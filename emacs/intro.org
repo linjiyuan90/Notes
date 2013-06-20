@@ -2,3 +2,8 @@
 * emacs as a python IDE.pdf
  - Customisability is a feature (not an add on).
  - Hence lots of “applications” in Emacs.
+
+
+
+* TODO what's
+  expand abbreviation?

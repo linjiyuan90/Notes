@@ -8,7 +8,7 @@
      only shows local branch
      git branch -r show remote
    - git add
-     add the *content* of this file to my next commit
+     add the *content/version* of this file to my next commit
      if you modify the file after add, before you commit, you need to
      add again!
      
@@ -25,18 +25,13 @@
      commit state.
 
    - git checkout bc
-     when you checkout, it'll get each file's last commit state!
-     not the last commit's files!
-     For example, you've commit a, b before, and now delete a, modify
-     b, then commit ( not commit -a, only add b), then checkout to somewhere
-     and checkout back, a is still there!
-     no no no!!!!
+     only give the point's indexed file back, may overwritten current
+     same file, but it'll prompt.
 
    - git merge branch_name
-     what about pull?
-     branch can merge content from master
-     (svn can only trunk merge ?)
-     
+     I think merge should be operated in local branch. If you
+     checkout to a remote branch then merge, it'll be in "no branch".
+
      -ff-only
      
    - git show-branch
@@ -124,8 +119,134 @@ will modify one affect others' index?
 At some point, git rm (or with --cached) only rm current point's
 index. Won't affect others!
 
-[[http://www.youtube.com/watch?v=ZDR433b0HJY][Introduction to Git with Scott Chacon of Github]]
 
+*commit before you checkout to other point*, otherwise the change you
+make will take effect like new file, delete file, but modify will
+prompt overwrite.
+
+
+** [[http://git-scm.com/book/en/Git-Basics-Recording-Changes-to-the-Repository#Ignoring-Files][gitignore]]
+   A class of file that you don't want Git to automatically *add* or
+   even show you as being *untracked*.
+   - .gitignore
+     : $ cat .gitignore
+     : *.[oa]
+     : *~
+   - blank lines or lines starting with # are ignored
+   - standard glob patterns work
+   - end patterns with / to specify a dir
+   - negate a pattern by starting it with an exclamation point(!)
+   : # a comment - this is ignored
+   : # no .a files
+   : *.a
+   : # but do track lib.a, even though you're ignoring .a files above
+   : !lib.a
+   : # only ignore the root TODO file, not subdir/TODO
+   : /TODO
+   : # ignore all files in the build/ directory
+   : build/
+   : # ignore doc/notes.txt, but not doc/server/arch.txt
+   : doc/*.txt
+   : # ignore all .txt files in the doc/ directory
+   : doc/**/*.txt
+
+
+
+
+* [[http://magit.github.io/magit/magit.html][magit]]
+  - only implements the most common Git operations
+  - M-x magit-status to entry
+    by default, this will use the current directory's git repository,
+    if there is not, magit will asks to create a new repository.
+    - C-u M-x magit-status
+      Choose other git dir, switch between them.
+    - *g* to refresh if you've modify files
+  - *magit-process* buffer contains the transcript of the most recent
+    command, you can swith to it wit $.
+
+** sections
+   section is something like *Staged changes*, *Changes*, *Untracked files*
+   - 1, 2, 3, 4 to control the visibility of sections based on levels
+   - M-1, 2, 3, 4 will control all sections' visibility
+   - TAB, S-TAB also works
+
+*** untracked files
+    |       |                                             |
+    |-------+---------------------------------------------|
+    | s     | add an untracked file to staging area       |
+    |       | if in section, will add all untracked files |
+    | C-u S | stage all untracked files                   |
+    | u     | unstaged                                    |
+    |-------+---------------------------------------------|
+    | i     | add to .gitignore                           |
+    | C-u i | prompt and add to .gitignore                |
+    | I     | add to .git/info/exclude                    |
+    |-------+---------------------------------------------|
+    | k     | remove file                                 |
+    
+*** staging
+    staged changes
+    changes (indexed, but not staged, unstaged changes)
+    untracked
+    |       |                                    |
+    |-------+------------------------------------|
+    | s     | add changes to staged changes      |
+    | u     | unstage a hunk                     |
+    | C-u S | staged all untracked/tracked files |
+    | C-u U | unmark all the files               |
+    |-------+------------------------------------|
+    | C-u s | ask a name for staged              |
+
+*** commit  
+    | c       | to pop up a buffer to write change description  |
+    |---------+-------------------------------------------------|
+    | C-c C-c | perform commit. If nothing staged, it will ask  |
+    |         | to whether commit all unstaged changes.         |
+    | C-c C-t | specify name and email for commit author        |
+    | C-c C-a | whether next commit will /amend/ current commit |
+    | C-c C-e | --allow-empty, without including any changes    |
+    | C-c C-k | erase *magit-log-edit* buffer and bury it       |
+
+*** history
+    |-----------------+-----------------------------------|
+    | q               | quit                              |
+    | l l             | short history of HEAD             |
+    | l L             | long history of HEAD              |
+    | l h             | local history of HEAD             |
+    | l rl            | range history between two points  |
+    | l rL            | range, but long history           |
+    | l =g            | grep                              |
+    |-----------------+-----------------------------------|
+    | when in history |                                   |
+    |-----------------+-----------------------------------|
+    | C-w             | copy the sha1                     |
+    | RET/SPC         | show the commit history           |
+    | v               | revert                            |
+    | ..              | mark                              |
+    | .               | unmark                            |
+    | C-u ..          | mark every one                    |
+    | \=              | show the differences from current |
+    |                 | commit and marked one             |
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[[http://www.youtube.com/watch?v=ZDR433b0HJY][Introduction to Git with Scott Chacon of Github]] \\
+[[http://daemianmack.com/magit-cheatsheet.html][magit-cheatsheet]] \\
 
 
 

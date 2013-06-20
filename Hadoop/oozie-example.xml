@@ -1,0 +1,133 @@
+<workflow-app name='example-forkjoinwf' xmlns="uri:oozie:workflow:0.1">
+    <start to='firstjob' />
+    <action name="firstjob">
+        <map-reduce>
+            <job-tracker>${jobtracker}</job-tracker>
+            <name-node>${namenode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.mapper.class</name>
+                    <value>org.apache.hadoop.example.IdMapper</value>
+                </property>
+                <property>
+                    <name>mapred.reducer.class</name>
+                    <value>org.apache.hadoop.example.IdReducer</value>
+                </property>
+                <property>
+                    <name>mapred.map.tasks</name>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>mapred.input.dir</name>
+                    <value>${input}</value>
+                </property>
+                <property>
+                    <name>mapred.output.dir</name>
+                    <value>/usr/foo/${wf:id()}/temp1</value>
+                </property>
+            </configuration>
+        </map-reduce>
+        <ok to="fork" />
+        <error to="kill" />
+    </action>
+    <fork name='fork'>
+        <path start='secondjob' />
+        <path start='thirdjob' />
+    </fork>
+    <action name="secondjob">
+        <map-reduce>
+            <job-tracker>${jobtracker}</job-tracker>
+            <name-node>${namenode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.mapper.class</name>
+                    <value>org.apache.hadoop.example.IdMapper</value>
+                </property>
+                <property>
+                    <name>mapred.reducer.class</name>
+                    <value>org.apache.hadoop.example.IdReducer</value>
+                </property>
+                <property>
+                    <name>mapred.map.tasks</name>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>mapred.input.dir</name>
+                    <value>/usr/foo/${wf:id()}/temp1</value>
+                </property>
+                <property>
+                    <name>mapred.output.dir</name>
+                    <value>/usr/foo/${wf:id()}/temp2</value>
+                </property>
+            </configuration>
+        </map-reduce>
+        <ok to="join" />
+        <error to="kill" />
+    </action>
+    <action name="thirdjob">
+        <map-reduce>
+            <job-tracker>${jobtracker}</job-tracker>
+            <name-node>${namenode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.mapper.class</name>
+                    <value>org.apache.hadoop.example.IdMapper</value>
+                </property>
+                <property>
+                    <name>mapred.reducer.class</name>
+                    <value>org.apache.hadoop.example.IdReducer</value>
+                </property>
+                <property>
+                    <name>mapred.map.tasks</name>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>mapred.input.dir</name>
+                    <value>/usr/foo/${wf:id()}/temp1</value>
+                </property>
+                <property>
+                    <name>mapred.output.dir</name>
+                    <value>/usr/foo/${wf:id()}/temp3</value>
+                </property>
+            </configuration>
+        </map-reduce>
+        <ok to="join" />
+        <error to="kill" />
+    </action>
+    <join name='join' to='finalejob'/>
+    <action name="finaljob">
+        <map-reduce>
+            <job-tracker>${jobtracker}</job-tracker>
+            <name-node>${namenode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.mapper.class</name>
+                    <value>org.apache.hadoop.example.IdMapper</value>
+                </property>
+                <property>
+                    <name>mapred.reducer.class</name>
+                    <value>org.apache.hadoop.example.IdReducer</value>
+                </property>
+                <property>
+                    <name>mapred.map.tasks</name>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>mapred.input.dir</name>
+                    <value>/usr/foo/${wf:id()}/temp2,/usr/foo/${wf:id()}/temp3
+                    </value>
+                </property>
+                <property>
+                    <name>mapred.output.dir</name>
+                    <value>${output}</value>
+                </property>
+            </configuration>
+        </map-reduce>
+        <ok to="end" />
+        <ok to="kill" />
+    </action>
+    <kill name="kill">
+        <message>Map/Reduce failed, error message[${wf:errorMessage()}]</message>
+    </kill>
+    <end name='end'/>
+</workflow-app>

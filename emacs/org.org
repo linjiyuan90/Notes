@@ -1,0 +1,90 @@
+
+
+* Tags 								       :tags:
++ Assign tags for headlines for cross-correlating information.
++ Tags must be preceded and followed by a sinlge colon, e.g.,
+  ':work:', ':work:urgent:'. *Tags occur at the end of the headline.*
++ tag inheritance
+  - By default, if a heading has a certain tag, all subheadings will
+    inherit the tag as well. org-tag-exclude-from-inheritance,
+    org-use-tag-inheritance.
+  - filetags
+    : #+FILETAGS: :Peter:Boss:Secret:
++ [ ] Setting tags
+  - at the end of a headling, after a colon, M-<TAB> offers
+    completion on tags
+  - C-c C-q 
+    org-set-tags-command
+  - C-c C-c
+    org-set-tags-command, when the cursor is in a headline, this does
+    the same as C-c C-q.
+  - default tags for a given file
+    : #+TAGS: @work @home @tennisclub
++ Tag searchs
+  - C-c / m or C-c \ (org-match-sparse-tree)
+  - [ ] C-c a m (org-tags-view)
+  - [ ] C-c a M (org-tags-view)
+  - these match commands allows bashic Boolean logic like
+    '+boss+urgent-project1'
+
+
+
+* Properties and columns
+A property is a *key-value pair* associated with an *entry*.
+Properties can be set so they are associated with a single entry, with
+every entry in a tree, or with every entry in an Org mode file.
+** applications
+   - properties like tags but with a value. 
+     Maintaining a file where you *document bugs and plan rerleases* for
+     a piece of software.
+   - implement very basic *databases capabilites* in an Org buffer.
+** properties syntax
+   - need to be inserted into a special /drawer/ with the name *PROPERTIES*
+   - each property is specified on a single line
+     for example:
+     #+BEGIN_EXAMPLE
+     * CD collection
+     ** Classic
+     *** Goldberg Variations
+         :PROPERTIES:
+         :Title:     Goldberg Variations
+         :Composer:  J.S. Bach
+         :Artist:    Glen Gould
+         :Publisher: Deutsche Grammophon
+         :NDisks:    1
+         :END:
+     #+END_EXAMPLE
+   - org-use-property-inheritance
+     Also, set ':xxx\_ALL:' for ':xxx:' to be inherited
+   - set property to be inherited by any entry in a file
+     : #+PROPERTY: XXX xxx
+   - add to the value of an existing property
+     append a + to the propery name
+     : #+PROPERTY: var foo=1
+     : #+PROPERTY: var+ foo=2
+
+** TODO column view
+
+|   |   |   |   |   |
+|---+---+---+---+---|
+|   |   |   |   |   |
+|---+---+---+---+---|
+|---+---+---+---+---|
+|---+---+---+---+---|
+|---+---+---+---+---|
+|   |   |   |   |   |
+
+* Markup
+** include files
+   : #+INCLUDE: "~/.emacs" src emacs-lisp
+optional second and third parameter are the markup
+   - quote
+   - example
+   - src
+other examples:
+   : #+INCLUDE: "ch2.org" :minlevel 1
+   : # make a file become a sibling of current top-level headline
+   : #+INCLUDE: "~/.emacs" :lines "5-10"   Include lines 5 to 10, 10 excluded
+   : #+INCLUDE: "~/.emacs" :lines "-10"    Include lines 1 to 10, 10 excluded
+   : #+INCLUDE: "~/.emacs" :lines "10-"    Include lines from 10 to EOF
+it seems that it can't include image, use

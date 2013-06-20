@@ -1,0 +1,31 @@
+
+* Oozie
+** two main parts
+   - a workflow engine
+   - a coordinator engine
+** different with JobControl
+JobControl runs on the client machine submitting the jobs, Oozie runs
+as a service in the cluster.
+
+** define an Oozie workflow
+*** nodes
+A workflow definition is a DAG with,
+ - 6 control-flow nodes:
+   - define beginning and end of a workflow (start, end, fail)
+   - control the workflow execution path (decision, fork, join)
+ - one *map-reduce action* node (map-reduce, pig, SSH, HTTP, eMail,
+   Oozie sub-workflow.)
+*** example
+#+INCLUDE: "oozie-example.xml" example
+*** parameterized
+   - job-tracker
+   - name-node
+*** components
+A workflow application is made up of the workflow definitions plus
+all the *associated resources* (such as MapReduce JAR files, Pig
+scripts, and son on).
+** install
+
+
+
+[[http://archive.cloudera.com/cdh/3/oozie/index.html][oozie document]]
