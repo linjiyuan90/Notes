@@ -1,20 +1,71 @@
 
 * Oozie
+Oozie is a Java Web-Application that runs in a Java servlet-container.
 ** two main parts
-   - a workflow engine
    - a coordinator engine
+     coordinator.xml, but where to put it?
+   - a workflow engine
+     workflow.xml, but where to put it?
 ** different with JobControl
 JobControl runs on the client machine submitting the jobs, Oozie runs
 as a service in the cluster.
+
+** states
+   PREP, RUNNING, SUSPENDED, SUCCEEDED, KILLED, FAILED
 
 ** define an Oozie workflow
 *** nodes
 A workflow definition is a DAG with,
  - 6 control-flow nodes:
    - define beginning and end of a workflow (start, end, fail)
+     - /start/ is the entry point for a workflow job, a workflow
+       definition must have one start node.
+     - /end/ indicates the workflow job has completed *successfully*. If
+       one or more actions started by the workflow job are executing
+       when the end node is reached, the actions will be *killed*. In
+       this scenario the workflow job is still considered as
+       successfully run.
+     - /kill/ kill itself, don't have to define
+     - /deicsion/ can be seen as a *switch-case* statement, consists
+       of a list of *predicates-transition* pairs plus a *default*
+       transition. \\
+       Predicates are *JSP Expression Language(EL) expressions* that
+       resolve into a boolean value.
+     - /fork/ *splits* one path of execution into *multiple concurrent
+       paths* of execution
+     - /join/ waits until every concurrent execution path of a
+       previous /fork/ node arrives to it.
+     - /fork/ and /join/ must be used in pair. To disable *forkjoin validation*x in *job.properties* file
    - control the workflow execution path (decision, fork, join)
  - one *map-reduce action* node (map-reduce, pig, SSH, HTTP, eMail,
    Oozie sub-workflow.)
+   - what's fs action? This is synchronous, others are asynchronous
+   - unique *callback* URL to the computation/processing task. If the
+     task failed to invoke the callback URL, Oozie *polls*
+     computation/processing tasks for completion. (Redo?)
+   - actions have 2 transitions, =ok= and =error=
+   - action recovery
+     - provides recovery capabilites when *start/end actions*
+     - Once an action starts successfully Oozie *will not retry
+       starting the action* if the action fails during its
+       execution. The assumption is that the *external system*
+       (i.e. Hadoop) executing the action has *enough resilience to
+       recovery jobs* once it has started (i.e. Hadoop task retries)
+     - if the failure is of *transient nature*, Oozie will perform
+       retries after a pre-defined time interval
+     - when *non-transient*, Oozie suspend the workflow job until *an
+       manual or programmatic intervention resumes* the workflow job
+       and the action start or end is retried. This external operator
+       need to do cleanup
+     - if the failure is an *error* and a retry will not resolve the
+       problem, Oozie will perform the *error transition* for the
+       action.
+*** actions
+    - map-reduce action \\
+      Can be configured to perform file system *cleanup* and directory
+      *creation* before staring the map reduce job. This enables
+      Oozie to *retry* a Hadoop job in the situation of a transient failure.
+    - 
 *** example
 #+INCLUDE: "oozie-example.xml" example
 *** parameterized
@@ -23,9 +74,39 @@ A workflow definition is a DAG with,
 *** components
 A workflow application is made up of the workflow definitions plus
 all the *associated resources* (such as MapReduce JAR files, Pig
-scripts, and son on).
+scripts, and so on).
+
+** file
+A Workflow application is a ZIP file that contains the workflow
+definition (an XML file), all the necessary files to run all the
+actions: JAR files for Map/Reduce jobs, shells for streaming
+Map/Reduce jobs, native libraries, Pig scripts, and other resource
+files.
 ** install
+   bin/mkdistro.sh
+** failure
+** extra
+#+BEGIN_EXAMPLE
+<!-- configs for  OOZIE -->
+<property>
+  <name>hadoop.proxyuser.ada.hosts</name>
+  <value>ada-s1</value><!-- where Oozie resides -->
+</property>
+<property>
+    <name>hadoop.proxyuser.ada.groups</name>
+    <value>ada</value><!--local groups, not 'supergroup' in hdfs! -->
+</property>
+#+END_EXAMPLE
+   
+** notes
+   - it seems that Oozie need jdk1.6 rather than jdk1.7
+   - need to add oozie user/group \\
+     sudo -u oozie oozie-start.sh
 
-
+** configuration
+   - Oozie level \\
+     oozie-site.xml
+   - workflow job \\
+     job.properties?
 
 [[http://archive.cloudera.com/cdh/3/oozie/index.html][oozie document]]

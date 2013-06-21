@@ -1,0 +1,8 @@
+
+* users
+  - chown
+    chown -R user:group dir
+  - adduser
+    
+  - sudo -u user cmd
+  
