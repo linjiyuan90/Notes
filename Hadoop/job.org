@@ -62,9 +62,15 @@ A workflow definition is a DAG with,
        action.
 *** actions
     - map-reduce action \\
-      Can be configured to perform file system *cleanup* and directory
-      *creation* before staring the map reduce job. This enables
-      Oozie to *retry* a Hadoop job in the situation of a transient failure.
+      - Can be configured to perform file system *cleanup* and
+        directory *creation* before staring the map reduce job. This
+        enables Oozie to *retry* a Hadoop job in the situation of a
+        transient failure.
+      - Hadoop *JobConf properties* can be specified in a *JobConf XML*
+        file bundled with the workflow application or they can be
+        indicated inline in the map-reduce action configuration.
+      - the mapred.job.tracker and fs.default.name properties must
+        not be present in the job-xml and inline configuration
     - 
 *** example
 #+INCLUDE: "oozie-example.xml" example
@@ -83,7 +89,31 @@ actions: JAR files for Map/Reduce jobs, shells for streaming
 Map/Reduce jobs, native libraries, Pig scripts, and other resource
 files.
 ** install
-   bin/mkdistro.sh
+   - bin/mkdistro.sh \\
+     After created, the bin will be in distro/target/...
+   - mkdir *libext* \\
+     Copy the Hadoop JARS (hadoop-core-*.jar,
+     commons-configuration*.jar) to libext (it seems that no need to
+     copy oozie-hadoop-*.jar in hadooplibs)
+     If using the ExtJS library, copy the ZIP file to libext
+   - oozie-setup.sh prepare-war [-jars <PATHS>] [-extjs <PATH>]
+     [-secure] \\
+     need jars, extjs. And they will be packaged to \\
+     distro/target/oozie-3.3.2-distro/oozie-3.3.2/oozie-server/webapps/oozie.war
+   - for first install, need to set 
+     : oozie.service.JPAService.create.db.schema=true
+     in oozie-site.xml, then run
+     : $ bin/ooziedb.sh create -sqlfile oozie.sql -run
+   - oozied.sh start \\
+     this started as daemon process
+     - or oozied.sh run \\
+       start as a *foreground* proces. This is better since you can see
+       the error message!
+     - oozie will used embedded tomcat, you don't have to install it individually
+     - by default, it use 11000 port, see it in http://localhost:11000/
+   - oozie admin -oozie 
+     
+   
 ** failure
 ** extra
 #+BEGIN_EXAMPLE
@@ -102,6 +132,7 @@ files.
    - it seems that Oozie need jdk1.6 rather than jdk1.7
    - need to add oozie user/group \\
      sudo -u oozie oozie-start.sh
+   - what and how to set separate group/user?
 
 ** configuration
    - Oozie level \\
@@ -110,3 +141,9 @@ files.
      job.properties?
 
 [[http://archive.cloudera.com/cdh/3/oozie/index.html][oozie document]]
+** steps
+   [[http://www.youtube.com/watch?v=Lt6ZRml6D7U][Hadoop Oozie]]
+   1. deploy INPUT data to HDFS (flume or manual)
+   2. deploy Oozie folder containing libraries and workflow
+      definitions (manual)
+   3. schedule Oozie workflow jobs (manual or on a schedule)
