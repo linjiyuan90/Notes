@@ -1,0 +1,29 @@
+
+
+* permission
+    
+** user identity
+   - groups [USERNAME]
+    print the groups a user is in
+   - adduser --ingroup <groupname> <username>
+
+** access control
+  - if you has r not x on a dir, you can list the filenames in the dir
+    but can not list the files' statistics \\
+    if you want to access a file, you must have *x along the path*
+  - w on a file means you can modify the content of the file, not the
+    filename or delete it. You need w of the file's directory to
+    rename, create, delete file.
+
+
+* Tricks
+  - echo | g++ -Wp,-v -x c++ - -fsyntax-only
+    this will send a *EOF* to it.
+  - visudo
+    : vi /etc/sudoers
+  - su user, su - user \\
+    The latter would provide an environment similar to what the user
+    would expect had the user *logged in* directly. \\ 
+    For example, load /etc/profile, and shift to home. So, it's recommended.
+    
+    

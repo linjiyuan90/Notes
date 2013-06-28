@@ -1,6 +1,18 @@
 
 * Oozie
-Oozie is a Java Web-Application that runs in a Java servlet-container.
+Oozie is a Java Web-Application that runs in a Java
+servlet-container - Tomcat and uses a database to store:
+   - Workflow definitions
+   - Currently running workflow instances, including instance states
+    and variables
+** two components
+Oozie-client and Oozie-server. \\
+Depending on the size of your cluster, you may have both components on
+the same =edge server= or on separate machines. \\ 
+The Oozie server contains the components for launching and controlling
+jobs, while the client contains the components for a person to be able
+to launch Oozie jobs and communicate with the Oozie server.
+
 ** two main parts
    - a coordinator engine
      coordinator.xml, but where to put it?
@@ -12,6 +24,80 @@ as a service in the cluster.
 
 ** states
    PREP, RUNNING, SUSPENDED, SUCCEEDED, KILLED, FAILED
+
+** install
+   - bin/mkdistro.sh \\
+     After created, the bin will be in distro/target/...
+   - mkdir *libext* \\
+     Copy the JARS in hadooplibs/hadoop*/target/ to libext \\
+     If using the ExtJS library, copy the ZIP file to libext
+   - oozie-setup.sh prepare-war [-jars <PATHS>] [-extjs <PATH>]
+     [-secure] \\
+     need jars, extjs. And they will be packaged to \\
+     distro/target/oozie-3.3.2-distro/oozie-3.3.2/oozie-server/webapps/oozie.war
+   - for first install, need to set 
+     : oozie.service.JPAService.create.db.schema=true
+     in oozie-site.xml, then run
+     : $ bin/ooziedb.sh create -sqlfile oozie.sql -run
+   - oozied.sh start / oozie-start.sh\\
+     this started as daemon process
+     - or oozied.sh run \\
+       start as a *foreground* proces. In this way, you can see
+       the *error message* if it failed to start!
+     - oozie will used embedded tomcat, you don't have to install it individually
+     - by default, it use 11000 port, see it in http://localhost:11000/
+   - oozie admin -oozie 
+   - oozied.sh stop / oozie-stop.sh
+   - *client* installation \\
+     expand oozie-client.tar.gz and add the bin/ to PATH.
+   - create a home for oozie in HDFS
+     #+BEGIN_SRC shell
+     $ hadoop fs -mkdir /user/oozie
+     $ hadoop fs -chown -R oozie /user/oozie
+     #+END_SRC
+   - sharelib \\
+     expand oozie-sharelib.tar.gz, and put the share directory to
+     Oozie HOME in HDFS.
+     : hadoop fs -put share share
+     Share libraries(Streaming, Pig, etc.) can simplify the deployment and management of
+     common components arcoss workflow applications.
+   - need to set =hadoop.proxyuser.[OOZIE_SERVER_USER].hosts=,
+     =hadoop.proxyuser.[OOZIE_SERVER_USER].groups= in hadoop's core-site.xml,
+     otherwise there will be error:
+     : Could not perform authorization operation, User: oozie is not allowed to impersonate xxx
+     
+** extra
+#+BEGIN_EXAMPLE
+<!-- configs for  OOZIE -->
+<property>
+  <name>hadoop.proxyuser.ada.hosts</name>
+  <value>ada-s1</value><!-- where Oozie resides -->
+</property>
+<property>
+    <name>hadoop.proxyuser.ada.groups</name>
+    <value>ada</value><!--local groups, not 'supergroup' in hdfs! -->
+</property>
+#+END_EXAMPLE
+   
+** notes
+   - need to add oozie user/group \\
+     sudo -u oozie oozie-start.sh
+   - what and how to set separate group/user?
+   - sharelib?
+   - oozie, oozie-client(to submit jobs?)
+   - to use a command, need to set *OOZIE_URL*, or use *-oozie url*
+     : oozie jobs -ooize http://localhost:11000/ooize
+     there is a *OOZIE_TIMEZONE* variable, set by *-timezone*
+   - dfs.permissions \\
+     if set to true, need to chown of the ooize home dir in HDFS as
+     *oozie:oozie* \\
+     do I have to set the /user's group? It seems don't need to.
+   - when is proxyuser work?
+   - oozie.wf.application.path=${nameNode}/user/... \\
+     need to add ${nameNode}
+     
+     
+     
 
 ** define an Oozie workflow
 *** nodes
@@ -82,68 +168,67 @@ A workflow application is made up of the workflow definitions plus
 all the *associated resources* (such as MapReduce JAR files, Pig
 scripts, and so on).
 
-** file
-A Workflow application is a ZIP file that contains the workflow
-definition (an XML file), all the necessary files to run all the
-actions: JAR files for Map/Reduce jobs, shells for streaming
-Map/Reduce jobs, native libraries, Pig scripts, and other resource
-files.
-** install
-   - bin/mkdistro.sh \\
-     After created, the bin will be in distro/target/...
-   - mkdir *libext* \\
-     Copy the Hadoop JARS (hadoop-core-*.jar,
-     commons-configuration*.jar) to libext (it seems that no need to
-     copy oozie-hadoop-*.jar in hadooplibs)
-     If using the ExtJS library, copy the ZIP file to libext
-   - oozie-setup.sh prepare-war [-jars <PATHS>] [-extjs <PATH>]
-     [-secure] \\
-     need jars, extjs. And they will be packaged to \\
-     distro/target/oozie-3.3.2-distro/oozie-3.3.2/oozie-server/webapps/oozie.war
-   - for first install, need to set 
-     : oozie.service.JPAService.create.db.schema=true
-     in oozie-site.xml, then run
-     : $ bin/ooziedb.sh create -sqlfile oozie.sql -run
-   - oozied.sh start \\
-     this started as daemon process
-     - or oozied.sh run \\
-       start as a *foreground* proces. This is better since you can see
-       the error message!
-     - oozie will used embedded tomcat, you don't have to install it individually
-     - by default, it use 11000 port, see it in http://localhost:11000/
-   - oozie admin -oozie 
-     
-   
-** failure
-** extra
-#+BEGIN_EXAMPLE
-<!-- configs for  OOZIE -->
-<property>
-  <name>hadoop.proxyuser.ada.hosts</name>
-  <value>ada-s1</value><!-- where Oozie resides -->
-</property>
-<property>
-    <name>hadoop.proxyuser.ada.groups</name>
-    <value>ada</value><!--local groups, not 'supergroup' in hdfs! -->
-</property>
-#+END_EXAMPLE
-   
-** notes
-   - it seems that Oozie need jdk1.6 rather than jdk1.7
-   - need to add oozie user/group \\
-     sudo -u oozie oozie-start.sh
-   - what and how to set separate group/user?
+** [[http://oozie.apache.org/docs/3.3.2/WorkflowFunctionalSpec.html#a7_Workflow_Application_Deployment][workflow application deployment]]
+   - workflow definition, *workflow.xml*
+   - config-default.xml
+     optional and typically contains workflow parameters *common* to
+     all workflow instance.
+   - lib/(*.jar; *.so) \\
+     All the JAR files and native libraries in lib are automatically
+     added to the mapr-reduce and pig jobs =classpath= and =LD_PATH=
+   - all configuration files and scripts (Pig, shell) needed by
+     action nodes
+   - additional JAR files and native libraries not present in lib/
+     can be specified in map-redcue and pig actions with the *file*
+     element
+   - additional jar files can also be included via an *uber jar*. An
+     uber jar is a jar file that contains additional jar files *within
+     a "lib" folder*. \\
+     *oozie.action.mapreduce.uber.jar.enble* in oozie-site.xml \\
+     oozie.mapreduce.uber.jar
 
-** configuration
-   - Oozie level \\
-     oozie-site.xml
-   - workflow job \\
-     job.properties?
 
-[[http://archive.cloudera.com/cdh/3/oozie/index.html][oozie document]]
+** Configuring Workflow Properties
+   
+There is some overlap between config-default.xml, jobs properties file and job arguments that can be passed to Oozie as part of command line invocations. Although documentation does not describe clearly when to use which, the overall recommendation is as follows:
+
+Use config-default.xml for defining parameters that never change for a given workflow
+Use jobs properties for the parameters that are common for a given deployment of a workflow
+Use command line arguments for the parameters that are specific for a given workflow invocation.
+The way Oozie processes these three sets of the parameters is as follows:
+
+Use all of the parameters from command line invocation
+If ano of the parameters can not be resolved there, try to resolve them using job config
+Once everything else fails, try using config-default.xml
+
+
 ** steps
    [[http://www.youtube.com/watch?v=Lt6ZRml6D7U][Hadoop Oozie]]
    1. deploy INPUT data to HDFS (flume or manual)
    2. deploy Oozie folder containing libraries and workflow
       definitions (manual)
    3. schedule Oozie workflow jobs (manual or on a schedule)
+
+** behind
+   - bundle
+     - coodinator jobs
+       - workflow jobs
+
+** run Oozie workflow
+   - job.properties?
+
+oozie job -log <arg>
+
+
+export OOZIE_URL=http://localhost:11000/ooize
+export OOZIE_TIMEZONE=Asia/Chongqing
+oozie.wf.application.path=
+${wf:user()}
+oozie info -timezones Asia/Chongqing
+
+imperonation, =-doas=
+
+[[http://oozie.apache.org/docs/3.3.2/AG_Install.html][Install]]
+
+[[http://archive.cloudera.com/cdh/3/oozie/index.html][Oozie document]]
+[[http://www.infoq.com/articles/introductionOozie][Introduction to Oozie]]

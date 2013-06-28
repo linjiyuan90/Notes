@@ -1,0 +1,68 @@
+% Created 2013-06-19 三 17:29
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{CJK}
+\usepackage{indentfirst}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage[CJKbookmarks=true]{hyperref}
+%% Define a museincludegraphics command, which is
+%%   able to handle escaped special characters in image filenames.
+\def\museincludegraphics{%
+  \begingroup
+  \catcode`\|=0
+  \catcode`\\=12
+  \catcode`\#=12
+  \includegraphics[width=0.75\textwidth]
+}
+\providecommand{\alert}[1]{\textbf{#1}}
+\begin{document}
+
+
+\begin{CJK*}{UTF8}{gbsn}
+
+
+
+\title{* This is the first structural section}
+\author{yuan}
+\date{\today}
+\maketitle
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+\vspace*{1cm}
+ \#+TITLE: Example Presentation
+ \#+AUTHOR: Carsten Dominik
+ \#+OPTIONS: H:2
+ \#+LATEX$_{\mathrm{CLASS}}$: beamer
+ \#+LATEX$_{\mathrm{CLASS}}$$_{\mathrm{OPTIONS}}$: [presentation]
+ \#+BEAMER$_{\mathrm{THEME}}$: Madrid
+ \#+COLUMNS: \%45ITEM \%10BEAMER$_{\mathrm{ENV}}$(Env) \%10BEAMER$_{\mathrm{ACT}}$(Act) \%4BEAMER$_{\mathrm{COL}}$(Col) \%8BEAMER$_{\mathrm{OPT}}$(Opt)
+ 
+       
+ ** Frame 1
+ *** Thanks to Eric Fraga                                           :B$_{\mathrm{block}}$:BMCOL:
+ for the first viable Beamer setup in Org
+ *** Thanks to everyone else                                        :B$_{\mathrm{block}}$:BMCOL:
+ for contributing to the discussion
+ **** This will be formatted as a beamer note                              :B$_{\mathrm{note}}$:
+ ** Frame 2 (where we will not use columns)
+ *** Request
+ Please test this stuff!
+
+\end{CJK*}
+\end{document}

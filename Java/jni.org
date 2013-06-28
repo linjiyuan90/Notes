@@ -1,0 +1,73 @@
+
+* introduction
+The advantage of using JNI is that both the calling program and the
+called program run *in the same process (job)* while the other methods
+start a new process (job). This makes JNI calls faster at startup time
+and less resource-intensive. However, because Java applications run in
+the Technology Independent Machine Interface (TIMI) and user native
+methods require a user address space to run, some overhead is required
+initially to create a user environment that uses 16-byte address
+pointers instead of the 8-byte pointers used below TIMI. It simply
+means that your reasons for using JNI should be based on more than
+performance.
+http://stackoverflow.com/questions/3706944/whether-a-new-process-is-forked-from-a-jni-call
+
+
+* compile
+  -I${JAVA_HOME}/include/
+  -ljvm
+  -L${JRW_HOME}/lib/amd64/server
+
+libjvm.so
+jni.h
+
+* run 
+  need 
+  #+BEGIN_EXAMPLE
+  ${JRE_HOME}/lib/
+             ├── amd64
+             │   ├── libjava.so
+             │   ├── libverify.so
+             │   ├── libzip.so
+             │   └── server
+             │       └── libjvm.so
+             └── rt.jar
+  #+END_EXAMPLE
+  you can copy them out.
+  : export LD_LIBRARY_PATH=lib/amd64/server
+  : # to load libjvm.so, and it need the other library in parent dir like above
+
+
+* program
+  The point is to init jvm
+** signatures
+   : javap -s -private MyClass
+   - env->GetMethodID(jclass clazz, const char *name, const char *sig);
+   - jmethodID env->CallObjectMethod()
+   - NewObject
+     NewObjectA
+     NewObjectV
+     jobject NewObject(JNIEnv *env, jclass clazz,
+     jmethodID methodID, ...);
+      
+     jobject NewObjectA(JNIEnv *env, jclass clazz,
+     jmethodID methodID, const jvalue *args);
+      
+     jobject NewObjectV(JNIEnv *env, jclass clazz,
+     jmethodID methodID, va_list args);
+      
+     Constructs a new Java object. The method ID indicates which
+     constructor method to invoke. This ID must be obtained by calling
+     GetMethodID() with <init> as the method name and void (V) as the
+     return type.
+   - GetObjectArrayElement
+     jobject GetObjectArrayElement(JNIEnv *env,
+     jobjectArray array, jsize index);
+
+     Returns an element of an Object array.
+   - 
+** javah   
+** native
+
+[[http://developer.51cto.com/art/201204/332810.htm][使用JNI进行混合编程：在C/C++中调用Java代码]]
+[[http://www.ibm.com/developerworks/cn/education/java/j-jni/section3.html#ibm-pcon][用 JNI 进行 Java 编程]]

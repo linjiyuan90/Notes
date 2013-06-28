@@ -1,0 +1,200 @@
+                                 git
+                                 ===
+
+Author: yuan
+Date: 2013-06-16 12:36:18 CST
+
+
+Table of Contents
+=================
+1 basic
+    1.1 somethings
+    1.2 operations
+2 Note
+    2.1 gitignore
+3 magit
+    3.1 sections
+
+
+1 basic 
+========
+
+1.1 somethings 
+---------------
+   - only push/poll need network access
+   - snapshots, not patches
+
+1.2 operations 
+---------------
+   - git branch
+     only shows local branch
+     git branch -r show remote
+   - git add
+     add the *content* of this file to my next commit
+     if you modify the file after add, before you commit, you need to
+     add again!
+     
+     if you have git add a file, delete this file and then commit,
+     the file will still there!
+
+     *checksum*
+   - git commit
+     git commit -a automatically add everything you have modified
+     (tracked files)
+
+   - git diff
+     difference between current working directory and staged/last
+     commit state.
+
+   - git checkout bc
+     when you checkout, it'll get each file's last commit state!
+     not the last commit's files!
+     For example, you've commit a, b before, and now delete a, modify
+     b, then commit ( not commit -a, only add b), then checkout to somewhere
+     and checkout back, a is still there!
+     no no no!!!!
+
+   - git merge branch_name
+     what about pull?
+     branch can merge content from master
+     (svn can only trunk merge ?)
+     
+     -ff-only
+     
+   - git show-branch
+   - git push
+     By default, with specifying branch, git push will push *all* the
+     branches you have push before unless you specify the branch you
+     want to.
+
+     *The first time* you want to push a branch, you need to specify
+     its name.
+    If a branch has not been pushed before, it won't automatically
+     push next if you push. (So you can save you private branch
+     local, without pushing it to remote)
+
+     If the branch you push has been modified in the remote
+     repository, git will requrie to pull first.
+
+   - get fetch
+     will fetch down new changes by others and move the origin/master
+     to new state.
+     And now you update, and push, origin/master will change to your
+     new state.
+     In other words, origin/master will always synchronize with the
+     remote state!
+     
+     what's the difference between pull/fetch?
+     fetch will get all the branch including the one you don't need,
+     and there may be a looooooooooooot of branches. If you have to
+     merge one by one, this will make you crazy! 
+     pull = fetch + merge
+
+   - git log
+     shows HEAD's log, not other branch.
+     git log --oneline [starting-point]
+     git log --all --oneline --graph --decorate
+     *logset*
+     git log A ^B
+       show all A can reach, but B can't
+       this will show what the branch means!
+     git log master ^origin/master
+       what you have not push to origin yet.
+
+   - git config
+     git config --global alias.lol "log --oneline --graph --decorate"
+     
+
+2 Note 
+=======
+  if two branch are point to same state, it's very dangerous, because
+  changing the working directory in one branch will affect the other
+  branch!
+
+
+There is a local repo and a lot of remote repos.
+If you want to use local branch to push to a remoe repo/branch, you
+have to fetch/pull first.
+fetch only synchronize your local's remote repos.
+pull will merge your local branch as well. (it'll create new remote
+branch as well if there is. This new remote branch will not merge to
+your local branch since there is no local branch tracking this new branch!)
+
+
+
+what's HEAD and ref?
+checkout is moving HEAD to the point.
+
+what's upstream?
+
+
+what's a stage?
+commit -a will track all the files that have been staged in previous
+commit.
+git rm --cached to rm it from stage (not rm CWD file)
+git rm will rm both.
+
+
+git add
+  is add current file's content to index, for next commit
+git commit
+  will commit all its index, not only the one new added, but the one
+  not added will commit its old content (index)
+  -a will update index file's content to current content, and commit
+
+
+does the index share by all branchs/commits?
+will modify one affect others' index?
+At some point, git rm (or with --cached) only rm current point's
+index. Won't affect others!
+
+2.1 gitignore 
+--------------
+   - .gitignore
+     $ cat .gitignore
+     *.[oa]
+     *~
+
+
+
+
+
+
+
+
+
+
+
+3 magit 
+========
+  - only implements the most common Git operations
+  - M-x magit-status to entry
+    by default, this will use the current directory's git repository,
+    if there is not, magit will asks to create a new repository.
+    - C-u M-x magit-status
+      Choose other git dir, switch between them.
+    - *g* to refresh if you've modify files
+  - *magit-process* buffer contains the transcript of the most recent
+    command, you can swith to it wit $.
+
+3.1 sections 
+-------------
+   section is something like *Staged changes*, *Changes*, *Untracked files*
+   - 1, 2, 3, 4 to control the visibility of sections based on levels
+   - M-1, 2, 3, 4 will control all sections' visibility
+   - TAB, S-TAB also works
+
+
+
+
+[Introduction to Git with Scott Chacon of Github] 
+[magit] 
+[magit-cheatsheet] 
+
+
+
+
+[Introduction to Git with Scott Chacon of Github]: http://www.youtube.com/watch?v=ZDR433b0HJY
+[magit]: http://magit.github.io/magit/magit.html
+[magit-cheatsheet]: http://daemianmack.com/magit-cheatsheet.html
+
