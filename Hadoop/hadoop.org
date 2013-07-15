@@ -41,7 +41,6 @@ dfs.replication
     : mydist_file#file2
     
 * mapred-default
-  |---------------------------------------------+---------------------------------+-----------------------------------------------------------|
   |                                             |                         default | desc                                                      |
   |---------------------------------------------+---------------------------------+-----------------------------------------------------------|
   | mapred.job.queue.name                       |                                 |                                                           |
@@ -95,4 +94,19 @@ dfs.replication
   |                                             |                                 | record PER bad record in mapper. 0 to turn off skip.      |
   |                                             |                                 | Long.MAX_VALUE whatever get skipped are acceptable.       |
   |                                             |                                 |                                                           |
+
+* web console
+  |      | Daemon                  | Default Port | Configuration Parameter          |
+  |------+-------------------------+--------------+----------------------------------|
+  | HDFS | Namenode                |        50070 | dfs.http.address                 |
+  |      | Datanodes               |        50075 | dfs.datanode.http.address        |
+  |      | Secondarynamenode       |        50090 | dfs.secondary.http.address       |
+  |      | Backup/Checkpoint node? |        50105 | dfs.backup.http.address          |
+  |------+-------------------------+--------------+----------------------------------|
+  | MR   | Jobracker               |        50030 | mapred.job.tracker.http.address  |
+  |      | Tasktrackers            |        50060 | mapred.task.tracker.http.address |
+
+* pipes
+  - program xxx is same as -Dhadoop.pipes.executable=xxx
+
 
