@@ -1,0 +1,18 @@
+
+for windows, MikTex
+for Mac OS, MacTex
+
+*TexMaker* vs TexWork
+
+http://mrskrummel.com/tutorials
+
+* two Tex-engines capable of processing Unicode input
+LaTeX can only handle ASCII ?
+** XeTeX
+  : apt-get install texlive-xetex texlive-latex-base texlive-latex-extra texlive-metapost texlive-math-extra texlive-science
+** LuaTeX
+
+
+* others
+  - what's eps graph?
+

@@ -1,0 +1,87 @@
+
+* position
+** numerate, itemize, description
+  - enumerate
+    #+BEGIN_SRC latex
+    \begin{enumerate}
+    \item <- this will become 1.
+    \end{enumerate}
+    #+END_SRC
+  - itemize
+    #+BEGIN_SRC latex
+    \begin{itemize}
+    \item[-]
+    \end{itemize}
+    #+END_SRC
+  - description
+
+** flushleft, flushright, center
+
+** verbatim
+   Text that is enclosed betwee \\begin\{verbatim\} and
+   \end\{verbatim\} will be directly printed. Delimiter can be any
+   character execpt * or space.
+   #+BEGIN_SRC latex
+   \verb+text+
+   \verb|\ldots|
+   \begin{verbatim}
+   xxx
+   \begin{verbatim}
+   \begin{verbatim*}
+   space will become␣.
+   \end{verbatim*}
+   #+END_SRC
+
+* table
+** tabular
+   - format
+   |---------------------------+-----------------------------------------------|
+   | l                         | left-aligned                                  |
+   | r                         | right-aligned                                 |
+   | c                         | centred                                       |
+   | p{width}                  | for a column containing text with line breaks |
+   | \vert                     | vertical line                                 |
+   | \&                        | jumps to next column                          |
+   | \\                        | starts a new line                             |
+   | \hline                    | insert a horizontal line                      |
+   | \cline{i-j}               | add partial lines                             |
+   | \multicolumn{2}{c}{title} |                                               |
+
+   - trick
+     - since there is no built-in way to align numeric columns to a
+       decimal point, we can "treat" and do it by using two columns:
+       a right-aligned integer and a left-aligned fraction.
+       [1] p48. @{}
+
+
+* floating bodies
+  'float' any figure or table that does not fit on the current page
+  to a later page, while filling the current page with body text.
+
+  - placement 
+  : \begin{figure}[placement specifier] or \begin{table}[...]
+  | Spec | Permission to place the float |
+  |------+-------------------------------|
+  | h    | here                          |
+  | t    | at the top of a page          |
+  | b    | at the bottom of a page       |
+  | p    | on a special page             |
+  | \!   | force, try really hard        |
+
+  : \begin{table}[!hbp]
+  The placement specifier [!hbp] allows LaTeX to place the table
+  right here(h) or at the bottom(b) of some page or on a special
+  floats page (p), and all this even if it does not look that good(!).
+  
+  - caption
+  : \caption{caption text}
+  to define a caption for the /float/.
+  : \caption[Short]{LLLLooooooonnnnnnnnnngggggggggg}
+  define a short caption (for list)
+  
+  - list
+  : \listoffigures and \listoftables
+  Analogously to the
+  : \tableofcontents
+  
+[1] The Not So Short Introduction to LaTeX

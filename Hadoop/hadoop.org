@@ -40,18 +40,34 @@ dfs.replication
   - generic options should put before command specific options
 
 * mapred-default
-  | mapred.job.queue.name | default |
+  |-------------------------------------+------------+-----------------------------|
+  |                                     | default    | desc                        |
+  |-------------------------------------+------------+-----------------------------|
+  | mapred.job.queue.name               |            |                             |
+  |-------------------------------------+------------+-----------------------------|
+  | mapred.mapper/reducer.class         |            |                             |
+  |-------------------------------------+------------+-----------------------------|
+  | *new api*                           |            |                             |
+  |-------------------------------------+------------+-----------------------------|
+  | mapred.mapper/reducer.new-api       | false/true |                             |
+  | mapreduce.map/reduce.class          |            |                             |
+  |-------------------------------------+------------+-----------------------------|
+  | *memory configuration*              |            |                             |
+  |-------------------------------------+------------+-----------------------------|
+  | mapred.cluster.map/reduce.memory.mb | -1         | virtual memory, of a single |
+  |                                     |            | map/reduce slot             |
+  |                                     |            |                             |
 
 * web console
-|      | Daemon                  | Default Port | Configuration Parameter          |
-|------+-------------------------+--------------+----------------------------------|
-| HDFS | Namenode                |        50070 | dfs.http.address                 |
-|      | Datanodes               |        50075 | dfs.datanode.http.address        |
-|      | Secondarynamenode       |        50090 | dfs.secondary.http.address       |
-|      | Backup/Checkpoint node? |        50105 | dfs.backup.http.address          |
-|------+-------------------------+--------------+----------------------------------|
-| MR   | Jobracker               |        50030 | mapred.job.tracker.http.address  |
-|      | Tasktrackers            |        50060 | mapred.task.tracker.http.address |
+  |      | Daemon                  | Default Port | Configuration Parameter          |
+  |------+-------------------------+--------------+----------------------------------|
+  | HDFS | Namenode                |        50070 | dfs.http.address                 |
+  |      | Datanodes               |        50075 | dfs.datanode.http.address        |
+  |      | Secondarynamenode       |        50090 | dfs.secondary.http.address       |
+  |      | Backup/Checkpoint node? |        50105 | dfs.backup.http.address          |
+  |------+-------------------------+--------------+----------------------------------|
+  | MR   | Jobracker               |        50030 | mapred.job.tracker.http.address  |
+  |      | Tasktrackers            |        50060 | mapred.task.tracker.http.address |
 
 * pipes
   -program xxx is same as -Dhadoop.pipes.executable=xxx

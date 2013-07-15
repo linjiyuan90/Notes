@@ -1,0 +1,12 @@
+
+* compile
+  : javac -cp xx.jar:yy_dir src/a/b/c/zz.java
+  : jar cfe zz.jar zz -C src .
+  : # -C to 
+  : # e to specify entrypoint (Main-Class), or use m to specify the manifest file
+  : jar cfm zz.jar manifest.txt -C src .
+
+* run
+  : java -cp .:xx.jar zz
+  : java -jar zz.jar
+  : # if use -jar, -cp seems take no effect, need to specify Class-path in manifest 

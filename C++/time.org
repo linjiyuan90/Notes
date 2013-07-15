@@ -1,0 +1,7 @@
+
+#+BEGIN_SRC c++
+std::chrono::system_clock::time_point last;
+auto now = std::chrono::system_clock::now();
+auto elapsed_seconds =
+  std::chrono::duration_cast<std::chrono::seconds>(now - last).count();
+#+END_SRC

@@ -232,3 +232,8 @@ imperonation, =-doas=
 
 [[http://archive.cloudera.com/cdh/3/oozie/index.html][Oozie document]]
 [[http://www.infoq.com/articles/introductionOozie][Introduction to Oozie]]
+
+** others
+  : <value>/usr/foo/${wf:id()}/temp2,/usr/foo/${wf:id()}/temp3</value>
+
+[1] http://jyd.me/nosql/oozie-classnotfoundexception-solution/

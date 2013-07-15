@@ -6,3 +6,8 @@
     
   - sudo -u user cmd
   
+
+
+* development
+** ldap
+** /etc/ld.so.conf

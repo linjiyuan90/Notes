@@ -1,0 +1,17 @@
+
+* install
+* key binding
+  | key     | cmd                                     |
+  |---------+-----------------------------------------|
+  | C-c C-s | LaTeX-Section                           |
+  | C-c C-e | LaTeX-environment, math, document, etc. |
+  | C-c C-j | LaTeX-insert-item                       |
+  | C-c ]   | close                                   |
+  | C-c C-c | compile                                 |
+  | C-c C-v | view                                    |
+  | C-c RET | TeX-insert-macro                        |
+  | C-c C-m | TeX-isnert-macro                        |
+  |         |                                         |
+
+* others
+  : fc-list :lang=zh-cn

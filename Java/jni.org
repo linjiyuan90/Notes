@@ -71,3 +71,6 @@ jni.h
 
 [[http://developer.51cto.com/art/201204/332810.htm][使用JNI进行混合编程：在C/C++中调用Java代码]]
 [[http://www.ibm.com/developerworks/cn/education/java/j-jni/section3.html#ibm-pcon][用 JNI 进行 Java 编程]]
+
+* tricks
+  remember to release, like *env->DeleteLocalRef*

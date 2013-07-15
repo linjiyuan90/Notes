@@ -7,3 +7,6 @@
 
 * TODO what's
   expand abbreviation?
+
+* others
+  - picture mode

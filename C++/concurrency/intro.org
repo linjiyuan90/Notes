@@ -1,0 +1,20 @@
+
+join
+detach
+
+* pthread
+** pthread_cancel
+   defer it until it reaches a cancellation point.
+   cause dead lock/memory leak if cancel unsafely!
+   
+   : pthread_testcancel()
+   : this_thread::interruption_point()
+
+** 
+polling ?
+
+
+* boost
+  use exception
+  it'll call destructor automatically
+
