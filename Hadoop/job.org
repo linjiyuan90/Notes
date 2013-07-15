@@ -95,9 +95,9 @@ as a service in the cluster.
    - when is proxyuser work?
    - oozie.wf.application.path=${nameNode}/user/... \\
      need to add ${nameNode}
-     
-     
-     
+   - The configuration properties are loaded in the following order,
+     streaming , job-xml and configuration , and later values override
+     earlier values.
 
 ** define an Oozie workflow
 *** nodes

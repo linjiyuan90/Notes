@@ -1,0 +1,3 @@
+
+http://wiki.apache.org/hadoop/EclipseEnvironment
+Protocol Buffers are required by hadoop's YARN framework,

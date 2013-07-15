@@ -3,3 +3,16 @@
 
 
 * Capacity Scheduler
+  The CapacityScheduler is designed to allow sharing a large cluster
+  while giving each organization a *minimum capacity guarantee*.
+
+  The CapacityScheduler provides a stringent set of limits to ensure
+  that a single job or user or queue *cannot consume dispropotionate*
+  amount of resources in the cluster. 
+
+  Also, the *JobTracker* of the cluster, in particular, is a precious
+  resource and the CapacityScheduler provides *limits on
+  initialized/pending tasks and jobs* from a single user and queue to
+  ensure fairness and stability of the cluster.
+
+

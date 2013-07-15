@@ -1,6 +1,12 @@
 
-join
-detach
+* compile
+  need to add
+  : -lpthread
+  when compile
+
+* concept
+  join
+  detach
 
 * pthread
 ** pthread_cancel
@@ -9,12 +15,21 @@ detach
    
    : pthread_testcancel()
    : this_thread::interruption_point()
-
-** 
+   
 polling ?
-
 
 * boost
   use exception
   it'll call destructor automatically
 
+* async
+  #+BEGIN_SRC C++
+  #include "future"
+  int func();
+  // start func() asynchronously in the background (now or later or never)
+  // assign the result to the object of class std::future
+  std::future<int> result(std::async(func());
+  // do something else
+  result.get();
+  #+END_SRC
+  
