@@ -10,11 +10,11 @@
 
 * pthread
 ** pthread_cancel
-   defer it until it reaches a cancellation point.
+   defer it until it reaches a cancellation point. \\
    cause dead lock/memory leak if cancel unsafely!
    
    : pthread_testcancel()
-   : this_thread::interruption_point()
+   : boost::this_thread::interruption_point()
    
 polling ?
 
@@ -22,14 +22,67 @@ polling ?
   use exception
   it'll call destructor automatically
 
-* async
+* async & future
   #+BEGIN_SRC C++
   #include "future"
   int func();
-  // start func() asynchronously in the background (now or later or never)
+  // try start func() asynchronously in the background (now or later or never)
   // assign the result to the object of class std::future
   std::future<int> result(std::async(func());
+  // ^ auto works as well
   // do something else
   result.get();
   #+END_SRC
+  use future for two reasons:
+  - it allows access to the "future" outcome of the functionality
+    passed to async(). The outcome might be either a return value or
+    an exception.
+    : std::future<void> for returns nothing
+  - async() may not start ever (if no more separated thread is
+    availble, it will defer), use future to force a start.
+
+  To have better effect, maximize the distance between calling
+  async() and calling get()
   
+** launch policy
+   To force async() to not defer the passed functionality, explicitly
+   passing a /launch policy/.
+   #+BEGIN_SRC C++
+   // force func() to start asynchronously now or throw std::system_error
+   // if it's not possible to call here
+   std::future<long> result = std::async(std::launch::async, func);
+   // std::launch::defered
+   #+END_SRC
+   In this case, no need to call get() anymore. If the *lifetime* of
+   the returned future ends, the program will *wait* for func() to
+   finish.
+
+** deal with exceptions
+   If exception is not caught in the thread, future will keep this
+   state until get() is called, and propagated to main.
+
+** waiting and polling
+   You can can only call get() once. After get(), the future is in an
+   invalid state, which can be checke only by calling valid() for the
+   future.
+
+   Below are callable more than once
+
+*** wait()
+    wait() forces the start of a thread a future represents and waits
+    (block) for the termination.
+    Looks like get(), but can be called more than once, and don't
+    return result. Call get() after wait().
+*** wait_for(), wait_until()
+    do /not/ force the thread to get started if it hasn't started yet.
+    #+BEGIN_SRC CPP
+    std::future<...> f(std::async(func));
+    ...
+    f.wait_for(std::chrono::seconds(10));
+    f.wait_until(std::system_clock()::now() + std::chrono::minutes(1));
+    #+END_SRC
+    wait_for, wait_until return one of the following:
+    | std::future_status::deferred | if async() deferred the operation and no calls to wait() or get() have yet forced it to start(both function return immediately in this case) |
+    | std::future_status::timeout  | the waiting expired due to the passing timeout                                                                                               |
+    | std::future_status::ready    | the operation is finished                                                                                                                    |
+
