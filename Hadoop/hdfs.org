@@ -1,51 +1,51 @@
 
 * Permissions
-Identity by name + group \\
-Each file/directory is associated with an owner and a group.
-| Files       |                                                            |
-|-------------+------------------------------------------------------------|
-| r           | read                                                       |
-| w           | write/append                                               |
-|-------------+------------------------------------------------------------|
-| Direcotries |                                                            |
-|-------------+------------------------------------------------------------|
-| r           | list the contents of the directory                         |
-| w           | create/delete files/directories                            |
-| x           | access a child of the directory (child's statistics)       |
-|             | children's names can be listed if have 'r' but without 'w' |
+  
+  Identity by name + group \\
+  Each file/directory is associated with an owner and a group.
+  | Files       |                                                            |
+  |-------------+------------------------------------------------------------|
+  | r           | read                                                       |
+  | w           | write/append                                               |
+  |-------------+------------------------------------------------------------|
+  | Direcotries |                                                            |
+  |-------------+------------------------------------------------------------|
+  | r           | list the contents of the directory                         |
+  | w           | create/delete files/directories                            |
+  | x           | access a child of the directory (child's statistics)       |
+  |             | children's names can be listed if have 'r' but without 'w' |
 
-In contrast to the POSIX model, there are *no sticky, setuid or setgid
-bits* for files as there is no notion of executable files.
+  In contrast to the POSIX model, there are *no sticky, setuid or
+  setgid bits* for files as there is no notion of executable files.
 
 ** user identity
-In this release of Hadoop the identity of a client process is just
-whatever the host operating system says it is.\\
-In the future there will be other ways of establishing user identity
-(think Kerberos, LDAP, and others).\\
-Each file or directory operation passes the full path name to the name
-node, and the permissions checks are applied *along the path* for each
-operation. 
-
-#+BEGIN_QUOTE
-"The user identity that Hadoop uses for permissions in HDFS is
-determined by running the whoami command on the client
-system. Similarly, the group names are derived from the output of
-running groups.
-So, you can create a new whoami command which returns the required
-username and put it in the PATH appropriately, so that the created
-whoami is found before the actual whoami which comes with Linux is
-found. Similarly, you can play with the groups command also.
-This is a hack and won't work once the authentication and
-authorization has been turned on."
-http://stackoverflow.com/questions/11371134/how-to-specify-username-when-putting-files-on-hdfs-from-a-remote-machine
-#+END_QUOTE
-
+  In this release of Hadoop the identity of a client process is just
+  whatever the host operating system says it is.\\
+  In the future there will be other ways of establishing user identity
+  (think Kerberos, LDAP, and others).\\
+  Each file or directory operation passes the full path name to the name
+  node, and the permissions checks are applied *along the path* for each
+  operation. 
+   
+  #+BEGIN_QUOTE
+  "The user identity that Hadoop uses for permissions in HDFS is
+  determined by running the whoami command on the client
+  system. Similarly, the group names are derived from the output of
+  running groups.
+  So, you can create a new whoami command which returns the required
+  username and put it in the PATH appropriately, so that the created
+  whoami is found before the actual whoami which comes with Linux is
+  found. Similarly, you can play with the groups command also.
+  This is a hack and won't work once the authentication and
+  authorization has been turned on."
+  http://stackoverflow.com/questions/11371134/how-to-specify-username-when-putting-files-on-hdfs-from-a-remote-machine
+  #+END_QUOTE
+   
 
 ** super-user
-The super-user is the user with *the same identity as name node process*
-itself. Loosely, if you started the name node, then you are the
-super-user. 
-
+  The super-user is the user with *the same identity as name node
+  process* itself. Loosely, if you started the name node, then you are
+  the super-user. 
 
 ** supergroup?
 
