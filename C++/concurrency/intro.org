@@ -1,9 +1,8 @@
 
 * compile
-  with g++, need to add
+  need to add
   : -lpthread
   when compile.
-  But clang++ doesn't need it!
 
 * concept
   join
@@ -35,9 +34,9 @@ polling ?
   result.get();
   #+END_SRC
   use future for two reasons:
-  - it allows access to the "future" outcome of the functionality
-    passed to async(). The outcome might be either a return value or
-    an exception.
+  - it allows access to the "future" outcome *(store state/result)* of
+    the functionality passed to async(). The outcome might be either a
+    return value or an exception.
     : std::future<void> for returns nothing
   - async() may not start ever (if no more separated thread is
     availble, it will defer), use future to force a start.
@@ -69,7 +68,7 @@ polling ?
 
    Below are callable more than once
 *** wait()
-    wait() forces the start of a thread a future represents and waits
+    wait() forces the start of a thread a future represents and *waits*
     (block) for the termination.
     Looks like get(), but can be called more than once, and don't
     return result. Call get() after wait().
@@ -86,8 +85,23 @@ polling ?
     | std::future_status::timeout  | the waiting expired due to the passing timeout                                                                                               |
     | std::future_status::ready    | the operation is finished                                                                                                                    |
     
+** shared future
+   future's get() can only be called once. With situation when
+   multiple threads process the outcome, use shared_future. Here,
+   multiple get() calls are possible and *yield the same result or
+   throw the same exception*.
+   : std::shared_future<int> f = std::async(func);
+   : auto f = std::async(func).share();
+   | future                   | shared_future                    |
+   |--------------------------+----------------------------------|
+   | T future<T>::get()       | const T& shared_future<T>::get() |
+   | T& future<T&>::get()     | T& shared_future<T&>::get()      |
+   | void future<void>::get() | void shared_future<void>::get()  |
+   "The *single-use* value get() is *move optimized*, the *const reference*
+   get() is *access optimized*."
+
 * note
-** two situation may lead to one thread occupying cpu
+** two situations may lead to one thread occupying cpu
   - std::future_status::deferred
     #+BEGIN_SRC CPP
     // need to judge, otherwise, the while loop may run forever!
