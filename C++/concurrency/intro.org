@@ -1,8 +1,9 @@
 
 * compile
-  need to add
+  with g++, need to add
   : -lpthread
-  when compile
+  when compile.
+  But clang++ doesn't need it!
 
 * concept
   join
@@ -62,12 +63,11 @@ polling ?
    state until get() is called, and propagated to main.
 
 ** waiting and polling
-   You can can only call get() once. After get(), the future is in an
+   You can can *only call get() once*. After get(), the future is in an
    invalid state, which can be checke only by calling valid() for the
    future.
 
    Below are callable more than once
-
 *** wait()
     wait() forces the start of a thread a future represents and waits
     (block) for the termination.
@@ -85,4 +85,24 @@ polling ?
     | std::future_status::deferred | if async() deferred the operation and no calls to wait() or get() have yet forced it to start(both function return immediately in this case) |
     | std::future_status::timeout  | the waiting expired due to the passing timeout                                                                                               |
     | std::future_status::ready    | the operation is finished                                                                                                                    |
-
+    
+* note
+** two situation may lead to one thread occupying cpu
+  - std::future_status::deferred
+    #+BEGIN_SRC CPP
+    // need to judge, otherwise, the while loop may run forever!
+    // or use std::launch::async when constructing 
+    // if (f.wait_for(std::chrono::seconds(0)) != std::futrue_status::deferred))
+    while (f.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
+      // wait
+    }
+    #+END_SRC
+  - yield
+    hint to reschedule to the next thread
+** lifetime
+   - when parsing reference to thread, make sure the object's lifetime
+   is larger than the thread
+   - detach thread will go on runing even main exit? Make sure
+     global/static object not destruct if they are use in detached thread.
+   
+  

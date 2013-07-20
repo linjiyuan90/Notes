@@ -1,0 +1,20 @@
+
+
+* class
+  : java.sql.*
+  : Connection
+  : PreparedStatement
+  : Statement
+
+* noted
+  - autoCommit
+  #+BEGIN_SRC java
+  connection.setAutoCommit(false);  // much faster!
+  statement.executeBatch();
+  connection.commit();
+  #+END_SRC
+  - insert ignore will make auto_increment increase though no data
+    are inserted.
+
+  
+  
