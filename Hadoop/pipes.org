@@ -1,16 +1,12 @@
 
 While streamming use stdin/stdout, pipes use *socket* to communicate.
 
-use java RecordReader, RecordWriter, rather than write them by
-yourself.
-
 * build
   The library in ${HADOOP_HOME}/c++/Linux-amd64-64/lib may not work!
-  Need to build native library. 
-  [[
+  Need to build native library.
   : ant -Dcompile.c++=yes example
   doesn't work for me. I follow
-  http://guoyunsky.iteye.com/blog/1709654]] to build native library.
+  http://guoyunsky.iteye.com/blog/1709654 to build native library.
   
   #+BEGIN_SRC shell
   $ cd src/c++/utils/
@@ -32,7 +28,6 @@ yourself.
       ├── libhadooppipes.a
       └── libhadooputils.a
   #+END_EXAMPLE
-
 
   note:
   - if error occures when configure c++/pipes:
@@ -66,17 +61,14 @@ yourself.
   
 * compile & run
   #+BEGIN_SRC shell
-  g++ wordcount-simple.cc -o wc -Iinstall/include -Linstall/lib
-  -lhadooppipes  -lhadooputils -lpthread -lssl -lpthread -lcrypto
+  g++ wordcount-simple.cc -o wc -Iinstall/include -Linstall/lib -lhadooppipes  -lhadooputils -lpthread -lssl -lpthread -lcrypto
   hadoop fs -put wc bin
-  hadoop pipes -Dhadoop.pipes.java.recordreader=true
-  -Dhadoop.pipes.java.recordwriter=true -program wc -input in -output out
-
-
+  hadoop pipes -Dhadoop.pipes.java.recordreader=true -Dhadoop.pipes.java.recordwriter=true -program wc -input in -output out
+  #+END_SRC
 
 * something
   - program xxx is same as -Dhadoop.pipes.executable=xxx
-
+  - input/output is same as -Dmapred.input/output.dir
 
 * reference
   - [[http://dongxicheng.org/mapreduce/hadoop-pipes-architecture/]]
