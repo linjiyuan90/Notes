@@ -4,11 +4,13 @@ While streamming use stdin/stdout, pipes use *socket* to communicate.
 use java RecordReader, RecordWriter, rather than write them by
 yourself.
 
-: -Dhadoop.pipe.java.
-
 * build
   The library in ${HADOOP_HOME}/c++/Linux-amd64-64/lib may not work!
-  Need to build native library. [[http://guoyunsky.iteye.com/blog/1709654]]
+  Need to build native library. 
+  [[
+  : ant -Dcompile.c++=yes example
+  doesn't work for me. I follow
+  http://guoyunsky.iteye.com/blog/1709654]] to build native library.
   
   #+BEGIN_SRC shell
   $ cd src/c++/utils/
@@ -18,6 +20,7 @@ yourself.
   #+END_SRC
   
   after that, you'll see this generate directories in src/c++/install/
+  #+BEGIN_EXAMPLE
   install/
   ├── include
   │   └── hadoop
@@ -28,6 +31,7 @@ yourself.
   └── lib
       ├── libhadooppipes.a
       └── libhadooputils.a
+  #+END_EXAMPLE
 
 
   note:
@@ -60,25 +64,22 @@ yourself.
     : impl/HadoopPipes.cc:1049:16: error: ‘sleep’ was not declared in this scope
     add #incldue "unistd.h" to src/c++/pipes/impl/HadoopPipes.cc
   
-* compile
+* compile & run
+  #+BEGIN_SRC shell
+  g++ wordcount-simple.cc -o wc -Iinstall/include -Linstall/lib
+  -lhadooppipes  -lhadooputils -lpthread -lssl -lpthread -lcrypto
+  hadoop fs -put wc bin
+  hadoop pipes -Dhadoop.pipes.java.recordreader=true
+  -Dhadoop.pipes.java.recordwriter=true -program wc -input in -output out
 
-  : ${HADOOP_HOME}/c++/Linux-amd64-64/include/
-  : ${HADOOP_HOME}/c++/Linux-amd64-64/lib
-  : g++ wordcount-simple.cc -Iinclude -Llib -lhadooppipes  -lhadooputils -lpthread -lssl -lpthread -lcrypto
 
 
 * something
-  - if you get 
-    
-    http://hadoop.illecker.at/?p=206
-
-
-* pipes
   - program xxx is same as -Dhadoop.pipes.executable=xxx
 
 
 * reference
-[[http://dongxicheng.org/mapreduce/hadoop-pipes-architecture/]]
-[[http://cs.smith.edu/dftwiki/index.php/Hadoop_Tutorial_2.2_--_Running_C%2B%2B_Programs_on_Hadoop]]
+  - [[http://dongxicheng.org/mapreduce/hadoop-pipes-architecture/]]
+  - [[http://cs.smith.edu/dftwiki/index.php/Hadoop_Tutorial_2.2_--_Running_C%2B%2B_Programs_on_Hadoop]]
 
 
