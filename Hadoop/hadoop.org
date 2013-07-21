@@ -41,7 +41,7 @@
  - Hadoop *proxyuser* capabilities
 
 * how to do online update without lossing data/stopping service?
-
+  
 * sth
   - An =edge node= is a machine that has the Hadoop libraries installed
     , yet is not part of the actual cluster. It is for applications
@@ -58,6 +58,7 @@
     working directory. User can rename, symlink it by using '#'
     : mydist_file#file1
     : mydist_file#file2
+  - working directory & distributed directory
     
 * mapred-default
   |                                             |                         default | desc                                                                                                                                                                                                                     |
@@ -109,7 +110,6 @@
   |------+-------------------------+--------------+----------------------------------|
   | MR   | Jobracker               |        50030 | mapred.job.tracker.http.address  |
   |      | Tasktrackers            |        50060 | mapred.task.tracker.http.address |
-
 
 
 * security
