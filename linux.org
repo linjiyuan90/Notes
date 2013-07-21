@@ -7,7 +7,10 @@
   - sudo -u user cmd
   
 
-
 * development
 ** ldap
 ** /etc/ld.so.conf
+* ld
+  - /etc/ld.so.conf
+  - ldconfig
+    since stale ld.so.cache, run ldconfig to update it.

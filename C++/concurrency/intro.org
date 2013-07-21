@@ -99,6 +99,37 @@ polling ?
    | void future<void>::get() | void shared_future<void>::get()  |
    "The *single-use* value get() is *move optimized*, the *const reference*
    get() is *access optimized*."
+   The multiple shared future objects share the same /shared
+   state/. Though possible, it's risky to share one future object (by
+   reference).
+
+* thread
+  As for async(), you can pass anything that's a /callable object/
+  (function, member function, function object, lambda) together with
+  possible additional arguments. It's recommended to pass all objects
+  by value so that the thread uses only /local copies/.
+
+  Thread is low-level interface, things it does not provides compared
+  to async():
+  - doesn't have a launch policy. Thread *always tries to start* the
+    passed functionality in a new thread. If it isn't possible, it
+    throws a std::system_error with the error code
+    resource_unavailble_try_again.
+  - *no interfaces to process the result or outcome of the thread*. The
+    only thing you can get is a unique thread ID.
+  - if an exception occurs that is not caught inside the thread, the
+    program immediately aborts, calling std::terminate(). (won't
+    propagate the exception to the caller?) \\
+    : exception_ptrs ?
+  - need to call join()(wait for teh end), detach()(let it run in the
+    background without any control). If you don't do this before the
+    lifetime of the thread objects ends or a move assignment to it
+    happens, the program aborts, calling std::terminate()
+  - if you let the thread run in the background and main() ends, all
+    threads are terminated abruptly.
+
+    #+BEGIN_SRC C++
+    #+END_SRC
 
 * note
 ** two situations may lead to one thread occupying cpu
