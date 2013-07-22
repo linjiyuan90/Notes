@@ -1,0 +1,3 @@
+
+std::bind()
+std::function()

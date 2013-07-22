@@ -6,7 +6,6 @@
 
 int query_number() {
   // read number
-  
   std::cout << "read number: ";
   int num;
   std::cin >> num;

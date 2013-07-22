@@ -40,9 +40,22 @@ polling ?
     : std::future<void> for returns nothing
   - async() may not start ever (if no more separated thread is
     availble, it will defer), use future to force a start.
+  - async() is a function and it returns future
 
   To have better effect, maximize the distance between calling
   async() and calling get()
+
+  | operaton         | effect                                                                                              |
+  |------------------+-----------------------------------------------------------------------------------------------------|
+  | future f(rv)     | move constructor, *gets the state* (not copy) of rv and *invalidates* the state of rv               |
+  | f = rv           | move assignments, destroys the old state of f, gets the state of rv and invalidates the state of rv |
+  | f.valid()        | yields true if f has a valid state, so you can call the following member functions                  |
+  | f.get()          | blocks until the background operation is done                                                       |
+  | f.wait()         | same as get(), block but not return result. Call get() after wait()                                 |
+  | f.wait_for(dur)  |                                                                                                     |
+  | f.wait_until(tp) |                                                                                                     |
+  | f.share()        | yields a shared_future with the current state and invalidates the state of f                        |
+  
   
 ** launch policy
    To force async() to not defer the passed functionality, explicitly
@@ -193,7 +206,7 @@ polling ?
      std::future:error with error code std::future_errc::future_already_retrieved.
    - if no /shared state/ is associated, a std::future_error with the
      error code std::future_errc::no_state might be thrown.
-   - Can an a promise shared by several thread? It seems impossible
+   - Can a promise shared by several thread? It seems impossible
      since get_future can only be called once!
 
    | operation                         | effect                                                                                                   |
@@ -208,7 +221,16 @@ polling ?
    | p.set_exception_at_thread_exit(e) |                                                                                                          |
 
 * packaged_task
-  reset()
+  also defined in future, *holds both the functionality to perform and
+  its possible outcome* (the so-called shared state of the functionality)
+  #+BEGIN_SRC C++
+  double compute(int x, int y);
+  std::packaged_task<double(int, int)> task(compute);
+  std::future<double> f = task.get_future();
+  task(7, 5);  // start the task (typically in a separate thread)
+  double res = f.get();
+  #+END_SRC
+  - 
 
 * note
 ** two situations may lead to one thread occupying cpu
