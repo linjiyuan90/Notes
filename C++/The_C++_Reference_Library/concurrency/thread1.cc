@@ -31,6 +31,18 @@ void do_something(int num, char c) {
 }
 
 int main() {
+
+  std::thread t([]{
+      std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+      std::cout << "1done" << std::endl;
+    });
+
+  t = std::thread([]{
+      std::cout << "Trying to assigned a new thread" << std::endl;
+      std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+      std::cout << "2done" << std::endl;
+    });
+    
   try {
     std::thread t1(do_something, 5, '.');  // print five dots in separate thread
     std::cout << "- start fg thread " << t1.get_id() << std::endl;
@@ -48,6 +60,6 @@ int main() {
   } catch(const std::exception &e) {
     std::cerr << "Exception: " << e.what() << std::endl;
   }
-  pthread_exit(NULL);
+  // pthread_exit(NULL);  // this will let detached thread go on running
   // return 0;
 }
