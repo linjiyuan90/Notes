@@ -132,22 +132,42 @@ polling ?
     should terminate by calling pthread_exit() rather than exit(3).
     #+END_QUOTE
 
-
     #+BEGIN_SRC C++
     #+END_SRC
-  - Thread IDs
-    Thread id of a joinable thread (thread with associated task) are
-    unique. For those without associated task, its id is same as
-    std::thread::id() (unique as well).
-    : std::thread t;
-    : assert(t.get_id() == std::thread::id());
-    Note! For those nojoinable(finished task, or detach), cout get_id()
-    will get the output:
-    : thread::id of a non-executing thread
-    *So, you can only call get_id() before join() or detach().*
-    If a thread has finished its task, its id might be assigned to
-    other thread.
-    : std::this_thread::get_id()
+
+** Thread IDs
+   - Thread id of a joinable thread (thread with associated task) are
+     unique. For those without associated task, its id is same as
+     `std::thread::id()` (unique as well).
+     : std::thread t;
+     : assert(t.get_id() == std::thread::id());
+     : std::this_thread::get_id()
+   - Note! For those nojoinable(finished task, or detach), cout
+     get_id() will get the output:
+     : thread::id of a non-executing thread
+     *So, you can only call get_id() before join() or detach().*
+   - If a thread has finished its task, its id might be assigned to
+     other thread.
+   - the only way to identify a thread, such as a master thread, is
+     to compare it to its saved ID when it was started
+   - if a thread object is joinable, no other thread object can be
+     assigned to it
+
+** beware of detached threads
+   - make sure that a detached thread does not access any object s
+      after their lifetime has ended. Passing arguments by value is
+      strongly recommended.
+   - if a detached thread use a global/static object, do:
+     * ensure these global/static objects are not destroyed before
+       all detached threads finished accessing them. One approach to
+       ensure is to use *condition variables* which the detached
+       threads use to signal that they have finished.
+     * end the program by calling quick_exit(), which won't call the
+       destructors for global and static objects.
+     * std::cin/cout/cerr and the other *global stream objects*
+       according to the standard "are not destroyed during program
+       execution," access to these objects in detached threads
+       should introduce no undefined behavior.
     
 * note
 ** two situations may lead to one thread occupying cpu
@@ -160,11 +180,11 @@ polling ?
       // wait
     }
     #+END_SRC
-  - yield
-    hint to reschedule to the next thread
+  - std::this_thread::yield() \\
+    hint to reschedule to the next thread, give up its time 
 ** lifetime
    - when parsing reference to thread, make sure the object's lifetime
-   is larger than the thread
+     is larger than the thread
    - detach thread will go on runing even main exit? Make sure
      global/static object not destruct if they are use in detached thread.
    
