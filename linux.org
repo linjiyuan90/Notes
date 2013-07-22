@@ -14,3 +14,9 @@
   - /etc/ld.so.conf
   - ldconfig
     since stale ld.so.cache, run ldconfig to update it.
+
+* ssh
+  add your public key to target user's ~/.ssh/authorized_keys,
+  then you can ssh the target user without authorization.
+  what if the target user change its password?
+  

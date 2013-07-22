@@ -153,6 +153,11 @@ prompt overwrite.
 
 
 
+* remote
+  after add ssh key to github,
+  : ssh -T git@github.com  # test
+  : git remote set-url origin git@github.com:username/repo.git  # use ssh rather https
+
 * [[http://magit.github.io/magit/magit.html][magit]]
   - only implements the most common Git operations
   - M-x magit-status to entry

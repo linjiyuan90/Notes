@@ -182,7 +182,24 @@ polling ?
      and can be used in a future object to retrieve this data as the
      outcome of the thread.
    - copying is not possible for promise, use std::ref()
-   - 
+   - catch exception in thread and set it to promise. Then this
+     exception won't throw right now, can be catched later when future
+     object call get(). Nice!
+   - once set_value/exception, the /shared state/ is /ready/, and
+     get() will return. There are set_value_at_thread_exit(val),
+     set_exception_at_thread_exit(e), which make the /state ready/ at
+     the end of the current thread (or throws std::future_error).
+   | operation                         | effect                                                                                                   |
+   |-----------------------------------+----------------------------------------------------------------------------------------------------------|
+   | promise p                         |                                                                                                          |
+   | promise p(rv)                     | move constructor; gets the state of /rv/ and removes the /shared state/ from rv                          |
+   | p = rv                            | move assignment; if p is not /ready/, stores a std::future_error exception with condition broken_promise |
+   | p.get_future()                    | yields a future object to retrieve the shared state (outcome of a thread)                                |
+   | p.set_value(val)                  | set val as (return) value and makes the state /ready/ (or throws std::future_error)                      |
+   | p.set_value_at_thread_exit(val)   |                                                                                                          |
+   | p.set_exception(e)                |                                                                                                          |
+   | p.set_exception_at_thread_exit(e) |                                                                                                          |
+
        	
 * note
 ** two situations may lead to one thread occupying cpu
