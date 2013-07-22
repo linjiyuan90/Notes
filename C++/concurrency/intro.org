@@ -138,7 +138,7 @@ polling ?
 ** Thread IDs
    - Thread id of a joinable thread (thread with associated task) are
      unique. For those without associated task, its id is same as
-     `std::thread::id()` (unique as well).
+     std::thread::id() (unique as well).
      : std::thread t;
      : assert(t.get_id() == std::thread::id());
      : std::this_thread::get_id()
@@ -168,7 +168,22 @@ polling ?
        according to the standard "are not destroyed during program
        execution," access to these objects in detached threads
        should introduce no undefined behavior.
-    
+** promise
+   To retrieve result from thread, you can pass return arguments by
+   reference. Another general mechanism is provided to pass result
+   values and exceptions as *outcomes of a thread*: class
+   std::promise. A promise object is the counterpart of a /future/
+   object. Both are able to temporarily hold a /shared state/,
+   representing a (result) value or an exception. While the future
+   object allows you to *retrieve the data* (using get()), the promise
+   object enables you to *provide the data* (by using set...()).
+   - The promise *internally creates a /shared state/*, which can be
+     used to store a value of the corresponding type or an exception,
+     and can be used in a future object to retrieve this data as the
+     outcome of the thread.
+   - copying is not possible for promise, use std::ref()
+   - 
+       	
 * note
 ** two situations may lead to one thread occupying cpu
   - std::future_status::deferred
