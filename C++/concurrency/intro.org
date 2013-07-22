@@ -168,7 +168,7 @@ polling ?
        according to the standard "are not destroyed during program
        execution," access to these objects in detached threads
        should introduce no undefined behavior.
-** promise
+* promise
    To retrieve result from thread, you can pass return arguments by
    reference. Another general mechanism is provided to pass result
    values and exceptions as *outcomes of a thread*: class
@@ -189,6 +189,13 @@ polling ?
      get() will return. There are set_value_at_thread_exit(val),
      set_exception_at_thread_exit(e), which make the /state ready/ at
      the end of the current thread (or throws std::future_error).
+   - you can call get_future() only once. A second call throws a
+     std::future:error with error code std::future_errc::future_already_retrieved.
+   - if no /shared state/ is associated, a std::future_error with the
+     error code std::future_errc::no_state might be thrown.
+   - Can an a promise shared by several thread? It seems impossible
+     since get_future can only be called once!
+
    | operation                         | effect                                                                                                   |
    |-----------------------------------+----------------------------------------------------------------------------------------------------------|
    | promise p                         |                                                                                                          |
@@ -200,7 +207,9 @@ polling ?
    | p.set_exception(e)                |                                                                                                          |
    | p.set_exception_at_thread_exit(e) |                                                                                                          |
 
-       	
+* packaged_task
+  reset()
+
 * note
 ** two situations may lead to one thread occupying cpu
   - std::future_status::deferred
@@ -221,3 +230,28 @@ polling ?
      global/static object not destruct if they are use in detached thread.
    
   
+** sth
+   - while async, promise, packaged_task use /shared state/, thread can
+     use /shared variales/, and thread use exception_ptr to process
+     exception.
+
+** summary
+   - with the low-level interface of class thread, we can start a
+     thread. To return data, we need shared variables (global or
+     static or passed as argument). To return exceptions, we could
+     use the type std::exception_ptr, which is returned by
+     std::current_exception() and can be processed by
+     std::rethrow_exception()
+   - the concept of a /shared state/ allow us to deal with return
+     values or exceptions in a more convenient way. With the
+     low-level interface of a promise, we can create such a /shared
+     state/, which we can process by using a future
+   - at a higher level, with class packaged_task or async(), the
+     /shared state/ automatically created and set with a return
+     statement or an uncaught exception.
+   - with packaged_task, we can create an object with a shared state
+     where *we explicitly have to program when to start the thread*.
+   - with std::async(), we *don't have to care when the thread exactly
+     gets started*. The only thing we know is that we have to call
+     get() when we need the outcome.
+
