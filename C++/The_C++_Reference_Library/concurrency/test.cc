@@ -31,6 +31,7 @@ std::future<int> result1(std::async(std::launch::async, func1));
 
 
 int main() {
+  std::cout << std::thread::hardware_concurrency() << std::endl;
   std::cout << "Starting func1() in background"
 	    << " and func2() in foreground: " << std::endl;
 

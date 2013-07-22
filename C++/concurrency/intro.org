@@ -144,10 +144,30 @@ polling ?
     To allow other threads to continue execution, the main thread
     should terminate by calling pthread_exit() rather than exit(3).
     #+END_QUOTE
+  - a static member function to query a hint for the possible number
+    of parallel threads:
+    : unsigned int std::thread::hardware_concurrency()
+    just a hint and does not guarentee to be exact
 
-    #+BEGIN_SRC C++
+    | operation                    | effect                                |
+    |------------------------------+---------------------------------------|
+    | this_thread::get_id()        |                                       |
+    | this_thread::sleep_for(dur)  |                                       |
+    | this_thread::sleep_until(tp) |                                       |
+    | this_thread::yield()         | hint to reschedule to the next thread |
+
+    this_thread::yield() is provided to give a hint to the system
+    that it's usefule to *give up the remainder of the current
+    thread's time slice* so that the runtime environment can
+    reschedule to allow other threads to run. One typical example is
+    to give up control when you wait or "poll" for another thread or
+    an atomic flag to be set by another thread:
+    #+BEGIN_SRC c++
+    while(!readyFlag) {  // loop until data is ready
+      std::this_thread::yield();
+    }
     #+END_SRC
-
+    
 ** Thread IDs
    - Thread id of a joinable thread (thread with associated task) are
      unique. For those without associated task, its id is same as
@@ -230,7 +250,23 @@ polling ?
   task(7, 5);  // start the task (typically in a separate thread)
   double res = f.get();
   #+END_SRC
-  - 
+  - try to call the task or get_future() if no state is available
+    throws a std::future_error with error code std::future_errc::no_state
+  - calling get_future() a second time throws an exception of type
+    std::future_error with the error code std::future_errc:future_already_retrieved
+  - calling the task a second time throws a std::future_error with
+    error code std::future_errc::promise_already_satisfied
+
+   | operation                          | effect                                                                                                        |
+   |------------------------------------+---------------------------------------------------------------------------------------------------------------|
+   | packaged_task pt(f)                |                                                                                                               |
+   | packaged_task pt(rv)               | move constructor, moves the packaged task rv (task and state) to pt (rv has no shared state afterwared)       |
+   | pt = rv                            | move assignment                                                                                               |
+   | pt.valid()                         | yields true if pt has a shared state                                                                          |
+   | pt.get_future()                    |                                                                                                               |
+   | pt(args)                           | calls the task (with optional arguments) and makes the shared state ready. This should be called before get() |
+   | pt.make_ready_at_thread_exit(args) | calls the task and at thread exit makes the shared state ready                                                |
+   | pt.reset()                         | creates a new shared state for pt (might make the old shared state ready)                                     |
 
 * note
 ** two situations may lead to one thread occupying cpu
