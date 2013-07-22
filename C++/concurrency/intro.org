@@ -125,12 +125,30 @@ polling ?
     background without any control). If you don't do this before the
     lifetime of the thread objects ends or a move assignment to it
     happens, the program aborts, calling std::terminate()
-  - if you let the thread run in the background and main() ends, all
-    threads are terminated abruptly.
+  - if you let the thread run in the background and main() ends (return
+    or exit), all threads are terminated abruptly.
+    #+BEGIN_QUOTE
+    To allow other threads to continue execution, the main thread
+    should terminate by calling pthread_exit() rather than exit(3).
+    #+END_QUOTE
+
 
     #+BEGIN_SRC C++
     #+END_SRC
-
+  - Thread IDs
+    Thread id of a joinable thread (thread with associated task) are
+    unique. For those without associated task, its id is same as
+    std::thread::id() (unique as well).
+    : std::thread t;
+    : assert(t.get_id() == std::thread::id());
+    Note! For those nojoinable(finished task, or detach), cout get_id()
+    will get the output:
+    : thread::id of a non-executing thread
+    *So, you can only call get_id() before join() or detach().*
+    If a thread has finished its task, its id might be assigned to
+    other thread.
+    : std::this_thread::get_id()
+    
 * note
 ** two situations may lead to one thread occupying cpu
   - std::future_status::deferred

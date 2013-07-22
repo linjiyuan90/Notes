@@ -6,6 +6,7 @@
 
 int query_number() {
   // read number
+  
   std::cout << "read number: ";
   int num;
   std::cin >> num;
@@ -14,6 +15,7 @@ int query_number() {
   if (!std::cin) {
     throw std::runtime_error("no numebr read");
   }
+
   return num;
 }
 

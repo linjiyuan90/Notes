@@ -58,7 +58,7 @@
     working directory. User can rename, symlink it by using '#'
     : mydist_file#file1
     : mydist_file#file2
-  - working directory & distributed directory
+
     
 * mapred-default
   |                                             |                         default | desc                                                                                                                                                                                                                     |
@@ -110,7 +110,6 @@
   |------+-------------------------+--------------+----------------------------------|
   | MR   | Jobracker               |        50030 | mapred.job.tracker.http.address  |
   |      | Tasktrackers            |        50060 | mapred.task.tracker.http.address |
-
 
 * security
 ** SLA

@@ -66,6 +66,8 @@ While streamming use stdin/stdout, pipes use *socket* to communicate.
   hadoop pipes -Dhadoop.pipes.java.recordreader=true -Dhadoop.pipes.java.recordwriter=true -program wc -input in -output out
   #+END_SRC
 
+* coding
+  see examples in src/examples/pipes/impl
 * something
   - program xxx is same as -Dhadoop.pipes.executable=xxx
   - input/output is same as -Dmapred.input/output.dir
