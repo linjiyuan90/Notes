@@ -58,6 +58,7 @@
     working directory. User can rename, symlink it by using '#'
     : mydist_file#file1
     : mydist_file#file2
+  - hostname can not have underscores
 
     
 * mapred-default
@@ -99,6 +100,11 @@
   | mapred.map/reduce.max.attempts              |                               4 |                                                                                                                                                                                                                          |
   | mapred.skip.mode.enabled                    |                                 |                                                                                                                                                                                                                          |
   | mapred.skip.map.max.skip.records            |                               0 | The number of acceptable skip records surrounding the bad record PER bad record in mapper. 0 to turn off skip. Long.MAX_VALUE whatever get skipped are acceptable.                                                       |
+  |---------------------------------------------+---------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | *hdfs*                                      |                                 |                                                                                                                                                                                                                          |
+  |---------------------------------------------+---------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | fs.checkpoint.dir                           |                                 |                                                                                                                                                                                                                          |
+  | dfs.name.dir                                |                                 |                                                                                                                                                                                                                          |
 
 * web console
   |      | Daemon                  | Default Port | Configuration Parameter          |

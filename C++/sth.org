@@ -1,3 +1,6 @@
 
 std::bind()
 std::function()
+
+partial_sum
+adj_diff  // doesn't exist

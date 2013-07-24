@@ -55,9 +55,12 @@ While streamming use stdin/stdout, pipes use *socket* to communicate.
     fi
     } # as_fn_exit
     #+END_SRC
+  - if error again, use this patch:
+    https://issues.apache.org/jira/browse/MAPREDUCE-2127
   - if the following error occur when make install pipes:
     : impl/HadoopPipes.cc:1049:16: error: ‘sleep’ was not declared in this scope
     add #incldue "unistd.h" to src/c++/pipes/impl/HadoopPipes.cc
+
   
 * compile & run
   #+BEGIN_SRC shell

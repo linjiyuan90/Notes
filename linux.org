@@ -17,6 +17,18 @@
 
 * ssh
   add your public key to target user's ~/.ssh/authorized_keys,
-  then you can ssh the target user without authorization.
+  then you can ssh the target user without authorization, or
+  : ssh-copy-id -i ~/.ssh/id_rsa.pub usr@host
   what if the target user change its password?
+  |                       |   |
+  |-----------------------+---|
+  | ssh user@host -t 'ls' |   |
+  |                       |   |
+  |                       |   |
+  |                       |   |
+  
+* grep
+  : echo -e '123\n\d+' | grep -P '\d+'
+  '\d' is not in grep's regrex, add -P to use perl regex. or use
+  : [[:digit:]]
   
