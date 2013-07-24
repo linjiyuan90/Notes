@@ -17,4 +17,11 @@ int main() {
   auto tt = std::tie(s);
   std::get<0>(tt) = "efg";
   std::cout << s << std::endl;
+
+  typedef std::tuple<std::string, int> tuple_type;
+  std::cout << std::tuple_size<tuple_type>::value << std::endl;
+  std::tuple_element<1, tuple_type>::type x = 1;
+
+  auto tt2 = std::tuple_cat(std::make_tuple(1), std::make_tuple(2), std::make_tuple(3));
+  std::cout << std::get<2>(tt2) << std::endl;
 }

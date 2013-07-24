@@ -268,6 +268,30 @@ polling ?
    | pt.make_ready_at_thread_exit(args) | calls the task and at thread exit makes the shared state ready                                                |
    | pt.reset()                         | creates a new shared state for pt (might make the old shared state ready)                                     |
 
+* mutex
+  #+BEGIN_SRC C++
+  #include "mutex"
+  std::mutex a_mutex;
+  a_mutex.lock();
+  // do something
+  a_mutex.unlock();
+  #+END_SRC
+  - if an exception occur, which ends an exclusive access, a resource
+    might become locked forever
+    - use the RAII principle (/Resouce Acquisition Is
+      Initialization/), whereby the constructor acquires a resource so
+      that the destructor, which is always called when an exception
+      causes the end of the lifetime, release the resource automatically
+    - for this purpose, the C++ standard library provides class std::lock_guard
+      #+BEGIN_SRC C++
+      {
+        std::lock_guard<std::mutex> lg(a_mutex);  // lock and automatically unlock
+        // do something
+      }  // ensures that lock gets released here
+      #+END_SRC
+      *Insert explicit braces* so that lock gets released before futher
+      statements are processed.
+
 * note
 ** two situations may lead to one thread occupying cpu
   - std::future_status::deferred
