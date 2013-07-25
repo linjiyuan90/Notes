@@ -191,16 +191,17 @@ polling ?
       after their lifetime has ended. Passing arguments by value is
       strongly recommended.
    - if a detached thread use a global/static object, do:
-     * ensure these global/static objects are not destroyed before
+     - ensure these global/static objects are not destroyed before
        all detached threads finished accessing them. One approach to
        ensure is to use *condition variables* which the detached
        threads use to signal that they have finished.
-     * end the program by calling quick_exit(), which won't call the
+     - end the program by calling quick_exit(), which won't call the
        destructors for global and static objects.
-     * std::cin/cout/cerr and the other *global stream objects*
+     - std::cin/cout/cerr and the other *global stream objects*
        according to the standard "are not destroyed during program
        execution," access to these objects in detached threads
        should introduce no undefined behavior.
+
 * promise
    To retrieve result from thread, you can pass return arguments by
    reference. Another general mechanism is provided to pass result
@@ -276,22 +277,116 @@ polling ?
   // do something
   a_mutex.unlock();
   #+END_SRC
-  - if an exception occur, which ends an exclusive access, a resource
-    might become locked forever
-    - use the RAII principle (/Resouce Acquisition Is
+** lock guard
+   if an exception occur, which ends an exclusive access, a resource
+   might become locked forever
+   - use the RAII principle (/Resouce Acquisition Is
       Initialization/), whereby the constructor acquires a resource so
       that the destructor, which is always called when an exception
       causes the end of the lifetime, release the resource automatically
-    - for this purpose, the C++ standard library provides class std::lock_guard
+   - for this purpose, the C++ standard library provides class std::lock_guard
       #+BEGIN_SRC C++
       {
         std::lock_guard<std::mutex> lg(a_mutex);  // lock and automatically unlock
         // do something
       }  // ensures that lock gets released here
       #+END_SRC
-      *Insert explicit braces* so that lock gets released before futher
-      statements are processed.
+   - *Insert explicit braces* so that lock gets released before
+      futher statements are processed.
 
+** recursive mutex
+   #+BEGIN_SRC C++
+   class DatabaseAccess {
+   private:
+     std::recursive_mutex db_mutex;
+     ...  // state of database access
+   public:
+     void create_table() {
+       std::lock_guard<std::recursive_mutex> lg(db_mutex);
+       ...
+     }
+     void insert_data() {
+       std::lock_guard<std::recursive_mutex> lg(db_mutex);
+       ...
+     }
+     void create_table_and_insert_data() {
+       std::lock_guard<std::recursive_mutex> lg(db_mutex);
+       create_table();  // using recursive_mutex is ok, no deadlock
+        	        // however, using mutex is ERROR
+       ...
+     }
+   };
+   #+END_SRC
+** tried mutex
+
+   mutex provides a try_lock() member function that /tries/ to
+   acquire a lock. If it succeeds, it returns true; if not, false
+   (*not block*).
+   #+BEGIN_SRC C++
+   std::mutex m;
+   // try to acquire a lock and do other stuff while this isn't possible
+   while (m.try_lock() == false) {
+     do_some_other_stuff();
+   }
+   // since lock has been acquire above, don't need lock_guard to acqiure the 
+   // lock, add std::adopt_lock so that any exit from the current scope unlocks
+   // the mutex
+   std::lock_guard<std::mutex> lg(m, std::adopt_lock);
+   #+END_SRC
+
+** timed mutex
+   #+BEGIN_SRC C++
+   std::timed_mutex m;
+   // try for one second to acquire a lock
+   if (m.try_lock_for(std::chrono::seconds(1))) {
+     std::lock_guard<std::timed_mutex> lg(m, std::adopt_lock);
+     ...
+   } else {
+     could_not_get_the_lock();
+   }
+   #+END_SRC
+   try_lock_for, try_lock_until \\
+   std::timed_mutex, std::recursived_timed_mutex
+
+** multipled locks
+   Locking more than one mutex at a time might be complicated and
+   risky: you might get the first but not the second lock, or
+   deadlock situations may occur if you lock the same locks in a
+   different order.
+   #+BEGIN_SRC C++
+   std::mutex m1, m2;
+   {
+     std::lock(m1, m2);  // lock both mutex (or none if not possible)
+     std::lock_guard<std::mutex> lock_m1(m1, std::adopt_lock);
+     std::lock_guard<std::mutex> lock_m2(m2, std::adopt_lock);
+   }  // automatically unlock all mutexes
+   #+END_SRC
+   - std::lock() locks all mutexes passed as arguments *blocking* until
+     all mutexes are locked or until an exception is thrown. In the
+     latter case, it *unlocks* mutexes already successfully locked.
+   - After successful locking, use lock_guard with std::adopt_lock
+   - std::lock() provides a *deadlock-avoidance* mechanism, which,
+     however, means that *the order of locking inside a multiple lock
+     is undefined*
+   #+BEGIN_SRC C++
+   int idx = std::try_lock(m1, m2);  // try to lock both mutexes
+   if (idx < 0) {  // both locks succeeded
+     std::lock_guard<std::mutex> lock_m1(m1, std::adopt_lock);  
+     std::lock_guard<std::mutex> lock_m2(m2, std::adopt_lock);
+     ...
+   } else {
+     // idx has zero-based index of first failed lock
+     std::cerr << "could not lock mutex m" << idx+1 << std::endl;
+   }
+   #+END_SRC
+   - /try/ to acqurie multiple locks *without blocking* if not all
+     locks are available.
+   - std::try_lock() returns -1 if all locks were possible If not,
+     the return value is the zero-based index of the first failed
+     lock. In that case, all succeeded locks are unlocked again.
+   - try_lock does not provide a deadlock-avoidance
+     mechanism. Instead, it guarantees that the locks are tried in
+     the order of the passed arguments.
 * note
 ** two situations may lead to one thread occupying cpu
   - std::future_status::deferred

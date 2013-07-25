@@ -6,6 +6,8 @@
 #include "iostream"
 #include "exception"
 
+
+
 int do_something(char c) {
   // random-number generator (use c as seed to get different sequences)
   std::default_random_engine dre(c);
