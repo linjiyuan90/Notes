@@ -57,6 +57,7 @@ polling ?
   | f.share()        | yields a shared_future with the current state and invalidates the state of f                        |
   
   
+
 ** launch policy
    To force async() to not defer the passed functionality, explicitly
    passing a /launch policy/.
@@ -381,12 +382,104 @@ polling ?
    #+END_SRC
    - /try/ to acqurie multiple locks *without blocking* if not all
      locks are available.
-   - std::try_lock() returns -1 if all locks were possible If not,
+   - std::try_lock() *returns -1* if all locks were possible. If not,
      the return value is the zero-based index of the first failed
      lock. In that case, all succeeded locks are unlocked again.
    - try_lock does not provide a deadlock-avoidance
      mechanism. Instead, it guarantees that the locks are tried in
      the order of the passed arguments.
+** unique_lock
+   - More flexible, same interface as clock_guard<>, plus the ability
+     to program explicitly *when and how to* lock or unlock its mutex.
+   - may or may not have a mutex locked (/owning a mutex/). This
+     differs from a *lock_guard<>, which always has an object locked
+     throughout its lifetime*.
+   - When the mutex is locked at destruction time, the destructor
+     automatically calls unlock() for it.
+   #+BEGIN_SRC C++
+   std::unique_lock<std::mutex> lock(mutex, std::try_to_lock); 
+   ...
+   if (lock) { // if lock was successful
+     ...
+   }
+   
+   // try to lock for a specific duration
+   std::unique_lock<std::timed_mutex> lock(mutex, std::chrono::seconds(1));
+   ...
+   
+   // initialize the lock without locking the mutex(yet)
+   std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
+   ...
+   lock.lock();  // or (timed) try_lock()
+   
+   // can create multiple locks and lock them later
+   std::mutex m1, m2;
+   std::unique_lock<std::mutex> lock_m1(m1, std::defer_lock);
+   std::unique_lock<std::mutex> lock_m2(m2, std::defer_lock);
+   ...
+   std::lock(m1, m2);  // lock both mutexes (or non if not possible)
+   #+END_SRC
+   | operation                    | effect                                                                        |
+   |------------------------------+-------------------------------------------------------------------------------|
+   | unique_lock l                | creates a lock not associated with a mutex                                    |
+   | unique_lock l(m)             | creates a lock guard for the mutex m and locks it                             |
+   | unique_lock l(m, adopt_lock) | creates a lock guard for the already locked mutex m                           |
+   | unique_lock l(m, defer_lock) | creates a lock guard for the mutex m without locking it                       |
+   | unique_lock l(m, try_lock)   | creates a lock guard for the mutex m and tries to locks it                    |
+   | unique_lock l(m, dur)        | creates a lock guard for the mutex m and tries to locks it for a duration dru |
+   | unique_lock l(m, tp)         | creates a lock guard for the mutex m and tries to locks it until timepoint tp |
+   | unique_lock l(rv)            | move lock state from rv to l (rv has no associated mutex anymore)             |
+   | unique_lock l = rv           |                                                                               |
+   | l.~unique_lock()             | unlocks the mutex, if any locked, and destroys the lock guard                 |
+   | l.mutex()                    | returns a pointer to the associated mutex                                     |
+   | l.release()                  | returns a pointer to the associated mutex and releases it                     |
+   | l.owns_lock()                | returns true if an associated mutex is locked                                 |
+   | l.lock()                     |                                                                               |
+   | l.try_lock()                 |                                                                               |
+   | l.try_lock_for(dur)          |                                                                               |
+   | l.try_lock_until(tp)         |                                                                               |
+   | t.unlock()                   |                                                                               |
+   
+** summary
+   - std::mutex is a simple mutex that can be *locked only once by one
+     thread at a time*. If it's locked, any other lock() will block
+     until mutex is avaible again and try_lock() will fail
+   - std::recursive_mutex is a mutex that *allows multiple locks at
+     the same time by the same thread*. The typical application of
+     such a lock is where functions acquire a lock and internally
+     call another function, which also acquires the same lock again
+   - lock() might throws a std::system_error
+     | operation_not_permitted       | the thread does not have the privilege to perform the operation(when unlock a mutex not belong to it) |
+     | resource_deadlock_would_occur | the platform detects that a deadlock would occur                |
+     | device_or_resource_busy       | it the mutex is already locked and blocking is not possible     |
+   - the behavior of a program is underfined if it unlocks a mutex
+     object it doesn't own, destroys a mutex object owned by any
+     thread, or if a thread terminates while owning a mutex object
+   - std::lock_guard, throughout its lifetime, it's always associated
+     with a lock either explicitly requested or adopted at
+     construction time
+   - std::unique_lock provides a lock guard for a mutex that *does not
+     necessarily have be locked(/owned but not lock/)*. 
+** call once for multiple threads
+   Situation like /lazy initialization/ in a *multithreaded context*,
+   where data races might occur if two or more threads check whether
+   the initialization didn't happen yet and start the initialization
+   then.
+   #+BEGIN_SRC C++
+   class X {
+    private:
+     mutable std::once_flag init_data_flag;
+     void init_data() const;
+    public:
+     data get_data() const {
+       std::call_once(init_data_flag, &X::init_data, this);
+     }
+   };
+   #+END_SRC
+
+
+* conditional variable
+  The mutex ensures that reads and writes are atomic.
 * note
 ** two situations may lead to one thread occupying cpu
   - std::future_status::deferred

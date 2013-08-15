@@ -1,0 +1,55 @@
+
+* tuple
+  With C++11, *variadic templates* were introduced to enable templates
+  to accept an arbitrary number of template arguments. The
+  declaration for class tuple, which hadppens in <tuple>, is now
+  reduced to:
+  #+BEGIN_SRC c++
+  namespace std{
+    template<typename... Types>
+    class tuple;
+  }
+  #+END_SRC
+  
+  operations
+  - create a tuple by declaring it explicitly or implicitly with the
+    convenience function make_tuple()
+  - access elements with the get<>() function template
+
+  #+BEGIN_SRC c++
+  // elements are initialized with defaut value (0 for fundamental types)
+  std::tuple<std::string, int, int, std::complex<double>> t;
+  std::get<0>(t) = 2;  // assign to element
+  std::cout << std::get<0>(t) << std::endl;
+  // std::get<ix>(t), ix have to be a compile-time values!
+
+  // std::tuple<int, float, std::string> t1 = (1, 2, "abc");  // ERROR conversion won't work
+  // std::tuple<int, float, std::string> t1 = {1, 2, "abc"};  // ERROR conversion won't work
+  // use make_tuple(1, 2, "abc") or constructor
+  std::tuple<int, float, std::string> t1(1, 2, "abc");
+  std::tuple<int, float, std::string> t1{1, 2, "abc"};
+  std::tuple<int, float, std::string> t1 = std::make_tuple(1, 2, "abc");
+  auto t1 = std::make_tuple(1, 2, "abc");
+
+  // reference can be used!
+  std::tuple<std::string &> t(s);  // now first element of tuple t refers to s
+  // same as
+  auto t = std::make_tuple(std::ref(s));
+  auto t = std::tie(s);
+
+  // unpack
+  int a;
+  double b;
+  std::string c;
+  std::make_tuple(std::ref(a), std::ref(b), std::ref(c)) = t;
+  std::tie(a, b, c) = t;  // nice
+  #+END_SRC
+
+  - tuples can be compared by lexicographical order
+  - pack & unpack
+  - others
+    #+BEGIN_SRC c++
+    std::tuple_size<tuple_type>::value
+    std::tuple_element<idx, tuple_type>::type
+    auto tt = std::tuple_cat(std::make_tuple(1, 2), std::make_tuple("abc"));
+    #+END_SRC

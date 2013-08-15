@@ -1,0 +1,39 @@
+
+ You can use Python much like PHP or Ruby, to build your
+ run-of-the-mill web-app, whereas node is better fitted for
+ applications where *live feedback* is important, due to its
+ asynchronous model. You could for example have a ruby app handling
+ your *CRUD load*, with nodejs/socket.io pushing live updates to the
+ user. It's not a black/white situation.
+
+
+Asynchronous IO
+Django don't support RESTful ?
+
+
+v8
+virtual machine!
+
+socket.io
+express, a framework
+
+
+node.js idleing
+idle so it can handle concurrent connection
+setInterval
+
+
+
+The major speed increase is due to the fact that V8 compiles JavaScript
+into native machine code, instead of interpreting it or executing it
+as bytecode. 
+
+
+
+*event model* instead of http's *request/response model*
+
+client require *persistent connetion*
+
+https://www.udemy.com/blog/learn-node-js/
+
+

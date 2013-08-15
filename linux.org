@@ -14,6 +14,11 @@
   - /etc/ld.so.conf
   - ldconfig
     since stale ld.so.cache, run ldconfig to update it.
+** ldd
+** elf
+   Executable and Linkable Format
+   if ldd doesn't work, use readelf.
+   : readelf -d executable | grep NEEDED
 
 * ssh
   add your public key to target user's ~/.ssh/authorized_keys,
@@ -32,3 +37,14 @@
   '\d' is not in grep's regrex, add -P to use perl regex. or use
   : [[:digit:]]
   
+
+* FAQ
+** GPG Error on Update
+#+BEGIN_EXAMPLE
+sudo apt-get clean
+cd /var/lib/apt
+sudo mv lists lists.old
+sudo mkdir -p lists/partial
+sudo apt-get clean
+sudo apt-get update
+#+END_EXAMPLE
