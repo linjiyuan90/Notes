@@ -1,4 +1,3 @@
-
 #include "future"
 #include "list"
 #include "iostream"
@@ -22,10 +21,11 @@ int main() {
   std::cout << "- task1: process endless loop of memory comsumption"
 	    << std::endl;
   std::cout << "- task2: wait for <return> and then for task1" << std::endl;
-
+  
   // start task1() asynchronously (now or later or never)
   auto f1 = std::async(task1);
   
+
   std::cin.get();  // read a character (like getchar())
   std::cout << "\n wait for the end of task1: " << std::endl;
   try {

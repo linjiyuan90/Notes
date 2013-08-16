@@ -3,7 +3,7 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var mime = require('mime');
-var cache = {};  // where the contents of cached fiels are stored
+var cache = {};  // where the contents of cached files are stored
 
 function send404(response) {
     response.writeHead(404, {'Content-Type': 'text/plain'});

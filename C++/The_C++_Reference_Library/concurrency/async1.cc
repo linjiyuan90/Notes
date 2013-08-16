@@ -29,7 +29,7 @@ int func2() {
 
 int main() {
   std::cout << "Starting func1() in background"
-	    << " and func2() in foreground: " << std::endl;
+            << " and func2() in foreground: " << std::endl;
 
   // start func1() asychronously (now or later or never)
   // use std::launch::async to start the thread immediately
@@ -41,5 +41,5 @@ int main() {
   int result = result1.get() + result2;
   
   std::cout << "\n result of func1() + func2(): " << result
-	    << std::endl;
+            << std::endl;
 }

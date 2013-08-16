@@ -3,7 +3,38 @@
  - Customisability is a feature (not an add on).
  - Hence lots of “applications” in Emacs.
 
-
+* keys
+** C mode
+  | key                        | meaning                     |
+  |----------------------------+-----------------------------|
+  | C-c C-l                    | c-toggle-electric-state     |
+  | C-c C-a                    | c-toggle-auto-newline       |
+  |----------------------------+-----------------------------|
+  | C-M-h                      | c-mark-function, mark-defun |
+  | C-M-a                      | beginning-of-defun          |
+  | C-M-e                      | end-of-defun                |
+  |----------------------------+-----------------------------|
+  | C-c C-<DEL>                | c-hungry-delete-backwards   |
+  | C-c <DEL>                  |                             |
+  | C-c C-d                    | c-hungry-delete-forwards    |
+  | C-c C-<DELETE>             |                             |
+  | C-c <DELETE>               |                             |
+  | M-x c-toggle-hungrys-state |                             |
+  |----------------------------+-----------------------------|
+  | M-j                        | c-indent-new-comment-line   |
+  | C-j                        | newline-and-indent          |
+  |----------------------------+-----------------------------|
+  | C-c C-q                    | c-indent-defun              |
+  | C-M-q                      | c-indent-exp                |
+  | <TAB>                      | c-indent-command            |
+  |----------------------------+-----------------------------|
+  | M-;                        | comment-dwim                |
+  | C-u M-;                    | comment-kill                |
+  | C-x ;                      |                             |
+  | M-j                        | comment-indent-new-line     |
+  | M-x comment-region         |                             |
+  | C-c C-c                    |                             |
+  
 
 * TODO what's
   expand abbreviation?
