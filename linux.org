@@ -37,7 +37,9 @@
   '\d' is not in grep's regrex, add -P to use perl regex. or use
   : [[:digit:]]
   
-
+* intersection between two files
+  : sort a.txt b.txt | uniq -d  # make sure a.txt, b.txt don't have duplicate lines
+  : grep -f a.txt b.txt  # slower than the above one
 * FAQ
 ** GPG Error on Update
 #+BEGIN_EXAMPLE
