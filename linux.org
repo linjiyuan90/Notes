@@ -37,7 +37,9 @@
   '\d' is not in grep's regrex, add -P to use perl regex. or use
   : [[:digit:]]
   
-
+* owner
+  - change owner of link instead of file it refers to, add -h option
+    : chown -h owner:group link
 * FAQ
 ** GPG Error on Update
 #+BEGIN_EXAMPLE
