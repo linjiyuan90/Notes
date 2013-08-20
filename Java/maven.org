@@ -1,0 +1,63 @@
+
+** repository
+   configure other repository in /etc/maven/settings.xml if
+   downloading plugins fails.
+   http://docs.codehaus.org/display/MAVENUSER/Mirrors+Repositories
+   or download manually from http://repo1.maven.org/xxx
+
+** archetype
+   : mvn archetype:generate
+*** field
+   - groupId
+   - artifactId
+   - version
+   - package
+   #+BEGIN_EXAMPLE
+   <groupId>HBaseIA</groupId>
+   <artifactId>twitbase</artifactId>
+   <version>1.0-SNAPSHOT</version>
+   <name>twitbase</name>
+   #+END_EXAMPLE
+   This will generate:
+   #+BEGIN_EXAMPLE
+   └── twitbase
+    ├── pom.xml
+    └── src
+        ├── main
+        │   └── java
+        │       └── TwitBase
+        │           └── App.java
+        └── test
+            └── java
+                └── TwitBase
+                    └── AppTest.java
+   #+END_EXAMPLE
+*** compile
+    : mvn compile
+    This will generate a target directory.
+*** test
+    : mvn test
+
+** Project Object Model
+   Structure of a POM
+   #+BEGIN_EXAMPLE
+   <projcet ...>
+     <!-- The Basics -->
+     <groupId>...</groupId>
+     <artifactId>...</artifactId>
+     <version>...</version>
+     <packaging>...</pakcaging>
+     <dependencies>...</dependencies>
+     <parent>...</parent>
+     <dependencyManagement>...</dependencyManagement>
+     <modules>...</modules>
+     <properties>...</properties>
+     
+     <!-- Build Settings -->
+     <build>...</build>
+     <reporting>...</reporting>
+
+     <!-- Project Meta Data -->
+     <name>...
+   </projcet>
+   #+END_EXAMPLE

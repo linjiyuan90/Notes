@@ -20,6 +20,7 @@ function sendFile(response, filePath, fileContents) {
 }
 
 function serverStatic(response, cache, absPath) {
+    console.log(absPath);
     if (cache[absPath]) {
 	sendFile(response, absPath, cache[absPath]);
     } else {

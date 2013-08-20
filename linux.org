@@ -37,9 +37,15 @@
   '\d' is not in grep's regrex, add -P to use perl regex. or use
   : [[:digit:]]
   
+<<<<<<< HEAD
 * owner
   - change owner of link instead of file it refers to, add -h option
     : chown -h owner:group link
+=======
+* intersection between two files
+  : sort a.txt b.txt | uniq -d  # make sure a.txt, b.txt don't have duplicate lines
+  : grep -f a.txt b.txt  # slower than the above one
+>>>>>>> 9a9289de27da50c31facaa0e4f7a5af051a5c92f
 * FAQ
 ** GPG Error on Update
 #+BEGIN_EXAMPLE
