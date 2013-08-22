@@ -10,3 +10,20 @@
         e.printStackTrace();
     }
     #+END_SRC
+
+* org.apache.log4j
+  - Logger
+    : Logger log = Logger.getLogger(xxx.class);
+    : log.info();
+  - PropertyConfigurator
+    : 	PropertyConfigurator.configure(xxx.class.getClassLoader().getResource("log4j.properties"));
+
+* org.apache.velocity
+  Velocity permits you to use a simple yet powerful template language
+  to reference objects defined in Java code.
+  Cool!
+
+* org.dom4j
+  - Document
+  - DocumentFactory
+  - io.SAXReader

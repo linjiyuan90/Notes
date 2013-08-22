@@ -133,3 +133,8 @@
   queues etc.
 ** ACL
    access control list
+
+* api
+** org.apache.hadoop.conf.Configuration
+   : conf.set(key, value);
+   : conf.setStrings(key, values);

@@ -35,7 +35,14 @@
   | M-x comment-region         |                             |
   | C-c C-c                    |                             |
   
-
+** nXML mode
+   | key     | meaning                                                                     |
+   |---------+-----------------------------------------------------------------------------|
+   | C-M-i   | completion-at-point                                                         |
+   | C-c C-i | inserts a '>', then inserts the end-tag and leaves point before the end-tag |
+   | C-c C-b | similar, bu insert block-level elements                                     |
+   | C-c C-f | inserts an end-tag                                                          |
+   
 * TODO what's
   expand abbreviation?
 

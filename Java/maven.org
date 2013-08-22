@@ -1,11 +1,8 @@
 
-** repository
-   configure other repository in /etc/maven/settings.xml if
-   downloading plugins fails.
-   http://docs.codehaus.org/display/MAVENUSER/Mirrors+Repositories
-   or download manually from http://repo1.maven.org/xxx
-
-** archetype
+** plugins & goal
+*** exec
+   : mvn exec:java -Dexec.mainClass=xxx -Dexec.args="xxx"
+*** archetype
    : mvn archetype:generate
 *** field
    - groupId
@@ -37,7 +34,22 @@
     This will generate a target directory.
 *** test
     : mvn test
+*** install
+*** help
+    : mvn help:describe -Dplugin=exec -Dfull
+*** dependency
+    : mvn dependency:resolve
+    : mvn dependency:tree
 
+** repository
+   configure other repository in /etc/maven/settings.xml if
+   downloading plugins fails.
+   http://docs.codehaus.org/display/MAVENUSER/Mirrors+Repositories
+   or download manually from http://repo1.maven.org/xxx
+   - repository.sonatype.org
+     search in it, and copy the dependency xml
+   - 
+    
 ** Project Object Model
    Structure of a POM
    #+BEGIN_EXAMPLE
@@ -58,6 +70,6 @@
      <reporting>...</reporting>
 
      <!-- Project Meta Data -->
-     <name>...
+     <name>...</name>
    </projcet>
    #+END_EXAMPLE
