@@ -1,0 +1,9 @@
+: db.collection.find({field:null})
+: db.collection.find({field:{$exists: false}})
+update a field, rather replace the record
+: db.collection.update({id:123}, {$set:{date:ISODate()}}}
+count
+$setOnInsert
+findAndModify
+
+

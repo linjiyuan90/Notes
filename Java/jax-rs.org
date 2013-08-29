@@ -1,0 +1,79 @@
+
+JAX-RS
+Java API for RESTful web services
+
+
+* REST
+  REST is a sytle, it use http standard
+  scale
+  It isn't protocol-specific, but when people talk about REST, they
+  usually mean REST over HTTP.
+** operation + resource
+  only POST is unideomo and unsafe
+
+* HTTP
+  - GET has no body?
+  - 
+
+* others
+** JAXB
+
+* API
+** javax.ws.rs.core.Application
+   #+BEGIN_SRC JAVA
+   public JaxRsApplication() {
+      HashSet<Class<?>> c = new HashSet<Class<?>>();
+      c.add(HelloWorldResource.class);
+      classes = Collections.unmodifiableSet(c);
+   }
+   #+END_SRC
+** org.glassfish.jersey.server.ResourceConfig
+   
+** jackson
+   if no setter/getter is added, jackson won't display it?
+* web.xml
+** <servlet-mapping>
+
+* example
+** ResourceConfig
+   add Application class
+   - register
+
+import org.glassfish.jersey.server.JSONP;
+
+
+* overview
+bean + resource
+
+
+@GET, @PUT, @POST, @DELETE and @HEAD are resource method designator
+annotations defined by JAX-RS and which correspond to the similarly
+named HTTP methods. 
+
+
+@Produces({"application/xml; qs=0.9", "application/json"})
+If client accepts both "application/xml" and "application/json"
+(equally), then a server always sends "application/json", since
+"application/xml" has a lower quality factor.
+
+
+** Parameter Annotations
+@DefaultValue("2") @QueryParam("step") int step,
+
+
+
+
+JAX-RS resources are managed in *per-request scope* by default which
+means that new resource is created for each request. 
+Not singleton.
+To use singleton
+: Class<MyClass> method() {
+:   return MyClass.class;
+: }
+or
+: return Resource.from(MyClass.class);
+
+
+need to register Feature to Configurable instance(client/server)
+Some are auto-discoverable features, like
+- MOXy

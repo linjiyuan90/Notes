@@ -73,3 +73,14 @@
      <name>...</name>
    </projcet>
    #+END_EXAMPLE
+** dependency scope
+   from POM 4
+   - compile
+   - provided
+   - runtime
+   - test
+   - system
+** install 3rd party JARs
+   : mvn install:install-file -Dfile=<path-to-file> -DpomFile=<path-to-pomfile>
+   <path-to-file> is the jar file
+   http://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html

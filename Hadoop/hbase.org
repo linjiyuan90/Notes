@@ -1,0 +1,18 @@
+
+* installation
+** pesudo
+   - if hostname is 127.0.1.1, remember to set it as 127.0.0.1, let it
+     same as localhost.
+     #+BEGIN_EXAMPLE
+     <configuration>
+       <property>
+         <name>hbase.rootdir</name>
+         <value>hdfs://localhost:8020/hbase</value>
+       </property>
+       <property>
+         <name>dfs.replication</name>
+         <value>1</value>
+       </property>
+     </configuration>
+     #+END_EXAMPLE
+
