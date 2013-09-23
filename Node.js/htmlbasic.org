@@ -1,0 +1,6 @@
+
+* form
+  : <form method="POST" action="/post_url">
+
+* input
+  : <input type="text" name="name">

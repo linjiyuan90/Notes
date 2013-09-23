@@ -1,0 +1,280 @@
+
+* timer
+  - setTimeout(callback, delay, [arg], [...])
+  - clearTimeout(timeoutId)
+    : var timer = setTimeout(functio(){}, 1000);
+    : clearTimeout(timer);
+  - 
+  - 
+  - 
+
+* tcp
+**  TCP is connection-oriented
+    - IP on which TCP sits is *connectionless*
+    - In the context of a TCP connection, IP datagrams that are sent
+      out contain information that *identifies* the connection they
+      belong to and the *order* in the data stream.
+    - byte orientation
+    - reliablity
+      acknowledgements and timeouts
+    - flow control
+      when flow of packets are not balanced
+
+TCP will always keep connected?
+
+**
+  what guarantees do I have when sending a message using TCP.
+
+** usage
+*** server
+   #+BEGIN_EXAMPLE
+   var server = require('net').createServer(function(conn){
+     conn.write('new connection');
+     conn.on('data', function(data) {
+       // note data is byte
+       // data.toString('utf8')
+       // or
+       // conn.setEncoding('utf8');
+     });
+     conn.on('close', function() {
+     });
+   });
+   // the above callback function only calls when a conn is established
+   server.listen(10086, function() {
+     console.log('listen on 10086');
+   });
+   #+END_EXAMPLE
+
+   shared-state concurrency, so need to record conn manually,
+   otherwise it will be overrided.
+   conn is overrided since it's a reference, however, variable
+   defined in the function() won't be overrieded!
+   
+*** client
+    #+BEGIN_EXAMPLE
+    var client = require('net').connect(port[[, host], callback]]);
+    client.on('connect', function() {});
+    // or add it as:
+    // require('net').connect(port, host, function(){})
+    #+END_EXAMPLE
+
+* http
+  http.ServerRequset
+  - header
+  - connection
+    removeAddress
+  - method
+      
+  http.ServerResponse
+  #+BEGIN_EXAMPLE
+  require('http').createServer(function(req, res){
+    res.writeHead(200, {'content-type': 'text/plain'});
+    res.end('end here');
+  }).listen(10086);
+  #+END_EXAMPLE
+  
+  http abstracts the multiple connections objects as request/response
+  objects
+  with connection:keep-alive, you reuse the tcp socket, and no need to
+  create a new one the next time!
+
+** request
+  #+BEGIN_EXAMPLE
+  var options = {
+    host: 'xxx'
+    port: 10086,
+    path: 'xxx'
+    method: 'GET'
+  };
+  var req = require('http').request(options, function(res) {
+    console.log('STATUS: ' + res.statusCode);
+    console.log('HEADERS: ' + JSON.stringify(res.headers));
+    res.setEncoding('utf8');
+    res.on('data', function(chunk) {
+	console.log('BODY: ' + chunk);
+    });
+    // res.on('end', function(){...});
+  });
+  req.on('error', function(e) {
+    console.log('problem with request: ' + e.message);
+  });
+  // write data to request body
+  // req.write();
+  // must always to call req.end() to signify that you're donne with request
+  req.end();
+  #+END_EXAMPLE
+  - request.connection.remoteAdress
+
+** get
+   since most requests are GET requsets without bodies, node provides
+   this convenience method. This method sets the method to get and
+   call req.end() automatically.
+
+* fs
+  #+BEGIN_EXAMPLE
+  var stream = require('fs').createReadStream(path);
+  stream.on('data', function(data) {
+    response.write(data);
+  });
+  stream.on('end', function() {
+    response.end();
+  });
+  // or equivalently
+  require('fs').createReadStream(path).pipe(response);
+  #+END_EXAMPLE
+
+* querystring
+  parse
+  stringify
+* url
+  url.parse(fullurl).pathname
+
+* 3rd party
+** web
+*** connect
+    [[http://stephensugden.com/middleware_guide/][middleware]]
+    Simply put, middleware is made up of functions that handle the
+    /req/ and /res/ objects but also receive a /next/ function that
+    allows you to do /flow control/.
+    #+BEGIN_SRC javascript
+    var connect = require('connect');
+    var server = connect.createServer();
+    server.use(connect.logger());
+    // __dirname is where server.js sits, not process.cwd()
+    server.use(connect.static(__dirname + ''));
+    #+END_SRC
+    Define own middleware
+    #+BEGIN_SRC javascript
+    // request-time.js
+    modules.exports = function time(option) {
+      this.time = option.time || 500;
+      // a middleware is a function with (req, res, next)
+      return function(req, res, next) {
+       	var timer = setTimeout(function() {
+       	    console.log(
+       		'\033[90m%s %s\033[39m \033[91mis taking too long!\033[39m'
+       		, req.method
+       		, req.url);
+       	}, time);
+       	// monkey-patch
+       	var end = res.end;
+       	res.end = function(chunk, encoding) {
+       	    res.end = end;
+       	    res.end(chunk, encoding);
+       	    clearTimeout(timer);
+       	}
+       	next();  // don't forget this
+      };
+    };
+    // server.js
+    var server = require('connect').createServer();
+    server.use(time({time:500}));
+    #+END_SRC
+**** query
+     Access '/blog-posts?page=5' by
+     : server.use(connect.query);
+     : req.query.page
+**** bodyParser
+     It'll automatically parse the request body, and you can access
+     the result by
+     : req.body.xxx  // xxx is the html input name
+*** websocket.io
+    The traditional web that was about *retrieving entire documents*
+    every time the user clicked is less common nowadays, especially
+    with all the tools that HTML5 makes available.
+    - ajax
+      make an *asynchronous request*, after receiving the resposnse,
+      alter the view to represent the user action by javascript
+      frameworks.
+    - http
+      after sending a request, you have to wait for the response,
+      sometimes it's no necessary
+
+    WebSockets enables *bidirectional*, full-duplex communication
+    channels. The connection is opened through a sort of HTTP
+    request, called a WebSockets handshake, with some special
+    headers. The connection is kept alive, and you can write and
+    receive data in JavaScript, as if you were using a raw TCP
+    socket. 
+
+    What's great about the WebSocket API that server and client can
+    *push messages to each other at any given time*. WebSocket is not
+    limited in its nature the way that AJAX (or XHR) is; *AJAX
+    technologies require a request to be made by the client*, whereas
+    WebSocket servers and clients can push each other messages. XHR is
+    also limited by domain; the WebSocket API allows cross-domain
+    messaging with no fuss.
+
+
+*** socket.io
+    Almost same as websocket.io, but with more compatibility and
+    actively maintained. Both are developed by same group/person.
+    
+    Based on /transports/, what's this?
+    You can uitlize AJAX as a method for real-time communication when
+    using a technique called /long polling/.
+    
+    With namespaces(/multiplexing/), multiple sockets share a
+    transports, a TCP?
+    
+
+***** background
+    
+    how can server send data to client using http?
+    Reverse Ajax can be simulated to issue an Ajax request.
+    The goal of Reverse Ajax is to let the server push information to
+    the client. Ajax requests are stateless by default, and can only
+    be opened from the client to the server.
+
+    *HTTP Polling* involves issuing a request from the client to the server
+    to ask for some data. Polling interval
+    *JSONP polling* is essentially the same as HTTP polling. The
+    difference, however, is that with JSONP you can issue *cross-domain*
+    requests (requests not in your domain).
+    A JSONP request can usually be recognized by its callback
+    parameter and returned content, which is executable JavaScript code.
+
+    
+    http://www.ibm.com/developerworks/library/wa-reverseajax1/
+    
+    - Reverse Ajax
+    - Piggyback
+      Accumulate events on the server and send them in a mixed
+      response when client request later.
+    - Comet
+      the above two *does not scale* and does not provide *low-latency*
+      communication.
+      Comet is a web application model where a request is sent to the
+      server and kept alive for a long time.
+      *long-lived request*
+      2 implementations:
+      - streaming model
+	only one long-lived request, two common techniques needed:
+	+ forever IFrames (hidden IFrames)
+	  since only one persistent connection is opened, saves most
+          bandwidth usage.
+	+ multipart request
+	  may not support by some browsers
+      - *long polling* (recommended)
+	Open an Ajax request to the server and wait for response. The
+        server requires specific features on the server side to allow
+        the request to be *suspended*.
+	As soon as an event occurs, the server sends back the
+        response in the *suspended request* and close it. The client
+        then consumes the response and *opens a new long-lived Ajax
+        request* to the server.
+	
+**** HTML5 websocket
+     websocket is the *TCP of the web*, a low-level bidirectional
+     socket that gives control of the communication back to you.
+     WebSocket API: browser and server
+
+     It's a *protocol*, still based on HTTP, which means it's fairly
+     easy to implement it on top of existing servers. The main
+     difference is that as soon as the handshake is complete, a
+     minimalistic TCP-like socket is available to you.
+       
+*** superagent
+** management
+*** up
+*** nodemon   

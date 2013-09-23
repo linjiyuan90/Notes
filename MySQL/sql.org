@@ -1,0 +1,3 @@
+
+: drop table if exists xxx;
+: create table xxx(f1 t1, f2 t2);
