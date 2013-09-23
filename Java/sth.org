@@ -1,0 +1,6 @@
+
+* unsigned
+  Java has no unsigned number. One way to get a unsigned number is to
+  use bit operation;
+  : byte a = (byte) 200;
+  : System.out.println(a&0x00ff);

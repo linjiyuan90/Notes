@@ -31,6 +31,12 @@
   |                       |   |
   |                       |   |
   |                       |   |
+** execute remote command
+   : ssh root@MachineB 'bash -s' < local_script.sh
+   : ssh user@host <<'ENDSSH'
+   : #commands to run on remote host
+   : ENDSSH
+
   
 * grep
   : echo -e '123\n\d+' | grep -P '\d+'

@@ -16,3 +16,31 @@
      </configuration>
      #+END_EXAMPLE
 
+* configuration
+** hbase-env.sh
+   - pid
+     default is /tmp/xxx, this will be cleaned automatically, so
+     change it.
+* NTP
+  if time diff between master and regionsever is to large,
+  regionserver won't start!
+  use NTP to synchronize time
+  : sudo apt-get install ntp
+  : sudo ntpdate cn.pool.ntp.org
+
+* Error
+** can't drop a table
+   : hadoop fs -ls /hbase/
+   : hadoop fs -mv /hbase/<table_name> /tmp
+   : ./bin/hbase hbck -fixMeta -fixAssignments
+* shell
+** truncate
+   disable, drop, recreate
+** deleteall
+   only delete a row's column
+* submit job
+  To submit job that connect to hbase, beside add hbase jars to
+  CLASSPATH, need to add $HABSE_HOME/conf/
+* sth
+  - hbase won't insert data if the column value if not provided (only
+    rowkey is provided)

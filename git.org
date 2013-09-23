@@ -157,6 +157,14 @@ prompt overwrite.
   after add ssh key to github,
   : ssh -T git@github.com  # test
   : git remote set-url origin git@github.com:username/repo.git  # use ssh rather https
+** branch
+   : git branch -r
+   : git branch -r -d  <branchName> # in fact, delete local's remote branch
+   : git push --delete <branchName>
+   : git push --delete tag <branchName>
+   : git push origin :<branchName>  # push an empty branch, equal to delete
+** show
+   : git remote show [name]
 
 * others
   : git pull --rebase origin master  # what's this?
@@ -266,3 +274,9 @@ prompt overwrite.
 
   : git rebase master
   : git pull --rebase develop
+
+* reset
+  : git reset --hard  # removes staged and working directory changes
+  : git clean -f -d  # remove untracked files
+  : git clean -f -x -d  # CAUTION: as above but removes ignored files like config
+

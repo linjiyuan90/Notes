@@ -74,3 +74,7 @@ jni.h
 
 * tricks
   remember to release, like *env->DeleteLocalRef*
+
+* note
+  if jar and libjvm.so are in different java version, class may not
+  be found.

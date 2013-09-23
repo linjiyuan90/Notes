@@ -1,0 +1,11 @@
+
+*core: oop + fp*
+
+very scalable
+
+FP think of space rather than time like in imperative programming.
+
+FP is very import for concurrency.
+
+
+FP require more memory ?
