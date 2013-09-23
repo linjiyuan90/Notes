@@ -70,12 +70,15 @@ as a service in the cluster.
 #+BEGIN_EXAMPLE
 <!-- configs for  OOZIE -->
 <property>
-  <name>hadoop.proxyuser.ada.hosts</name>
-  <value>ada-s1</value><!-- where Oozie resides -->
+  <name>hadoop.proxyuser.oozie.hosts</name>
+  <value>oozie-server</value><!-- where Oozie resides -->
 </property>
 <property>
-    <name>hadoop.proxyuser.ada.groups</name>
-    <value>ada</value><!--local groups, not 'supergroup' in hdfs! -->
+    <name>hadoop.proxyuser.oozie.groups</name>
+    <value>yuan,oozie</value>
+    <!--local groups, not 'supergroup' in hdfs!
+     And * may not work.
+     -->
 </property>
 #+END_EXAMPLE
    

@@ -2,8 +2,48 @@
 : db.collection.find({field:{$exists: false}})
 update a field, rather replace the record
 : db.collection.update({id:123}, {$set:{date:ISODate()}}}
+: db.collection.update({id:123}, {$unset:{date:1}})  # remove a field
 count
 $setOnInsert
 findAndModify
 
+: db.collection.ensureIndex({a:1, b:})
+Can I create serveral index with common part?
+{a, b, c}, {a, e}
 
+
+mongodb support tag excellently ?
+
+
+* Query Selectors
+** Comparison
+   http://docs.mongodb.org/manual/reference/operator/#query-selectors
+   | name | description |
+   |------+-------------|
+   | $all |             |
+   | $gt  |             |
+   | $gte |             |
+   | $in  |             |
+   | $lt  |             |
+   | $lte |             |
+   | $ne  |             |
+   
+   : db.col.find({field: {$lt:1234}})
+
+* Date
+  : Date()  // return the current date as a string
+  : new Date()  // return an ISODate object
+  : [new] ISODate()  // return an ISODate object
+  : var now = Date() - 0
+  : new Date(now + 1000 * 10)  // 10s later
+
+  ISODate can cast to Date object in java
+  
+* js
+  store javascript into =db.system.js=
+  http://docs.mongodb.org/manual/tutorial/store-javascript-function-on-server/
+* auto increment
+  http://docs.mongodb.org/manual/tutorial/create-an-auto-incrementing-field/
+
+* others
+  mongodb has a memory-map engine, reside data in memory.

@@ -1,4 +1,9 @@
 
+ It’s like Ruby’s Event Machine or Python’s Twisted, but it takes the
+ event model a bit further—it presents the event loop as a language
+ construct instead of as a library.
+
+
  You can use Python much like PHP or Ruby, to build your
  run-of-the-mill web-app, whereas node is better fitted for
  applications where *live feedback* is important, due to its
@@ -37,3 +42,17 @@ client require *persistent connetion*
 https://www.udemy.com/blog/learn-node-js/
 
 
+* npm
+  : npm install superagent@0.3.0
+  : npm pubish
+  : npm install
+** notes
+   - need to export NODE_PATH=/usr/local/lib/node_modules, otherwise
+     node won't find desired modules even though you have install it
+     globally!
+     : node install -g express  // 
+     And you have to instlal locally.
+
+
+* grammer
+  : var time = opts.time || 1000;

@@ -257,3 +257,12 @@ prompt overwrite.
 
 
 
+
+* rebase
+  Rebasing replays changes from one line of work onto another in the
+  order they were introduced, whereas merging takes the endpoints and
+  merges them together.
+  With respect to =merge=, It’s only the history that is different.
+
+  : git rebase master
+  : git pull --rebase develop

@@ -1,0 +1,8 @@
+
+* stable /0-1/ sorting
+  <<stable mininum space partitioning in linear time>>
+  The task is to sort an array of n elements with two distinct values
+  such that equal elements retain their relative input order.
+** O(n) time, O(1) space
+   
+  

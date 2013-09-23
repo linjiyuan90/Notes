@@ -117,6 +117,14 @@
   | MR   | Jobracker               |        50030 | mapred.job.tracker.http.address  |
   |      | Tasktrackers            |        50060 | mapred.task.tracker.http.address |
 
+* web browser
+  | url             | descritption      |
+  |-----------------+-------------------|
+  | localhost:50070 |                   |
+  | localhost:50075 | hdfs file browser |
+  
+
+* 
 * security
 ** SLA
   *Service Level Authorization* is the initial authorization mechanism

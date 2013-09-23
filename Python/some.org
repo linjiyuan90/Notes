@@ -1,2 +1,5 @@
 
 : cat xxx.json | python -m json.tool
+
+* decorator
+  : @memo
