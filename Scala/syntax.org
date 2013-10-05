@@ -1,0 +1,169 @@
+
+* call by value/name
+  : def gao(x: Boolean)
+  : def gao(x: => Boolean)  // call by name
+  - Call-by-value has advantage that it avoids repeated evaluation of
+    arguments. Call-by-name has the advantage that it avoids
+    evaluation of arguments when the parameter is not used at all by
+    the function.
+  - Call-by-value is usually more efficient than call-by-name, but a
+    call-by-value evaluation might loop where a call-by-name
+    evaluation would terminate.
+  #+BEGIN_SRC scala
+  def loop: Int = loop
+  def first(x: Int, y: Int) = x
+  first(1, loop)  // <= loop forever
+  def constOne(x: Int, y: => Int) = 1  // '=>' switch to call-by-name evaluation
+  constOne(1, loop)  // returns 1
+  constOne(loop, 2)  // <= loop forever
+  #+END_SRC
+
+** def
+   Executing a Definition such as =def x = e= will not evaluate the
+   expression e. Instead e is evaluated whenever x is used.
+   Value definition =val x = e=, which does evalute the
+   right-hand-side e as part of the evaluation of the definition.
+
+* operators
+** infix
+   need 2 operands
+   : 7 + 2
+   : s index ('o', 5)
+** prefix
+   : -2.0
+   : 2.0.unary_-  // unary_^, unary_+
+** postfix
+   methods that take no arguments
+** unsigned shift right (>>>)
+   : -1 >>> 31  // 1
+   : -1 >> 31   // -1
+   
+** =::=, =:::=
+   Any method that ends in a ':' characters is invoked on its right
+   operand, passing in the left operand.
+   =:::= for list concatenation
+   =::= for 'cons', which prepends a new element to the begining of
+   an existing list
+   : // a, b, c are List
+   : a:::b  // b.:::(a)
+   : a:::b:::c  // a:::(b:::c)
+   : 1::a
+
+* wrappers
+  : -12 abs
+  : -12.abs  // not -12.abs(), error: Int does not take parameters
+  : 4 to 6  // Range(4, 6)
+
+* parentheses
+  - () and [] can't contain multiple statements while {} can
+
+* tail recursive
+
+  #+BEGIN_SRC scala
+  // tail-recursive
+  // The final call in a tail-recursive function can be implemented by a jump
+  // back to the begining of that function.
+  // The arguments of that call can overwrite the parameters of the current
+  // instantiation. so that no new stack space is needed.
+  def gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a%b)
+  
+  // not tail-recursive
+  // A new stack frame is allocated for the recursive instance of factorial, and is
+  // deallocated after that instance has finished.
+  // It needs space proportional to its input parameter!
+  def factorial(n: Int): Int = if (n == 0) 1 else n * factorial(n-1)
+  
+  def factorial(n: Int): Int = {
+    def fact(n:Int, acc:Int): Int = if (n == 0) acc else fact(n-1, acc * n)
+    fact(n, 1)
+  }
+  #+END_SRC
+
+* anonymous function
+  #+BEGIN_SRC scala
+  val f = (x: Int) => x * x  // need ()
+  // {} can be used in definition with multiple expressions
+  // Also use {} to pass anonymous function as argument if multiple expressions
+  // are needed
+  val f = {x: Int =>
+    println("hi")
+    x * 3
+  }
+  f(3)
+
+  // If you want to call it immediately rather than save it,
+  // need () outside parameter and function, not {}
+  ((x: Int) => x*2)(3)
+  ((x: Int) => {println("x is " + x); x * 2})(2)
+  
+  // type is not needed if it can be deduced
+  // Usually when pass the anonymouse function as arugments
+  a.map(x => x*x)
+  #+END_SRC
+
+* partially applied function
+  partially apply a function with an underscore, which gives you
+  another function.
+  Think it as left the places for future
+  #+BEGIN_SRC scala
+  def sum(f: Int => Int, a: Int, b: Int):Int = {
+    if (a > b) 0
+    else f(a) + sum(f, a+1, b)
+  }
+  def sumSquares = sum(x => x*x, _: Int, _:Int)
+  sumSquares(1, 3)
+  
+  sum _
+  // (Int => Int, Int, Int) => Int = <function3>
+  (sum _).curried
+  // (Int => Int) => (Int => (Int => Int)) = <function1>
+  #+END_SRC
+
+* curried function
+  Sometimes it makes sense to let people apply some arguments to your
+  function now and others later
+  #+BEGIN_SRC scala
+  def sum(f: Int => Int)(a: Int)(b: Int):Int = {
+    if (a > b) 0
+    else f(a) + sum(f)(a+1)(b)
+  }
+  // compile error if without '_'
+  def sumCube = sum(x => x*x*x) _
+  // sumCube: Int => (Int => Int)
+  sumSquares(1)(3)
+
+  // pass curried function as argument
+  def needAFunc(f: Double => Double) = {
+    println(f(1))
+  }
+  def averageDamp(f: Double => Double)(x: Double) = (x + f(x)) / 2  // curried
+  needAFunc(averageDamp(y => 2/y))  // pass as argument value
+  #+END_SRC
+
+  In general, a curried function definition
+  : def f(args1)(args2) ... (argsn) = E
+  expands to
+  : def f(args1)(args2) ... (argsn-1) = {def g(argsn) = E; g _}
+  Or shorter, using anonymouse function
+  : def f(args1)(args2) ... (argsn-1) = (argsn) => E
+  Performing n steps
+  : def f = (args1) => (args2) => ... => (argsn) => E
+* collections
+** List
+   : List(1, 2, 3)
+** Set
+** Tuple
+   #+BEGIN_SRC scala
+   val a = (1, 2)
+   // or
+   val a = 1 -> 2
+   // access element
+   println(a._2)  // 1-based
+   #+END_SRC
+** Map
+   #+BEGIN_SRC scala
+   val m = Map(1 -> 2)
+   val m = Map(1 -> "one", 2 -> "two")
+   #+END_SRC
+
+

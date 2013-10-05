@@ -1,0 +1,24 @@
+* enumerate
+  #+BEGIN_SRC java
+  // values()  <-- 
+  // 
+  public enum DBpediaResourceField {
+    URI("URI"), URI_COUNT("URI_COUNT"), SURFACE_FORM("SURFACE_FORM"), CONTEXT("CONTEXT"), TYPE("TYPE");
+    private String name;
+    DBpediaResourceField(String name) {
+        this.name = name;
+    }
+    public static String[] stringValues() {
+        String[] stringValues = new String[values().length];
+        int i = 0;
+        for (DBpediaResourceField value: values()) {
+            stringValues[i++] = value.toString();
+        }
+        return stringValues;
+    }
+    @Override
+    public String toString() {
+        return this.name;
+    }
+  }
+  #+END_SRC

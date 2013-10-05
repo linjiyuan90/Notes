@@ -37,7 +37,19 @@
    : #commands to run on remote host
    : ENDSSH
 
-  
+* sort
+  Even with field-separator, sort compares strings with
+  field-seperator. By default, it compares from field1 to end of line.
+  : $ echo -e "abc ;def\nabc;def" | sort -k1 -t ','
+  : abc ,def
+  : abc,def
+  : # it will compare the whole string!
+  : $ echo -e "abc ;def\nabc;def" | sort -k1,1 -t ','
+  : abc,def
+  : abc ,def
+  : # only compare 'abc', 'abc '
+
+
 * grep
   : echo -e '123\n\d+' | grep -P '\d+'
   '\d' is not in grep's regrex, add -P to use perl regex. or use
@@ -54,7 +66,11 @@
 >>>>>>> 9a9289de27da50c31facaa0e4f7a5af051a5c92f
 * ansi escape code
   http://en.wikipedia.org/wiki/ANSI_escape_code
-  console.log('\033[90m' + 'red' + '\033[39m' + 'default');
+  : console.log('\033[90m' + 'red' + '\033[39m' + 'default');
+
+  : System.out.pritnln("first line");
+  : System.out.print(\33[1A\33[2K");  // this will erase the prev line
+  : System.out.pritnln("next line");
 * FAQ
 ** GPG Error on Update
 #+BEGIN_EXAMPLE
@@ -69,3 +85,6 @@ sudo apt-get update
 
 * mount
   how to mount a remote direcotry?
+
+* output
+  

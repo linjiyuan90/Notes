@@ -1,0 +1,57 @@
+
+: val x = Array(3, 2, 5, 1, 8, -1)
+: x.reduceLeft((a:Int, b:Int) => a max b)
+: x.reduceLeft((a:Int, b:Int) => a.max(b))
+: def sum(xs: Array[Int]):Int = if (xs.isEmpty) 0 else xs.head + sum(xs.tail)
+: def sum(xs: Array[Int]) = xs.reduceLeft((a:Int, b:Int) => a + b)
+
+
+* quick sort
+  #+BEGIN_SRC scala
+  def sort(x: Array[Int]): Array[Int] = {
+    if (x.length <= 1) x
+    else {
+      val pivot = x(x.length/2)
+      Array.concat(
+        sort(x filter(pivot >)),
+	x filter(pivot ==),
+	sort(x filter(pivot <)))
+    }
+  }
+  #+END_SRC
+
+* while
+  #+BEGIN_SRC scala
+  def While(p: => Boolean)(s: => Unit) {
+    if(p) {s; While(p)(s)}
+  }
+  #+END_SRC
+
+* square roots by Newton's method
+  #+BEGIN_SRC scala
+  def abs(x: Double) = if (x > 0) x else -x 
+
+  def sqrt(x: Double) = {
+
+    def sqrtIter(guess: Double, x: Double): Double = 
+      if (isGoodEnough(guess, x)) guess
+      else sqrtIter(improve(guess, x))
+
+    def isGoodEnough(guess: Double, x: Double) = 
+      // divide x to make sure precise for small number and termination
+      // for large number
+      abs(guess * guess - x) / x < 0.01
+
+    def improve(guess: Double, x: Double) = 
+        (guess + x / guess) / 2
+   
+    sqrtIter(1.0, x)
+  }
+  #+END_SRC
+
+* something
+  #+BEGIN_SRC scala
+  (0 until 10).foldLeft(Map.empty[Int, Int]){
+    case (m, k) => m + ((k, k))
+  }
+  #+END_SRC

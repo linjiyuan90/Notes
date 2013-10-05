@@ -1,0 +1,29 @@
+load balancer -> front-end server -> back-end server -> data store
+
+
+
+
+* Threaded vs Evented
+  In a threaded server, threads spend most of the time idle, waiting
+  on I/O.
+** Threading dilemma
+   thread pool hell
+   [[http://www.youtube.com/watch?v=8z3h4Uv9YbE][The Play Framework at LinkedIn: Productivity and Perormance at Scale]]
+   - creating new thread on the fly is expensive:
+     - use a thread pool
+   - too many threads in the thread pool:
+     - memory overhead
+     - context switching overhead
+   - too few threads in the thread pool:
+     - run out of threads, latency goes up
+     - sensitive to downstream latency
+       
+* Play
+Play is built on top of Netty, so it supports non-blocking I/O
+** NIO benefits
+   - No sensitivity to downstream slowness
+   - easy to parallelize I/O
+   - support many concurrent and *long-running connections*, enabling:
+     - WebSockets
+     - Comet
+     - Server-Sent Events
