@@ -1,3 +1,15 @@
+* val & var
+  : val a, b = 2  // a:Int = 2, b:Int = 2
+  - A mutable variable (var) can be reassigned to point at new data.
+  - An immutable variable (val) is like a =final= variable in Java; it can never be
+reassigned.
+  - val + mutable or var + immutable
+    These approaches generally seem to be used as follows:
+    - A mutable collection field delcared as a /val/ is typically made
+      /private/ to its class(or method)
+    - An immutable collection field declared as a /var/ in a class is
+      more often mad publicly visible, that is, it's made avaiable to
+      other classes
 
 * call by value/name
   : def gao(x: Boolean)
@@ -166,4 +178,94 @@
    val m = Map(1 -> "one", 2 -> "two")
    #+END_SRC
 
+* implicit
+  http://pietrowski.info/2009/07/scala-implicit-conversion/
+  http://www.artima.com/pins1ed/implicit-conversions-and-parameters.html
+  The fun comes from fact that this functions are applied implicitly by
+  compiler with full type check. 
 
+* class
+  : class Test(val id: Int, val name: String)  // add val to the parameter will make the argument as class field
+  : println(new Test(1, "a").id)
+** constructor
+   - hide the primary constructor by adding a private modifier in
+     front of the class, then to construct, use auxiliary construcotr
+     #+BEGIN_SRC scala
+     class Queue[T] private (
+       private val leading: List[T],
+       private val trailing: List[T]) {
+       def this() = this(Nil, Nil)  // auxiliary constructor
+       def this(elems: T*) = this(elems.toList, Nil)
+     }
+     // Another possibility is to add a factory method since companion object same access
+     // right as its class
+     object Queue {
+       def apply[T](xs: T*) = new Queue[T](xs.toList, Nil)
+     }
+     #+END_SRC
+
+parameter list  
+** abstract vals
+   initialization order is not the same for *class parameters* and
+   *abstract fields*. A class parameter argument is evaluated before it
+   is passed to the class constructor (unless the parameter is
+   by-name). An implementing val definition in a subclass, by
+   contrast, is evaluated only after the superclass has been
+   initialized.
+
+* case class
+  case class has a companion object with an apply function ?
+* import
+  : import java.{ lang => jl, util => ju }, java.util.{ concurrent => juc }
+* covariant & contravariant positions
+  Whether a type parameter is /covariant/, /contravariant/, or /nonvariant/
+  is called the parameter’s /variance/ . The + and - symbols you can
+  place next to type parameters are called /variance annotations/.
+  =+=, =-=
+  : trait Maybe[+A]  // + indicates covariance
+  In scala, generic types have by default nonvariant(or "rigid")
+  subtyping.
+** variance
+  
+   Some types are covariant, like =List=, some are not, like =Array=
+   Roughly speaking, a type that accept mutations of its elements
+   should not be covariant. But immutatble types can be covariant, if
+   some conditions on methods are met.
+   Say C[T] is a =parameterized type= and A, B are types such that A <: B.
+   | C[T]                                            | relationship       | declare          |
+   |-------------------------------------------------+--------------------+------------------|
+   | C[A] <: C[B]                                    | C is covariant     | class C[+A]{...} |
+   | C[A] >: C[B]                                    | C is contravaraint | class C[-A]{...} |
+   | neither C[A] nor C[B] is a subtype of the other | C is nonvariant    | class C[A]{...}  |
+   
+** function
+   : trait Function1[-S, +T] {  // parameters are contravariant!
+   :   def apply(x: S): T
+   : }
+   #+BEGIN_SRC scala
+   val getTweet: (Bird => String) = ((a: Animal) => a.sound)
+   // Like 
+   // val a: List[Any] = List[String]()
+   // Think about (Bird => String) as a super type of variable getTweet
+   // And instance of Bird can be passed to Animal type 
+   #+END_SRC
+*** Typing rules for functions
+    
+* existential types
+* empty
+  extends =Nothing= so that any type can hold this *object*
+  #+BEGIN_SRC scala
+  case object Nil extends List[Nothing] {
+    override def isEmpty = true
+    def head: Nothing =
+      throw new NoSuchElementException("head of empty list")
+    def tail: List[Nothing] =
+      throw new NoSuchElementException("tail of empty list")
+  }
+  #+END_SRC
+* type erasure & manifests
+  Type information is lost at compile time due to =erasure=.
+  Scala features =Manifests=, allowing us to selectively recover type information.
+* for comprehension
+  In general, the collection type that's returned by a for
+  comprehension will be the same type that you begin with.

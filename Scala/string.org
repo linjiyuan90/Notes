@@ -1,0 +1,19 @@
+* interpolation
+** The s String interpolator
+  #+BEGIN_SRC scala
+  val name = "James"
+  println(s"Hello, $name")
+  println(s"1 + 1 = ${1 + 1}")
+  val x = (1 -> 2)
+  println(s"${x._1} -> ${x._2}")
+  #+END_SRC
+** The f Interpolator
+   #+BEGIN_SRC scala
+   val height: Double = 1.9d
+   val name = "James"
+   println(f"$name%s is $height%2.2f meters tall")
+   "%s is %2.2f meters tall".format(name, height)
+   #+END_SRC
+** raw interpolator
+   : scala> raw"a\nb"
+   : res1: String = a\nb

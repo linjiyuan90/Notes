@@ -1,8 +1,5 @@
 load balancer -> front-end server -> back-end server -> data store
 
-
-
-
 * Threaded vs Evented
   In a threaded server, threads spend most of the time idle, waiting
   on I/O.
@@ -27,3 +24,134 @@ Play is built on top of Netty, so it supports non-blocking I/O
      - WebSockets
      - Comet
      - Server-Sent Events
+* mvc
+  Think view(template) as function to be called in the controller.
+  Template's first line is parameters list.
+  
+* http server
+  Play’s HTTP server is JBoss Netty, one of several Java =NIO=
+  non-blocking servers.
+  Non-blocking—asynchronous—I/O makes it possible for Netty to process
+  multiple requests and responses with a single thread, instead of
+  having to use one thread per request.
+
+* DB
+**  SQL
+    : SQL(...).on()  // placeholder
+    : SQL(...).as()  // use * to parse as many rows of this kind as it can
+
+* controllers
+  It seems that controller is =non-blocking=! I think it needs to make
+  sure the control function "可重入"
+
+  extends trait to get implicit
+  #+BEGIN_SRC scala
+  trait WithCart {
+    implicit def cart(implicit request: RequestHeader) = {
+      // Get a fake cart. In a real app, you'd get it from the session here.
+   	Cart.demoCart()
+    }
+  }
+  // We extend the 'WithCart' trait, so we have an implicit conversion from RequestHeader to Cart
+  object Application extends Controller with WithCart {
+    def index = Action { implicit request =>
+      // The index template takes an implicit Cart, which is not available.
+      // However, the WithCart trait has an implicit conversion from
+      // RequestHeader to Cart, and we do have an implicit RequestHeader
+      // here, because `request` is a Request, which extends RequestHeader.
+      Ok(views.html.index())
+    }
+  }
+  #+END_SRC
+* view
+  =ScalaTemplates.scala=
+
+  The scala view template is type safe because it requires type when
+  passing parameters, while Play 1.x's groovy template not.
+  : <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by computer name...">
+  : controllers.Application.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+  parameter value will be fill by =name=
+
+  #+BEGIN_SRC scala
+  <ul>
+  @articles.map { article =>
+  <li>@article.name</li>
+  }
+  </ul>
+  #+END_SRC
+  *The template compiler automatically adds the yield keyword*, since
+  that is virtually always what you want in a template. Without the
+  yield keyword, the for comprehension would not produce any output,
+  which doesn’t make much sense in a template.
+
+** view compile error
+  This error will be shown regardless of the URL you visit, since your
+  application will not start when it has encountered a compilation
+  error.
+  
+** Note
+   #+BEGIN_SRC scala
+   @{var index = 0}
+   @articles.map { article =>
+     <li>@index: @article.name</li>
+     index = index + 1
+   }
+   #+END_SRC
+   Above code will give an error /not found: value/ because the
+   template parser encloses all template expressions in culy braces,
+   this means that the index variable is only in scope in its
+   expression. Besides, the parameter to map has a =side effect=,
+   namely changing the variable index. Use:
+   #+BEGIN_SRC scala
+   @for((article, index) <- articles.zipWithIndex;
+      first = index == 0;  @* nice! *@
+      last = index == articles.length - 1) {
+      <li class="@if(first){first}@if(last){last}">
+        @if(first){<em>}
+        @article.name
+        @if(first){</em>}
+      </li>
+   }
+   #+END_SRC
+
+** html
+   <input> to post, need a form?
+   <a></a> to get
+   <span class="label label-info">Heads up!</span>
+** other text file
+   views/robots.scala.txt =>  views.txt.robots
+   views/users/profilepage/avatar.scala.html =>
+   views.html.users.profilepage.avatar
+** LESS & Coffeescript
+   Just put sources in app/assets directory or a subdirectory of
+   that, Play will automatically compile them and make them avaiable
+   in public folder!
+   Any .less, .coffee or .js file that starts with an underscore is
+   not compiled.
+
+* ReactiveMongo
+  The future of the web is in streaming data to a very large number of
+  clients simultaneously. Twitter Stream API is a good example of this
+  paradigm shift that is radically altering the way data is consumed
+  all over the web.
+  A capped collection is a fixed-size (FIFO) collection from which
+  you can fetch documents as they are inserted. Each time a document
+  is stored into this collection, the webapp broadcasts it to all the
+  interested clients, in a complete non-blocking way. Moreover, you
+  can now use GridFS as a non-blocking, streaming
+  datastore. ReactiveMongo retrieves the file, chunk by chunk, and
+  streams it until the client is done or there's no more data. Neither
+  huge memory consumption, nor blocked thread during the process!
+  
+** GridFS
+   
+* Akka
+  To run a separate job using actor model!
+
+* console
+  To start application from play console, need to add after typing
+  =play console=
+  : import play.core.StaticApplication
+  : new StaticApplication(new java.io.File("."))
+  otherwise, there maybe exception
+  : java.lang.RuntimeException: There is no started application 

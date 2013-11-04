@@ -1,0 +1,29 @@
+
+final field/class can't be inheritanced.
+Any define '==' and '!=' as final, why?
+
+* construct
+** with trait
+   Compile trait will generate a set of static methods. The code
+   inside the Test object will be placed in the constructor first,
+   then scala creates ="static forwarders"= (like the main method in
+   trait).
+   #+BEGIN_SRC scala
+   trait Application {
+     println("app")
+     def main(args: Array[String]): Unit = {
+       println("main")
+     }
+   }
+    
+   object Test extends Application {
+     println("first print app, then this, main last")
+   }
+
+   // create a anonymouse subclass
+   // val x = new Application {println("later")}
+   #+END_SRC
+** eary member definition
+   solution to issues from previous versions of Scala
+** lazy
+

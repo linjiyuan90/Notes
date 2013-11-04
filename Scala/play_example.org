@@ -1,0 +1,54 @@
+* json
+  #+BEGIN_SRC scala
+  // a classic Play action
+  def getNameOnly = Action(parse.json) { request =>
+    val json = request.body
+    json.validate[Creature].fold(
+      valid = ( res => Ok(res.name) ),
+      invalid = ( e => BadRequest(e.toString) )
+    )
+  }
+  #+END_SRC
+
+* form
+  #+BEGIN_SRC scala
+  import play.api.data._
+  import play.api.data.Forms._
+   
+  val loginForm = Form(
+    tuple(
+      "email" -> text,
+      "password" -> text
+    )
+  )
+
+  val (user, password) = loginForm.bindFromRequest.get
+  #+END_SRC
+  A form can use functions to construct and deconstruct the value. 
+  #+BEGIN_SRC scala
+  import play.api.data._
+  import play.api.data.Forms._
+   
+  case class User(name: String, age: Int)
+   
+  val userForm = Form(
+    mapping(
+      "name" -> text,
+      "age" -> number
+    )(User.apply)(User.unapply)
+  )
+   
+  val anyData = Map("name" -> "bob", "age" -> "18")
+  val user: User = userForm.bind(anyData).get
+  val user: User = userForm.bindFromRequest.get
+  #+END_SRC
+
+  *tuple & mapping*
+  - Using tuple the contruction and deconstruction function don't
+    need to specified
+  - mapping method lets you define your custom functions. need its
+    default apply and unapply functions
+** constraints
+   If you can define constraints, then you need to be able to handle
+   the binding errors.
+   =fold=

@@ -1,0 +1,9 @@
+
+- find all port that pid is listening
+- find files with modifcation time before 3 days ago
+- parent process send data to child process
+- find data package from one ip port
+- RAID5
+- nmap, zmap
+- xss
+- keep-alive

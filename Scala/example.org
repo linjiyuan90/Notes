@@ -55,3 +55,6 @@
     case (m, k) => m + ((k, k))
   }
   #+END_SRC
+
+
+: list.find(_.id == id)

@@ -1,0 +1,15 @@
+
+#+BEGIN_SRC html
+<html>
+    <head>
+        <title>The &#x27;helloworld&#x27; application</title>
+        <link rel="stylesheet" media="screen" href="/assets/stylesheets/main.css">
+        <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
+        <script src="/assets/javascripts/jquery-1.6.4.min.js" type="text/javascript"></script>
+    </head>
+    <body>
+    </body>
+</html>
+#+END_SRC
+
+=shortcut icon=

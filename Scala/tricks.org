@@ -1,0 +1,19 @@
+
+* imports
+  #+BEGIN_SRC scala
+  import com.mongodb.casbah.Imports._
+  /*
+
+  trait Imports extends BaseImports with TypeImports with Implicits
+  trait BaseImports {
+    val MongoClient = com.mongodb.casbah.MongoClient
+    val MongoConnection = com.mongodb.casbah.MongoConnection
+    ...
+  }
+  trait TypeImports {
+    type MongoConnection = com.mongodb.casbah.MongoConnection
+    type MongoCollection = com.mongodb.casbah.MongoCollection
+    ...
+  }
+  */
+  #+END_SRC

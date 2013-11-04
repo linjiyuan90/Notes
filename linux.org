@@ -5,7 +5,8 @@
   - adduser
     
   - sudo -u user cmd
-  
+  - change root's password
+    : sudo passwd root
 
 * development
 ** ldap
@@ -36,7 +37,15 @@
    : ssh user@host <<'ENDSSH'
    : #commands to run on remote host
    : ENDSSH
-
+** tunnel
+   want to scp file from localhost to remote2 but it can only be
+   accessed from remote1
+   #+BEGIN_SRC shell
+   # First, open the tunnel
+   ssh -L 1234:remote2:22 -p 45678 user1@remote1
+   # Then, use the tunnel to copy the file directly from remote2
+   scp -P 1234 user2@localhost:file .
+   #+END_SRC
 * sort
   Even with field-separator, sort compares strings with
   field-seperator. By default, it compares from field1 to end of line.
@@ -88,3 +97,7 @@ sudo apt-get update
 
 * output
   
+* jobs
+  - to resume a background in other terminal(for example, in screen), use
+    : kill -CONT <pid>
+    Since =jobs -l= will show nothing, you can't use =fg=

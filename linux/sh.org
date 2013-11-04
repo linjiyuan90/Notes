@@ -1,0 +1,16 @@
+
+: mkdir -p src/{main,test}/{scala,java,resources}
+
+#+BEGIN_SRC shell
+cat > .gitignore <<EOF
+.classpath
+*~
+.cache
+.idea/
+.idea_modules/
+.project
+.settings/
+*.iml
+target/
+EOF
+#+END_SRC

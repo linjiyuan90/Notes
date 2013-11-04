@@ -1,0 +1,12 @@
+
+monad is a container
+
+
+examples:
+  - for comprehensions (dealing future, Option, Either, Validation)
+    to make the for work, require *map* function
+
+
+* ohters
+  - Java also has monad
+    

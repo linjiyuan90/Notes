@@ -1,0 +1,159 @@
+* Vector
+  The default =scala.collection.IndexedSeq()= implemention
+  immutable, fast random access and modification.
+  - distinct
+    To use =distinct= with your own class, you'll need to imp
+  - flatten
+    : List("Hello", "world").flatten
+    : Vector(Some(1), None, Some(3), None).flatten  // -> Vector(1, 3)
+    An Option can be thought of as a containter that holds zero or
+    one elements, flatten has a very useful effect on a sequence of
+    Some and None elements. It pulls the values out of the Some
+    elements to create the new list, and drop the None elements.
+  - flatMap
+    In situations where you run /map/ followed by /flatten/
+    Use flatMap to create a *filtered* list:
+    #+BEGIN_SRC scala
+    list flatMap {
+      case s: String => Some(s)
+      case _ => None
+    }
+    // List[String]
+    "hi" :: 1 :: "world" :: 4 :: Nil filter { _.isInstanceOf[String]}
+    // List[Any] = List(hi, world)
+    "hi" :: 1 :: "world" :: 4 :: Nil collect {case s: String => s}
+    // List[String] = List(hi, world)
+    #+END_SRC
+    The difference with filter is that this will return a
+    =List[String]= rather than =List[Any]=
+    Or use =collect=
+    
+    [[http://daily-scala.blogspot.com/2010/04/filter-with-flatmap-or-collect.html][Filter with FlatMap (or collect)]]
+
+    Options are implicitly converted to Iterables.
+    : scala> List(1, 2, 3) ++ None
+    : res0: List[Int] = List(1, 2, 3)
+  - filter
+    #+BEGIN_SRC scala
+    List(1, 2, "3", "4").filter {
+      case s: String => true
+      case _ => false
+    }
+    #+END_SRC
+  - collect
+  - take, takeRight, takeWhile
+  - drop, dropRight, dropWhile
+  - reduceLeft, reduceRight, reduce
+    With respect to =reduce=, "The order in which operations are
+    performed on elements is unspecified and may be nondeterministic"
+  - foldLeft, foldRight, fold
+  - scanLeft, scanRight, scan
+    Return a sequence instead of a single value.
+    : Range(1, 5).scanLeft(0){_+_}
+    : // Vector(0, 1, 3, 6, 10)
+  - union, diff, intersect, --
+    union may not lead to distinct result for colletions such as Vector
+
+* List
+  The default =scala.collection.LinearSeq()= implemention
+  - zipWithIndex
+  - sorted
+  - sortWith((a, b) => a < b)
+  - sortBy()
+  - head & tail, init & last
+  - groupBy, partition, span, splitAt
+    #+BEGIN_SRC scala
+    val x = List(15, 10, 5, 8, 20, 12)
+    val groups = x.groupBy(_ > 10)  // Map(false -> List(10, 5, 8), true -> List(15, 20, 12))
+    x.partition(_ > 10)  // (List(15, 20, 12),List(10, 5, 8))
+    x.span(_ < 20)  // (List(15, 10, 5, 8),List(20, 12))
+    val (a, b) = x.splitAt(2)  // (List(15, 10), List(5, 8, 20, 12))
+    #+END_SRC
+  - unzip
+    : val couples = List(("Kim", "Al"), ("Julia", "Terry"))
+    : val (women, men) = couples.unzip
+    : // List(Kim, Julia), List(Al, Terry)
+
+* ArrayBuffer
+  "Append, update, and random access take constant time(amortized
+  time). Prepends and removes are linear in the buffer size."
+  - ArrayBuffer.range(from, to)
+  - append(elem: A*)
+  - appendAll(xs: TraversableOnce[A])
+  - insert(n: Int, elem: A*)
+  - insertAll(n: Int, seq: collection.Traversable[A])
+  - prepend, prependAll
+  - remove(k)
+  - trimStart(n), trimEnd(n)
+* ListBuffer
+  Like an ArrayBuffe except that it uses a linked list internally
+  instead of an array.
+
+* ArrayBuilder
+
+* Seq
+  Though there is a =:+= operator, no =:-= operator in Seq, use =diff=
+* Enumeration
+  #+BEGIN_SRC scala
+  object Margin extends Enumeration {
+    type Margin = Value
+    val TOP, BOTTOM, LEFT, RIGHT = Value
+  }
+  import Margin._
+  Margin.withName("TOP") == TOP
+
+  // a much "heavier" approach
+  trait Margin
+  case Object TOP extends Margin
+  case Object RIGHT extends Margin
+  case Object BOTTOM extends Margin
+  case Object LEFT extends Margin
+  #+END_SRC
+* tuple
+  : val (x, _, z) = t  // skip the element don't want
+* Regex
+** match
+   You can extract match groups via pattern matching.
+   #+BEGIN_SRC scala
+   val line = "myprefix:123x"
+   val r = """^myprefix:(.*)x""".r
+   line match {
+     case r(group) => group
+     case _ => ""
+   }
+   // or
+   val r(group) = line
+   // but will not work for " myprefix:123x" or "myprefix:123"
+   // since match is exact match
+   #+END_SRC
+** find
+   http://www.scala-lang.org/api/current/index.html#scala.util.matching.Regex
+   http://daily-scala.blogspot.com/2010/01/regular-expression-3-regex-matching.html
+* String
+  : text.sliding(k)  // ngram
+  
+* Ordering & Ordered trait
+* sth
+** loop over
+   : for ((elem, count) <- fruits.zipWithIndex) {..}
+   : for ((elem, count) <- fruits.zip(Stream from 0)) {...}
+** view
+   lazy view, so the elements won't be created until they're needed.
+   Good for suituation when million of elements are needed.
+   /Transformed method/ will be affected, like /map/, but /foreach/
+   is not.
+   : Range(1, 20).view.map{x=>2*x}.force
+   - update
+     Changing the elements in the array updates the view, and changing
+     the elements referenced by the view changes the elements in the
+     array. When you need to modify a subset of elements in a
+     collection, creating a view on the original collection and
+     modifying the elements in the view can be a powerful way to
+     achieve this goal.
+** Range
+   : (1 until 10).toArray
+   : 1 to 10 by 2 toList
+   : (1 to 10).by(2).toList
+   : Range(1, 10)  // 1 until 10
+** mkString
+   : a.mkString("[", ", ", "]")  // with prefix, and suffix

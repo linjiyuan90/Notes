@@ -1,3 +1,6 @@
 
 : drop table if exists xxx;
 : create table xxx(f1 t1, f2 t2);
+
+To dump tables with specify fields
+: mysql -u USERNAME --password=PASSWORD --database=DATABASE --execute='SELECT `FIELD`, `FIELD` FROM `TABLE` LIMIT 0, 10000 '
