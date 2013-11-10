@@ -1,2 +1,108 @@
-: sbt ~compile
-to continous compile
+
+* introduction
+  sbt, like maven, use Ivy
+** SBT build definition files
+   - build.sbt, project/*.scala, project/*.sbt
+   - whereas the /build.sbt/ is used to define simple settings for
+     your SBT project, the /project/Build.scala/ file is used for
+     "everything else". In this file you write Scala code using the
+     SBT API to accomplish any other task you want to achieve, such
+     as including GitHub projects. 
+   
+* Structure
+** build.sbt
+   : libraryDependencies += groupID % artifactID % revision % configuration
+   : libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
+   : libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+   | method | description                                                                                    |
+   |--------+------------------------------------------------------------------------------------------------|
+   | +=     | appends to the key's value                                                                     |
+   | %      | construct Ivy Module ID                                                                        |
+   | %%     | when used after the groupID, it automatically adds your project's Scala version(such as _2.10) |
+   
+** Dependency management
+*** revision terms
+    According to Apache Ivy revision documention:
+    latest.integration, latest.milestone
+* commands
+  | Command           | Description                                                                 |
+  |-------------------+-----------------------------------------------------------------------------|
+  | clean             |                                                                             |
+  | compile           |                                                                             |
+  | ~ compile         | automatically recompiles                                                    |
+  | console           |                                                                             |
+  | doc               |                                                                             |
+  | help <command>    |                                                                             |
+  | reload            | reload the build definition file(build.sbt, project/*.scala, project/*.sbt) |
+  | inspect <setting> | inspect library-dependencies                                                |
+  | package           |                                                                             |
+  | package-doc       |                                                                             |
+  | pubish            |                                                                             |
+  | publish-local     |                                                                             |
+  | run               |                                                                             |
+  | test              |                                                                             |
+  | update            | update external dependencies                                                |
+  | last [<command>]  |                                                                             |
+  
+* Giter8
+  : g8 scalatra/scalatra-sbt
+
+* Multiple Project
+* With Eclipse
+  Need to add sbteclipse plugin first, [[https://github.com/typesafehub/sbteclipse#readme][sbteclipse]]
+  : addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.4.0")
+  To =~/.sbt/0.13/plugins/= or the project-specific file =PROJECT_DIR/project/plugins.sbt=
+  Then
+  : sbt eclipse
+  This will generate .project, .classpath.
+  Any time you update SBT build definition files (build.sbt,
+  project/*.scala, project/*.sbt) you should rerun the /sbt eclipse/
+  command to update the .classpath, .project files.
+
+* Generate Project API documention
+  | SBT command      | Description                                                            |
+  |------------------+------------------------------------------------------------------------|
+  | doc              | Generate Scaladoc API documention from src/main/scala                  |
+  | test:doc         | from src/test/scala                                                    |
+  | package-doc      | Create a JAR file containing the API documention from scr/main/scala   |
+  | test:package-doc |                                                                        |
+  | publish          | Publishs artifacts to the repository defined by the publish-to setting |
+  | publish-local    | Publishes artifacts to the local Ivy repository                        |
+  
+
+* Specify Main class
+  When you have multiple main method, need to specify which one to
+  run when =sbt run=.
+  Add a line like this to build.sbt file
+  #+BEGIN_SRC scala
+  // set the main class for 'sbt run'
+  mainClass in (Compile, run) := Some("com.example.Foo")
+  // set the main class for packaging the main jar
+  mainClass in (Compile, packageBin) := Some("com.example.Foo")
+  #+END_SRC
+** Using run-main
+   : $ sbt "run-main com.example.Foo"
+   or 
+   : $ sbt
+   : > run-main com.example.Foo
+
+* Using GitHub Projects as Project Dependencies
+* Find a resposiory (Work with Resolvers)
+  #+BEGIN_SRC scala
+  resolvers += "Java.net Maven2 Resposity" at "http://download.java.net/maven/2/"
+  resolvers ++= Seq(
+    "Typesafe" at "http://repo.typesafe.com/typesafe/releases/",
+    "Java.net Maven2 Resposity" at "http://download.java.net/maven/2/"
+  )
+  // In addition to the default Maven2 respository, SBT is configured to know 
+  // about the JavaNet1Respository
+  resolvers += JavaNet1Respository
+  #+END_SRC
+* Deploying a Single, Executable JAR file
+  Things that doesn't include in the JAR file when using =package=
+  - project dependencies (JAR file in /lib/, or managed dependencies
+    declared in /build.sbt/)
+  - libraries from the /Scala distribution/ that are needed to execute
+    the JAR file with the /java/ command
+** sbt-assembly
+   

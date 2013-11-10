@@ -4,3 +4,6 @@
 
 To dump tables with specify fields
 : mysql -u USERNAME --password=PASSWORD --database=DATABASE --execute='SELECT `FIELD`, `FIELD` FROM `TABLE` LIMIT 0, 10000 '
+
+* others
+  : show processlist

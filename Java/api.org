@@ -27,3 +27,11 @@
   - Document
   - DocumentFactory
   - io.SAXReader
+* regex
+  Pattern.MULTILINE or (?m) tells Java to accept the anchors ^ and $
+  to match at the start and end of each line (otherwise they only
+  match at the start/end of the entire string).
+  Pattern.DOTALL or (?s) tells Java to allow the dot to match newline
+  characters, too.
+
+

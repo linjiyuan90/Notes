@@ -33,6 +33,7 @@
   | queue |   |
   | pipes |   |
   | jar   |   |
+  | fsck  |   |
 
  - how to create a *superuser*
    - impersonation, doAs
@@ -124,7 +125,6 @@
   | localhost:50075 | hdfs file browser |
   
 
-* 
 * security
 ** SLA
   *Service Level Authorization* is the initial authorization mechanism
@@ -146,3 +146,6 @@
 ** org.apache.hadoop.conf.Configuration
    : conf.set(key, value);
    : conf.setStrings(key, values);
+* jar
+  To use generic options like =libjars=, need to make sure the code
+  is using =GenericOptionsParser=

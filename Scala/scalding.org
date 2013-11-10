@@ -1,0 +1,15 @@
+* introduction
+  build on =Cascalding=, pure scala, like =pig=
+
+* concepts
+  field?
+  
+* api
+** Pipe
+   - groupBy
+     the returned field is (key, size)?
+   - joinWithSmaller
+
+* thoughts
+  - groupBy to reduce
+  - join

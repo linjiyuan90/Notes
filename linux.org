@@ -37,6 +37,7 @@
    : ssh user@host <<'ENDSSH'
    : #commands to run on remote host
    : ENDSSH
+   : ssh -t -C remote "command here"
 ** tunnel
    want to scp file from localhost to remote2 but it can only be
    accessed from remote1

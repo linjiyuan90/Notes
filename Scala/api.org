@@ -65,6 +65,7 @@
     #+BEGIN_SRC scala
     val x = List(15, 10, 5, 8, 20, 12)
     val groups = x.groupBy(_ > 10)  // Map(false -> List(10, 5, 8), true -> List(15, 20, 12))
+    x.groupBy(_%10)  // Map(5->List(15, 5), ...)
     x.partition(_ > 10)  // (List(15, 20, 12),List(10, 5, 8))
     x.span(_ < 20)  // (List(15, 10, 5, 8),List(20, 12))
     val (a, b) = x.splitAt(2)  // (List(15, 10), List(5, 8, 20, 12))

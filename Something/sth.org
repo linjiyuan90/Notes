@@ -1,0 +1,14 @@
+* component & service
+  "A service is similar to a component in that it's used by foreign
+  applications. The main difference is that I expect a component to be
+  used locally (think jar file, assembly, dll, or a source import). A
+  service will be used remotely through some remote interface, either
+  synchronous or asynchronous (eg web service, messaging system, RPC,
+  or socket.)"
+  [[http://www.martinfowler.com/articles/injection.html][Dependency Injection]]
+
+
+* dependency injection
+  The implementation is injected from outside?
+  Being able to make this decision at run-time rather than compile
+  time is the key advantage of dependency injection. 
