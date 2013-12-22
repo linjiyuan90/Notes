@@ -7,3 +7,8 @@ To dump tables with specify fields
 
 * others
   : show processlist
+
+* auto_increment
+  : alter table tbl auto_increment = 1;  // 0 not work
+  Note, You cannot reset the counter to a value less than or equal to any that have already been used.
+  : truncate tbl

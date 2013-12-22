@@ -37,7 +37,24 @@
 ** truncate
    disable, drop, recreate
 ** deleteall
-   only delete a row's column
+    only delete a row's column
+** compress
+   - to set up support for compression, /must/ install the *native binary*
+     library on all region servers, and hbase will call them by JNI; if not, you
+     will see "Got brand-new compressor" in logfiles, this indicates a failure
+     to load the native version while falling back to the Java code
+     implementation instead.
+   - available compression algrotihms: "GZ", "LZO", "SNAPPY"
+   - after issue the compress operation, all the stored files won't change
+     unless you issue =major_compact=
+
+   #+BEGIN_SRC shell
+   disable table
+   alter table, {NAME => "cf", COMPRESSION => "snappy"}
+   enable table
+   # or compress it when create the table
+   create table, {NAME => "CF", COMPRESSION => "snappy"}
+   #+END_SRC
 * submit job
   To submit job that connect to hbase, beside add hbase jars to
   CLASSPATH, need to add $HABSE_HOME/conf/

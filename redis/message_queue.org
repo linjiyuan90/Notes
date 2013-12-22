@@ -1,0 +1,9 @@
+
+Redis can be used as a lightweight message queue by push/pop of the list.
+However, it's not reliable. Since there is no confirm mechenism.  other mq
+product like rabbitmq has this confirm mechnism to avoid message loss and
+provide redelivery.
+
+Note, publish/subscribe of redis can'be used as mq since if message will loss if
+client is offline.
+

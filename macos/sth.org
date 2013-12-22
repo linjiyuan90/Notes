@@ -1,0 +1,8 @@
+
+* sharing
+  System Preferences -> Sharing
+  - change =Computer Name=
+  - allow =Remote Login=, otherwise, you can't ssh it.
+* quick look
+  select items in Finder, then press =space bar= to view a file without opening them.
+  =->, <-= to switch, "cmd+ret" to grid view

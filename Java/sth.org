@@ -6,3 +6,16 @@
   : System.out.println(a&0x00ff);
 * tools
   - JMap, JHat
+  - jad to decompile a class file
+    
+* to check
+  - why java doesn't support parameter with default value?
+* options
+  | options              | description |
+  |----------------------+-------------|
+  | -Xmx                 |             |
+  | -Xms                 |             |
+  | -XX:MaxPermSize=128m |             |
+  |                      |             |
+  |                      |             |
+

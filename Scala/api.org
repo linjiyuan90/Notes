@@ -74,6 +74,12 @@
     : val couples = List(("Kim", "Al"), ("Julia", "Terry"))
     : val (women, men) = couples.unzip
     : // List(Kim, Julia), List(Al, Terry)
+  - fill(num)(val)
+  - range(from, until, step)
+  - tabulate[A](n: Int)(f: (Int) => A): List[A] 
+    Produces a list containing values of a given function over a range of integer values starting from 0
+    : List.tabulate(5)(x => x * x)
+    tabulate[A](n1: Int, n2: Int)(f: (Int, Int) => A): List[List[A]]
 
 * ArrayBuffer
   "Append, update, and random access take constant time(amortized

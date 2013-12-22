@@ -250,7 +250,6 @@ parameter list
    // And instance of Bird can be passed to Animal type 
    #+END_SRC
 *** Typing rules for functions
-    
 * existential types
 * empty
   extends =Nothing= so that any type can hold this *object*
@@ -269,3 +268,200 @@ parameter list
 * for comprehension
   In general, the collection type that's returned by a for
   comprehension will be the same type that you begin with.
+* extractor
+  An extracotr in Scala is an object that has a method called =unapply= as one
+  of its members.  
+
+  Whenever =pattern matching= encounters a pattern referring to an extractor
+  object, it invokes the extractor's =unapply= method.
+  #+BEGIN_SRC scala
+  object Email {
+    // The injection method (optional)
+    def apply(user: String, domain: String) = user + "@" + domain
+    // The extraction method (mandatory)
+    def unapply(str: String): Option[(String, String)] = {
+      val parts = str split "@"
+      // when Some is applied to tuple, parentheses can be omitted
+      if (parts.length == 2) Some(parts(0), parts(1))
+      else None
+    }
+  }
+  "example@example.com" match {
+    case Email(user, domain) => ...
+  }
+  // equals to
+  Email.unapply("example@example.com")
+  #+END_SRC
+  
+  Multiple extractor can be combined, and the match order is from *outside to inside*
+  : case EMail(Twice(x), domain)
+** Varaible argument extractors
+** Regular Expressions
+* case class & pattern matching
+  =Case classes= and =pattern matching= are particularly helpful for tree-like
+  *recursive* data.
+** case class
+   - it adds a factory method, no need to add =new=. Particulary nice when nesting them.
+   - syntactic convenience that all argumentes in the parameter list of a case
+     class implicitly get a =val= prefix, so they are maintained as fields
+   - the compiler adds "natural" implementations of =toString=, =hashCode=, =equals=
+   - adds a =copy= method for making *modified copies*
+     #+BEGIN_SRC scala
+     case class Person(Name:String, age:Int)
+     val a = Person("a", 10)
+     val b = a.copy(age = 20)
+     #+END_SRC
+   - the biggest advantage of =case classes= is that they support =pattern matching=
+** pattern matching
+   - wildcard pattern
+     #+BEGIN_SRC scala
+     expr match {
+       case BinOp(_, _, _) => println(expr + " is a binary operation")
+       case _ => println("It's something else")
+     }
+     #+END_SRC
+   - constant pattern
+   - variable pattern
+     #+BEGIN_SRC scala
+     expr match {
+       case 0 => "zero"
+       case sthElse => "not zero: " + sthElse
+     }
+     #+END_SRC
+     A simple name starting with a *lowercase letter* is taken to be a pattern
+     variable; all other references are taken to be =constants= (that's
+     Uppercase, Capital, like "Pi"). In case lowercase name should be
+     interpreted as a constant, add =back-tick=
+     : val x = 2
+     : val pi = 3.14
+     : x match {
+     : case `pi` => true
+     : case _ => false
+     : }
+     =back-tick= syntax for identifiers is used for two different purposes:
+     1. treat a lowercase identifier as a constant in a pattern match
+     2. treat a keyword as an ordinary identifier, e.g., writing Thread.`yield`()
+   - constructor patterns (/deep matches/), like =extractor=
+   - sequence pattern
+     #+BEGIN_SRC scala
+     List(0, 3) match {
+       case List(0, _, _) => println("found it")
+       case List(0, _*) => println("others")
+       case _  =>
+     }
+     #+END_SRC
+   - tuple pattern
+     : case (a, b, c) =>
+   - typed pattern
+     #+BEGIN_SRC scala
+     def generalSize(x: Any) = x match {
+       case s: String => s.length  // x.isInstanceOf[String]
+       case m: Map[_, _] => m.size
+       case _ => -1
+     }
+     #+END_SRC
+     Note =Scala= uses the =erasure= model of generics, just like =Java=
+     does. This means that no information about =type arguments= is maintained
+     at runtime.
+     #+BEGIN_SRC scala
+     def isIntMap(x: Any) = x match {
+       case m: Map[Int, Int] => true
+       case _ => false
+     } 
+     isIntMap(Map(1 -> 1)) // true
+     isIntMap(Map("a" -> "a")) // true
+     #+END_SRC
+     The only exception to the =erasure rule= is =arrays=, because they are
+     handled specially in Java as well as in Scala. The *element type* of an
+     array is stored with the array value, so you can pattern match on it.
+   - variable binding
+     If the pattern succeeds, set the varaible to the matched objects just as
+     with a simple variable pattern.
+     #+BEGIN_SRC scala
+     expr match {
+       case UnOp("abs", e @ UnOp("abs", _)) => e  // the match is from outside to inside
+       case _ =>
+     }
+     #+END_SRC
+   - Pattern guard
+     A pattern guard comes after a pattern and starts with an =if=.
+     : case n: Int if 0 < n => ...
+   - patterns in variable definitions, =for= expressions
+     : val (a, b) = (1, 2)
+     : for ((country, city) <- Map("China" -> "Beijing", "Japan" -> "Tokyo"))
+     In =for= expressions, generated values that do not match patterns
+     are *discarded*.
+   - case sequences as partial functions
+     #+BEGIN_SRC scala
+     val second: List[Int] => Int = {
+       case x :: y :: _ => y
+     }
+     // warning: match is not exhaustive
+     // missing combination    Nil
+     // such an expressions gets translated by the Scala compiler to a partial function
+     new PartialFunction[List[Int], Int] {
+       def apply(xs: List[Int]) = xs match {
+         case x :: y :: _ => y
+       }
+       def isDefinedAt(xs: List[Int]) = xs match {
+         case x :: y :: _ => true
+         case _ => false
+       }
+     }
+     // so you can check isDefinedAt before calling the function
+     #+END_SRC
+
+** sealed class
+   A sealed class cannot have any new =subclasses= added except the ones in the
+   same file. If you match against case classes that inherit from a sealed
+   class, the compiler will flag missing combinations of patterns with a warning
+   messsage.
+
+   One alternative to suppress the warning is adding 'case _'. A more
+   lightweight alternative is to add an =@unchecked= annotation.
+   #+BEGIN_SRC scala
+   sealed abstract class Expr
+   case class Var(name: String) extends Expr
+   case class Number(num: Double) extends Expr
+   case class UnOp(operator: String, arg: Expr) extends Expr
+   case class BinOp(operator: String, left: Expr, right: Expr) extends Expr
+ 
+   def describe(e: Expr): String = (e : @unchecked) match {
+     case Number(_) => 
+     case Var(_) =>
+     // case _ => // no needed
+   }  
+   #+END_SRC
+   
+* reassignable variables and properties
+  =var= in class is expaned to getters and setters.
+  #+BEGIN_SRC scala
+  class Time {
+    var hour = 12
+  }
+  // equivalent to
+  class Time {
+    private[this] var h = 12
+    def hour: Int = h
+    def hour_= (x:Int) { h = x }
+  }
+  // you can also choose to define a getter and setter directly instead of defining a var.
+  class Time {
+    private[this] var h = 12
+    def hour: Int = h
+    def hour_= (x:Int) { 
+      require(0 <= x && x < 24)
+      h = x
+    }
+  } 
+  #+END_SRC
+  Sometimes useful, to define a getter and a setter without an =associated field=.
+  #+BEGIN_SRC scala
+  class Thermometer {
+    var celsius: Float = _  // '_' as the "initializing value"
+    def fahrenheit = celsius * 9 / 5 + 32
+    def fahrenheit_= (f: Float) {
+      celsius = (f - 32) * 5 / 9
+    }
+  }
+  #+END_SRC

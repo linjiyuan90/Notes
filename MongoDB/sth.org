@@ -1,3 +1,4 @@
+* query
 : db.collection.find({field:null})
 : db.collection.find({field:{$exists: false}})
 update a field, rather replace the record
@@ -13,7 +14,6 @@ Can I create serveral index with common part?
 
 
 mongodb support tag excellently ?
-
 
 * Query Selectors
 ** Comparison
@@ -50,3 +50,8 @@ mongodb support tag excellently ?
 * import & export
   : mongoexport -d test -c records -q "{ a: { \$gte: 3 } } }" --out exportdir/myRecords.json
   : mongoimport -d test -c records --file  exportdir/myRecords.json
+* tips
+  - Do not index your collection before inserting, as inserts modify the index which is an overhead. Insert everything, then create index .
+  - instead of "save" , use mongoDB "batchinsert" which can insert many records in 1 operation. So have around 5000 documents inserted per batch. You will see remarkable performance gain .
+    see the method#2 of insert here, it takes array of documents to insert instead of single document. Also see the discussion in this thread. And if you want to benchmark more. This is just a guess, try using a capped collection of a predefined large size to store all your data. Capped collection without index has very good insertion performance.
+

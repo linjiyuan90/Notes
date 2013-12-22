@@ -1,0 +1,65 @@
+
+* intro
+  redis in action
+
+* features
+  - in-memory key-structured database
+  - data structures
+    - String, List, Set, Hzsh, Sorted Set(Zset)
+    mongo is more complicated
+  - Server-side scripting
+  - Persistence via snapshot or append-only file
+  - Replication
+  - HA, automated failover via 'Redis sentinel' daemon
+    
+* datastructure
+** Strings
+   - Scalars: char[], long int, double
+** Lists
+   implemented with linked-list
+   - Doubly-linked list of char[]
+   - index can be -1 for the last index
+** Sets
+** Hashes
+   - Hash of char[] key -> scalars
+** Sorted Sets(Zsets)
+   - Hash/skiplist of char[] member -> double score
+   - Order by score
+
+* sth
+  - Publish/Subscribe
+  - Optimistic locking/transactions
+    + WATCH(UNWATCH) - MULTI(DISCARD) - EXEC
+  - Server-side scripting
+    + EVAL - EVALSHA -SCRIPT LOAD
+  - Client-side sharding
+    - Server-side notification of "wrong shared" with cluster
+
+
+* question
+  - support text search?
+  - 
+
+* pulbish/subscribe
+** drawbacks
+   client must be connected at all times to receive messages, disconnections can
+   cause the client to lose messages, and older versions of Redis could become
+   unusable, crash, or be killed if there was a slow subscriber.
+
+* others
+  - redius is *single-thread* Its simpler than that, Redis like Nginx and node.js
+    is an *async io evented* server where each operation is atomic simply because
+    its only run one at a time. It *achieves concurrency by being very fast* and
+    its fast because it runs in memory and *no time is wasted context switching
+    between threads*.
+  - redius don't let you query on object's values
+  - any binary sequence can be a key, from string to JPEG file, even empty string.
+  - a value can't be bigger than 512 MB.
+
+* databases
+  In redis, databases are simply *identified by a number* with the default
+  database beging number 0.
+  : 127.0.0.1:6379> select 1
+  : # Then become
+  : 127.0.0.1:6379[1]> 
+

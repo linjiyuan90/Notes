@@ -102,3 +102,27 @@ sudo apt-get update
   - to resume a background in other terminal(for example, in screen), use
     : kill -CONT <pid>
     Since =jobs -l= will show nothing, you can't use =fg=
+* ulimit
+  | options | desc                                   |
+  |---------+----------------------------------------|
+  | -a      | show all                               |
+  | -f      | max file size created by a process, KB |
+  | -m      | max memory, KB                         |
+  | -n      | max opened file                        |
+  | -p      | max pipes buffer, KB                   |
+  | -s      | max stack size, KB                     |
+  | -t      | max CPU time, second                   |
+  | -u      | max number of process                  |
+  | -v      | virtual memory                         |
+  set to =unlimited=.
+
+* programming
+** trick
+   - when programming with remote db, with logic read one process one, notice the timeout in cursor.
+     read all at one time? or branch read, or set timeout?
+     
+  
+* shell
+  : cat /etc/shells
+  It seems that =zsh= is the most powerful shell.
+  : chsh -s /bin/zsh
