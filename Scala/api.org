@@ -1,5 +1,5 @@
 
-#+INCLUDE: "Seq hierarchy.png" Seq Hierarchy
+[[file:./SeqHierarchy.png]]
 
 * Vector
   The default =scala.collection.IndexedSeq()= implemention
