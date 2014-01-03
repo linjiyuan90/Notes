@@ -1,0 +1,5 @@
+
+* revert
+  : svn revert . # ignore working edits
+  : svn log f
+  : svn up -r 147 f

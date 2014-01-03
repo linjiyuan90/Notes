@@ -1,0 +1,8 @@
+
+* Thrift
+  Handle transport by =Thrift=.
+  Thrift IDL (interface description languate)
+
+* Finagle
+  
+

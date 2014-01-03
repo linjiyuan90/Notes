@@ -59,21 +59,17 @@
   : abc ,def
   : # only compare 'abc', 'abc '
 
-
 * grep
   : echo -e '123\n\d+' | grep -P '\d+'
   '\d' is not in grep's regrex, add -P to use perl regex. or use
   : [[:digit:]]
   
-<<<<<<< HEAD
 * owner
   - change owner of link instead of file it refers to, add -h option
     : chown -h owner:group link
-=======
 * intersection between two files
   : sort a.txt b.txt | uniq -d  # make sure a.txt, b.txt don't have duplicate lines
   : grep -f a.txt b.txt  # slower than the above one
->>>>>>> 9a9289de27da50c31facaa0e4f7a5af051a5c92f
 * ansi escape code
   http://en.wikipedia.org/wiki/ANSI_escape_code
   : console.log('\033[90m' + 'red' + '\033[39m' + 'default');
@@ -91,7 +87,6 @@ sudo mkdir -p lists/partial
 sudo apt-get clean
 sudo apt-get update
 #+END_EXAMPLE
-
 
 * mount
   how to mount a remote direcotry?
@@ -121,8 +116,10 @@ sudo apt-get update
    - when programming with remote db, with logic read one process one, notice the timeout in cursor.
      read all at one time? or branch read, or set timeout?
      
-  
 * shell
   : cat /etc/shells
   It seems that =zsh= is the most powerful shell.
   : chsh -s /bin/zsh
+* route
+  : route [add|del] -net 10.0.0.0/8 gw 10.61.1.254
+  Note, if you want to ping from A to B, need to make sure *both* end have route!

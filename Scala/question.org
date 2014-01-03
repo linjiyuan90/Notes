@@ -1,0 +1,15 @@
+
+* function
+  what's the difference?
+  #+BEGIN_SRC scala
+  > val a = (x: Int) => x*x
+  a: Int => Int = <function1>
+  > def a(x: Int) = x*x
+  a: (x: Int)Int
+  #+END_SRC
+
+* case object
+
+* tail recursion won't lead to stack overflow?
+* why add final?
+  : @tailrec override final def f()

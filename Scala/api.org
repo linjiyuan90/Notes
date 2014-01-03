@@ -1,6 +1,19 @@
+
+#+INCLUDE: "Seq hierarchy.png" Seq Hierarchy
+
 * Vector
   The default =scala.collection.IndexedSeq()= implemention
   immutable, fast random access and modification.
+
+  It's represented as broad, shallow =trees=. Up to 32 elements can be
+  represented in a single node. 32 * 32 elements can be represented with a
+  single =indirection=. And so on, five hops of vector can hold 2^30
+  elements. So an element selections involves up to five primitive array
+  selections. A functional =update= creates between one and five nodes that each
+  contain up to 32 elements or subtress. This is certainly more expensive than
+  an in-place update in a mutable array, but still a lot cheaper than copying
+  the whole vector.
+
   - distinct
     To use =distinct= with your own class, you'll need to imp
   - flatten
@@ -55,31 +68,82 @@
     union may not lead to distinct result for colletions such as Vector
 
 * List
-  The default =scala.collection.LinearSeq()= implemention
-  - zipWithIndex
-  - sorted
-  - sortWith((a, b) => a < b)
-  - sortBy()
-  - head & tail, init & last
-  - groupBy, partition, span, splitAt
-    #+BEGIN_SRC scala
-    val x = List(15, 10, 5, 8, 20, 12)
-    val groups = x.groupBy(_ > 10)  // Map(false -> List(10, 5, 8), true -> List(15, 20, 12))
-    x.groupBy(_%10)  // Map(5->List(15, 5), ...)
-    x.partition(_ > 10)  // (List(15, 20, 12),List(10, 5, 8))
-    x.span(_ < 20)  // (List(15, 10, 5, 8),List(20, 12))
-    val (a, b) = x.splitAt(2)  // (List(15, 10), List(5, 8, 20, 12))
-    #+END_SRC
-  - unzip
-    : val couples = List(("Kim", "Al"), ("Julia", "Terry"))
-    : val (women, men) = couples.unzip
-    : // List(Kim, Julia), List(Al, Terry)
-  - fill(num)(val)
-  - range(from, until, step)
-  - tabulate[A](n: Int)(f: (Int) => A): List[A] 
-    Produces a list containing values of a given function over a range of integer values starting from 0
-    : List.tabulate(5)(x => x * x)
-    tabulate[A](n1: Int, n2: Int)(f: (Int, Int) => A): List[List[A]]
+  /covariant/ 
+
+  Do not provide fast access to arbitrary indexes, but it have fast addition and
+  removal of *initial* elements.
+
+** List patterns
+   #+BEGIN_SRC scala
+   val List(a, b) = List(1, 2)
+   // if you don't know the number beforehand, it's better to match with ::.
+   // Note! This :: is in package scala, while rest.:: is in class List
+   val a :: b :: rest = List(1, 2, 3, 4)
+  
+   def isnert(x: Int, xs: List[Int]): List[Int] = xs match {
+     case List() => List()
+     case y :: ys => if (x <= y) x :: xs 
+                     else y :: insert(x, ys)
+   }
+   #+END_SRC
+** api
+   The default =scala.collection.LinearSeq()= implemention
+   - empty[T] 
+     Empty list =Nil= has type =List[Nothing]=, =Nothing= is the bottom
+     type in Scala's class hierachy.
+   - zipWithIndex
+   - sorted
+   - sortWith(_.length < _.length)
+   - sortBy()
+   - head & tail, init & last
+   - groupBy, partition, span, splitAt
+     #+BEGIN_SRC scala
+     val x = List(15, 10, 5, 8, 20, 12)
+     val groups = x.groupBy(_ > 10)  // Map(false -> List(10, 5, 8), true -> List(15, 20, 12))
+     x.groupBy(_%10)  // Map(5->List(15, 5), ...)
+     x.partition(_ > 10)  // (List(15, 20, 12),List(10, 5, 8))
+     x.span(_ < 20)  // (List(15, 10, 5, 8),List(20, 12))
+     val (a, b) = x.splitAt(2)  // (List(15, 10), List(5, 8, 20, 12))
+     #+END_SRC
+   - grouped, sliding
+     : List(1, 2, 3).grouped(2) // a iterator: List(1, 2), List(3)
+   - zip, unzip, zipAll
+     #+BEGIN_SRC scala
+     List(1, 2, 3).zip(List("one", "two"))
+     // List((1, "one"), (2, "two"))
+     val couples = List(("Kim", "Al"), ("Julia", "Terry"))
+     val (women, men) = couples.unzip
+     // List(Kim, Julia), List(Al, Terry)
+
+     // With zipAll, the shorter sequence is extended to match the longer one
+     List(1, 2, 3).zipAll(List("a", "b"), -1, "?")
+     // List(List(1, "a"), List(2, "b"), List(3, "?"))
+     #+END_SRC
+   - fill(num)(val)
+     fill(x, y)(val)
+   - range(from, until, step)
+   - tabulate[A](n: Int)(f: (Int) => A): List[A] 
+     Produces a list containing values of a given function over a range of integer values starting from 0
+     : List.tabulate(5)(x => x * x)
+     tabulate[A](n1: Int, n2: Int)(f: (Int, Int) => A): List[List[A]]
+   - iterator
+   - forall, exists
+   - folding list /:, :\
+     + xs.foldLeft(z)(op), (z /: xs)(op)
+       (z /: List(a, b, c))(op) <=> op(op(op(z, a), b), c)
+     + xs.foldRight(z)(op), (xs :\ z)(op)
+       (List(a, b, c) :\ z)(op) <=> op(a, op(b, op(c, z)))
+
+** note
+   - Unlike arrays, =length= is a relatively expensive operation, it needs to traverse the whole list!
+   - =isEmpty= is implemented as =lengthCompare(0)==0=, nice!
+   - organize your data so that most accesses are at the =head= of a list, rather than the =last= element
+   - list concatenation takes time proportional to the number of elements
+* Seq
+  Though there is a =:+= operator, no =:-= operator in Seq, use =diff=
+  - 
+  - indexOfSlice
+  - :+, +:, padTo
 
 * ArrayBuffer
   "Append, update, and random access take constant time(amortized
@@ -93,13 +157,43 @@
   - remove(k)
   - trimStart(n), trimEnd(n)
 * ListBuffer
-  Like an ArrayBuffe except that it uses a linked list internally
+  Like an ArrayBuffer except that it uses a linked list internally
   instead of an array.
+  
+  *Constant time append and prepend*.
+  #+BEGIN_SRC scala
+  val a = collection.mutable.ListBuffer[Int]()
+  a += 2
+  1 +=: a
+  // a: (1, 2)
+  #+END_SRC
 
 * ArrayBuilder
-
-* Seq
-  Though there is a =:+= operator, no =:-= operator in Seq, use =diff=
+* Array
+  It's implemented as native java array(this also lead to some problem like
+  genericity) but with two implicit conversions:
+  - ArrayOps, defined in =Predef=
+  - WrappedArray, defined in =LowPriorityImplicits=
+** manifest, context bound, 
+   type erasure
+   ￼
+* Set & Map
+  By default, Scala use =HashSet=, =HashMap= for Set/Map factory method. The
+  sorted Set/Map is =TreeSet=, =TreeMap=.
+  #+BEGIN_SRC scala
+  object Predef {
+    type Map[A, +B] = collection.immutable.Map[A, B]
+    type Set[A] = collection.immutable.Set[A]
+    val Map = collection.immutable.Map  // companion object
+    val Set = collection.immutable.Set
+  }
+  #+END_SRC
+  For sets with fewer than five elements, a special class devoted exclusively to
+  sets of each particular size is used, to maximize performance. For small maps
+  and sets, the immutable versions are much more *compact* than the mutable ones.
+  
+  - keySet, keys(Iteratable), values
+  - +, ++, -, --
 * Enumeration
   #+BEGIN_SRC scala
   object Margin extends Enumeration {
@@ -140,6 +234,17 @@
   : text.sliding(k)  // ngram
   
 * Ordering & Ordered trait
+* Option
+  Options are implicitly converted to Iterables, so Options can be appended to
+  collections.
+  #+BEGIN_SRC scala
+  List(1, 2, 3) ++ Some(4)
+  List(1, 2, 3) ++ None
+  val x: Iterable[Int] = None
+  #+END_SRC
+* BitSet
+  Internally, bit sets use an array of 64-bit =Longs=.
+  : collection.immutable.BitSet.empty + 3 + 4 + 4
 * sth
 ** loop over
    : for ((elem, count) <- fruits.zipWithIndex) {..}

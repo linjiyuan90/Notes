@@ -41,3 +41,7 @@
    : val pool = new HTablePool(hconf, 10)
    Also, note that since the config files are located by resouce, need to add
    path to CLASSPATH (such as current working path '.', by default it exists)
+* other
+** tmp file
+  It's better not put tmp(like pid) file in /tmp, since this may be removed by
+  system.

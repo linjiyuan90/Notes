@@ -19,7 +19,33 @@
     }
   }
   #+END_SRC
+* merge sort
+  #+BEGIN_SRC scala
+  // currying
+  def msort[T](less: (T, T) => Boolean)(xs: List[T]): List[T] = {
+    def merge(xs: List[T], ys: List[T]): List[T] =
+      (xs, ys) match {
+        // nice pattern
+        case (Nil, _) => ys
+        case (_, Nil) => xs
+        case (x :: xs1, y :: ys1) =>
+          if (less(x, y)) x :: merge(xs1, ys)
+          else y :: merge(xs, ys1)
+      }
+    val n = xs.length / 2
+    if (n == 0) xs
+    else {
+      val (ys, zs) = xs splitAt n
+      merge(msort(less)(ys), msort(less)(zs))
+    }
+  }
 
+  msort((a: Int, b: Int) => a < b)(List(-1, -2, 0, 1, 5, -10))
+
+  // An underscore stands for a missing argument list
+  // partially applied function
+  val intSort = msort((x: int, y: Int) => x < y) _
+  #+END_SRC
 * while
   #+BEGIN_SRC scala
   def While(p: => Boolean)(s: => Unit) {
@@ -57,4 +83,10 @@
   #+END_SRC
 
 
+: for (x <- this) (if (p(x)) l else r) += x
 : list.find(_.id == id)
+* Fibonacci sequence
+  #+BEGIN_SRC scala
+  def fibFrom(a: Int, b: Int):Stream[Int] = a #:: fibFrom(b, a + b)
+  fibFrom(1, 1) take(10) toList
+  #+END_SRC

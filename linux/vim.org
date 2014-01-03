@@ -1,0 +1,9 @@
+* increase & decrease number
+  Ctrl + a, Ctrl + x
+* record macro
+  : q a # this record a macro name a
+  : q # to quit
+  : N @a # play a N times
+
+
+

@@ -1,0 +1,7 @@
+: lsof -i | grep 10010
+* Gatewarys & Routes
+  - Three types of destinations: individual hosts, subnets, and "default".
+  - Three types of gateway: indivdiual hosts, interfaces (also called "links") and
+  MAC address.
+  : netstat -rn
+  

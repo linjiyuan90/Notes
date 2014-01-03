@@ -60,7 +60,6 @@ reassigned.
    : a:::b  // b.:::(a)
    : a:::b:::c  // a:::(b:::c)
    : 1::a
-
 * wrappers
   : -12 abs
   : -12.abs  // not -12.abs(), error: Int does not take parameters
@@ -215,41 +214,61 @@ parameter list
 
 * case class
   case class has a companion object with an apply function ?
-* import
+* import & package
   : import java.{ lang => jl, util => ju }, java.util.{ concurrent => juc }
-* covariant & contravariant positions
-  Whether a type parameter is /covariant/, /contravariant/, or /nonvariant/
-  is called the parameter’s /variance/ . The + and - symbols you can
-  place next to type parameters are called /variance annotations/.
-  =+=, =-=
-  : trait Maybe[+A]  // + indicates covariance
-  In scala, generic types have by default nonvariant(or "rigid")
-  subtyping.
-** variance
-  
-   Some types are covariant, like =List=, some are not, like =Array=
-   Roughly speaking, a type that accept mutations of its elements
-   should not be covariant. But immutatble types can be covariant, if
-   some conditions on methods are met.
-   Say C[T] is a =parameterized type= and A, B are types such that A <: B.
-   | C[T]                                            | relationship       | declare          |
-   |-------------------------------------------------+--------------------+------------------|
-   | C[A] <: C[B]                                    | C is covariant     | class C[+A]{...} |
-   | C[A] >: C[B]                                    | C is contravaraint | class C[-A]{...} |
-   | neither C[A] nor C[B] is a subtype of the other | C is nonvariant    | class C[A]{...}  |
-   
-** function
-   : trait Function1[-S, +T] {  // parameters are contravariant!
-   :   def apply(x: S): T
-   : }
+
+  : // package scala.collectin.mutable
+  : package scala
+  : package collection
+  : package mutable
+
+** access modifier & qualifier
+   | access modifier | desc                                                                                                                      |
+   |-----------------+---------------------------------------------------------------------------------------------------------------------------|
+   | private         | visible only inside the class or object that contains the member definition                                               |
+   | protected       | only accessible from =subclasses=. While in Java, such access are also possible from other classes in the same =package=. |
+   | public          | Every member not labeled =private= or =protected= is public. Can be accessed from anywhere                                |
+   |                 |                                                                                                                           |
+   =Access modifiers= in Scala can be argumented with =qualifiers=. A modifier of
+   the form private[X] or protected[X] means that access is private or protected
+   *"up to"* X, where X designates some enclosing package, class or singleton
+   object.
    #+BEGIN_SRC scala
-   val getTweet: (Bird => String) = ((a: Animal) => a.sound)
-   // Like 
-   // val a: List[Any] = List[String]()
-   // Think about (Bird => String) as a super type of variable getTweet
-   // And instance of Bird can be passed to Animal type 
+   package pack1 {
+     private[pack1] class A {  // without qualifier [pack1], ATest can't access A
+       // most restrictive, object-private
+       // Any access must not only be within this class, but it must also be made
+       // from the very same instance!
+       private[this] val x = 1 
+       (new A).x  // Not work!
+     }
+     object ATest {
+       val a = new A()
+     }
+   }
    #+END_SRC
-*** Typing rules for functions
+** companion objects
+   In Scala there are no static mmebers; instead you can have a =companion
+   object= that contains members that exist only once.  A class shares all its
+   access rights with its companion object and vice versa. In particular, an
+   objec can acces all =private= members of its companion class.
+** package object
+   Any kind of definition that you can put inside a class, you can also put at
+   the top level of a package. To do so, put the definitions in a /package
+   objects/. Each pacakge is allowed to have *one* package object.
+   #+BEGIN_SRC scala
+   // foo/package.scala
+   // It's a convention to name it package.scala
+   package object foo {  // same name as the package
+     def bar() = "bar() in foo"
+   }
+   // foo/TestFoo.scala
+   class TestFoo {
+     // import foo._
+     def callFoo() = foo.bar()
+   }
+   #+END_SRC
+   
 * existential types
 * empty
   extends =Nothing= so that any type can hold this *object*
@@ -465,3 +484,48 @@ parameter list
     }
   }
   #+END_SRC
+* type parameterization
+  =Type parameterization= allows you to wrtie =generic classes= and
+  =traits=. =Variance= define inheritance relationships of parameterized types.
+  
+  how does variance interact with =information hiding=.
+** variance
+   Whether a type parameter is /covariant/, /contravariant/, or /nonvariant/
+   is called the parameter’s /variance/ . The + and - symbols you can
+   place next to type parameters are called /variance annotations/.
+   =+=, =-=
+   : trait Maybe[+A]  // + indicates covariance
+   In scala, generic types have by default /nonvariant/ (or "rigid") subtyping.
+
+   Some types are covariant, like =List=, some are not, like =Array=. Roughly
+   speaking, a type that accept *mutations* of its elements should *not* be
+   covariant. But immutatble types can be covariant, if some conditions on
+   methods are met.  Say C[T] is a =parameterized type= and A, B are types such
+   that A <: B.
+   | C[T]                                            | relationship       | declare          |
+   |-------------------------------------------------+--------------------+------------------|
+   | C[A] <: C[B]                                    | C is covariant     | class C[+A]{...} |
+   | C[A] >: C[B]                                    | C is contravaraint | class C[-A]{...} |
+   | neither C[A] nor C[B] is a subtype of the other | C is nonvariant    | class C[A]{...}  |
+   
+** function
+   : trait Function1[-S, +T] {  // parameters are contravariant!
+   :   def apply(x: S): T
+   : }
+   #+BEGIN_SRC scala
+   val getTweet: (Bird => String) = ((a: Animal) => a.sound)
+   // Like 
+   // val a: List[Any] = List[String]()
+   // Think about (Bird => String) as a super type of variable getTweet
+   // And instance of Bird can be passed to Animal type 
+   #+END_SRC
+*** Typing rules for functions
+* glossary
+  - A method is /first-order/ if it does not take any functions as arguments.
+  - 
+* annotation
+  @tailrec
+  @unchecked
+* sth
+  - scala.LowPriorityImplicits is the subperclass of =Predef= object, so if both
+    conversions are applicable, the one in =Predef= is chosen.

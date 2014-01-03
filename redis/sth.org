@@ -19,6 +19,7 @@
    implemented with linked-list
    - Doubly-linked list of char[]
    - index can be -1 for the last index
+   - block pop
 ** Sets
 ** Hashes
    - Hash of char[] key -> scalars
@@ -35,11 +36,8 @@
   - Client-side sharding
     - Server-side notification of "wrong shared" with cluster
 
-
 * question
   - support text search?
-  - 
-
 * pulbish/subscribe
 ** drawbacks
    client must be connected at all times to receive messages, disconnections can
@@ -63,3 +61,43 @@
   : # Then become
   : 127.0.0.1:6379[1]> 
 
+* replication
+  Redis support master/slave (not master/master) replication.
+  Can slave servers write?
+** slave
+   Instead of specifying in conf file or by passing as argument, we can change a
+   running instance's maseter by
+   : redis-cli
+   : > SLAVEOF master_ip master_port
+* transcatoin & pipeline
+  Traditional db like relation use lock to implement transaction, which may
+  result in long wait times. This could be viewed as /pessimistic/. Instead,
+  Redis doesn't lock data during =WATCH=, which it's called /optimistic
+  locking/.
+  
+** MULTI/EXEC
+   =MULTI= + series of commands + =EXEC=
+   
+   This *delayed* execution method of sending multiple commands at once and
+   waiting for all of the replies is generally referred to as /pipeling/.
+** WATCH
+   When we've watched keys with =WATCH=, if at any time some other client
+   replaces, updates, or deletes any keys that we've WATCHed before we have
+   performed the =EXEC= operation, our operatons against Redis will fail with an
+   error messsage when we try to =EXEC=.
+
+   By using WATCH, MULTI/EXEC, and UNWATCH/DISCARD, we can ensure that the data
+   that we're working with doesn't change while we're doing something important,
+   which protects us from *data corruption*. (Consitent?)
+
+   =WATCH= + fetch data + =MULTI= + commands + =EXEC=
+   =WATCH= + fetch data + =UNWATCH=
+** pipeline
+   The =MULTI/EXEC= pipeline has a "trasaction" property. Besides, there is
+   something called /non-transactional pipelines/.  Just pass =False= to the
+   pipeline constructor, and it won't use =MULTI/EXEC=. This fits situation when
+   result of one command doesn't affect the input to another.
+
+* application
+  - distributed id generator
+    since Redis is single thread, just use =incr=, cool.

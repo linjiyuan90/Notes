@@ -1,0 +1,4 @@
+* Fatory
+  Factory pattern can be used to deal with different situation to maximize
+  performance.  For example, in Scala, =Set= factory method provides 6
+  constructors to deal with sets with 0, 1, 2, 3, 4, 5 or more elements.

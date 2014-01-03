@@ -4,3 +4,15 @@ std::function()
 
 partial_sum
 adj_diff  // doesn't exist
+
+// what's the signature of overloading = ?
+#+BEGIN_SRC C++
+T& operator=(const T &that) {
+  // do something of that
+  return *this;
+}
+// Look at such suituations,
+// that's why overload = need a return value
+y = (x = a);
+(x += 5) += 3;
+#+END_SRC

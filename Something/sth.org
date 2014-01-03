@@ -7,7 +7,6 @@
   or socket.)"
   [[http://www.martinfowler.com/articles/injection.html][Dependency Injection]]
 
-
 * dependency injection
   The implementation is injected from outside?
   Being able to make this decision at run-time rather than compile

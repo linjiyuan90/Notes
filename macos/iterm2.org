@@ -1,0 +1,13 @@
+| key       | desc         |
+|-----------+--------------|
+| cmd + d/D | split pane   |
+| cmd+[,]   | shift pane   |
+| cmd + {,} | shitf tab    |
+| cmd + ,   | preference   |
+| cmd + H   | history      |
+| cmd + ;   | autocomplete |
+
+* sth
+** use option as ESC
+   ESC + . can perform =yank-last-arg=. Redefine right option key to make it more comfortable.
+   Profiles -> Keys -> Right Option Key acts as +ESC

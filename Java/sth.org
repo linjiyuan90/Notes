@@ -19,3 +19,11 @@
   |                      |             |
   |                      |             |
 
+* compile & jar
+  To compile multiple packges
+  #+BEGIN_SRC shell
+  libs=`ls lib/* | tr '\n' ':'`
+  libs=${libs%:}
+  find src -name *.java | xargs javac -d classes -cp $libs
+  jar cvf xx.jar -C classes .
+  #+END_SRC

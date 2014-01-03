@@ -1,3 +1,6 @@
+
+=Predefs= has an implicit conversion from =String= to =StrintOps=.
+
 * interpolation
 ** The s String interpolator
   #+BEGIN_SRC scala
