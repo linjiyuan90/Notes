@@ -1,3 +1,33 @@
 
 * first missing positive
 * morris traversal 
+* sth
+  - 一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只
+    出现一次的数字。要求时间复杂度是O(n)，空间复杂度是O(1)
+    http://zhedahht.blog.163.com/blog/static/2541117420071128950682/
+  - There are many numbers in an array and each number appears three times
+    excepting for one special number appearing once. Here is the question: how
+    can I find the special number in the array?
+    每一位每满3就归0
+    #+BEGIN_SRC c++
+    // bit-sets for those which are visited odd(one time only) number of times 
+    int ones = 0 ;
+    //bit-sets for those which are visited two times.
+    int twos = 0 ; 
+    //just to reset twos and ones if the number are visited three times
+    int not_threes; 
+
+    for( int x: A) {
+      twos |= ones & x ; 
+      ones ^= x ; 
+
+      not_threes = ~(ones & twos) ; 
+      ones &= not_threes ; 
+      twos &= not_threes ; 
+    } 
+    return ones;
+    #+END_SRC
+  - 给出一堆interval。求出与其他相交最多的interval。
+  - 停车场排序。。。数组长度n，元素是0到n-1，其中0代表空位，其他代表车，origin数
+    组为未排序的，dst数组也是随机的。可进行的操作是交换0与其他数字，问如何从
+    origin数组编导dst数组

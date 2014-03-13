@@ -9,9 +9,88 @@
 - keep-alive
 - 竞赛树, 胜者树
 - local sensitive hashing
+- x permission in directory
+- manacher algorithm to find longest palindrome substring in linear time
+  - extra 
+    insert special char (like #) in betwen letters, both palindromes of odd and
+    even lengths are handled graciously
+    : abaaba
+    : #a#b#a#a#b#a#
 
+- consistent hash in p2p, distributed db
+  distributed hash table
+- http://en.wikipedia.org/wiki/Reservoir_sampling
+- outner join
+- voronoi
+- how is C++ std::string::find implements? 
+  kmp or brute force?
+- signed cast to unsigned?
+- hbase corprocsser
+- threaded binary tree, morris
+- LinkedHashMap
+  will iterate *in the order* in which the entries were put into the map
+- LRUCache
+  O(1) is implemented with ArrayList + HashMap
+  - LinkedHashMap inherited from HashMap LinkedHashMap will iterate in the order
+    in which the entries were put into the map. However, not thread-safe.
+    ConcurrentHashMap
+  Another implemention is use Hashmap + Sortedmap, where the sortedmap store
+  each key's last accesstime
+  https://github.com/twitter/util/blob/master/util-collection/src/main/scala/com/twitter/util/ImmutableLRU.scala
+  : cache: Map[K,(Long,V)], ord: SortedMap[Long,K]
 
+- memory pool
+- translation lookaside buffer (TLB)
+  TLB tremble
+- closest pair of points 
+- security testing
+  - sql injection
+  - cross-site scripting(XSS)
+    http://www.acunetix.com/websitesecurity/cross-site-scripting/
+- LCA
+- coherent hashing
+- BST
+- log structured merge-stree
+  used in leveldb
+- tcp 
+  - Congestion Control, AIMD (Additive increase/multiplicative decrease)
 * multithread
   wait & notify
 
-  
+* why zookeepr?
+  - paxos algorithm
+
+* load balance
+  weighted Round Robin
+
+- algorithm on strings & sequences
+
+* hash
+  - open addressing
+  - re-hash
+  - chaining
+* difference between iterable and iterator
+
+* mathematics
+  - Taylor series
+  - 同余(same remainder?)
+  - Possion Distribution
+  - 允许重复的组合（有重集组合？）
+    x1 + x2 + ... + xk = r, r >= 0, xi >=0
+    => C(r + k - 1, r)
+    即k-1个0将r个1分开的方案数，或者说r + k - 1个位置选k-1个来放0
+    hdu 1294 m个位置，每个位置有k种方案，k^m/m!,这样是有问题的！
+    应该建模为：k种方案，每种方案选xi个，x1 + x2 + ... + xk = m
+  - 有重集排列
+    n!/(n1!n2!..nk!)
+    两种理解，一种是先当成无重集排列，再除以每个重集的排列；一种是用组合来解释，
+    n个位置选n1个放1，剩下的n-n1个选n2个放2。。。
+* others
+  - what if query are enormoous?
+
+
+* system
+  - when crawling, how to avoid the inifite loop.
+    Different url may have same content!
+  - NIO, epoll
+  - 文件队列

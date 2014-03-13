@@ -42,7 +42,7 @@ as a service in the cluster.
    - oozied.sh start / oozie-start.sh\\
      this started as daemon process
      - or oozied.sh run \\
-       start as a *foreground* proces. In this way, you can see
+       start as a *foreground* process. In this way, you can see
        the *error message* if it failed to start!
      - oozie will used embedded tomcat, you don't have to install it individually
      - by default, it use 11000 port, see it in http://localhost:11000/
@@ -55,7 +55,7 @@ as a service in the cluster.
      $ hadoop fs -mkdir /user/oozie
      $ hadoop fs -chown -R oozie /user/oozie
      #+END_SRC
-   - sharelib \\
+   - sharelib (needed?)\\
      expand oozie-sharelib.tar.gz, and put the share directory to
      Oozie HOME in HDFS.
      : hadoop fs -put share share
@@ -65,6 +65,7 @@ as a service in the cluster.
      =hadoop.proxyuser.[OOZIE_SERVER_USER].groups= in hadoop's core-site.xml,
      otherwise there will be error:
      : Could not perform authorization operation, User: oozie is not allowed to impersonate xxx
+   - copy the core-site.xml of hadoop to oozie/conf/hadoop-conf, otherwise you may get 
      
 ** extra
 #+BEGIN_EXAMPLE

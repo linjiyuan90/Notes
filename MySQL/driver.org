@@ -1,0 +1,2 @@
+what's autoReconnect property ?
+How long can a connection maintain?

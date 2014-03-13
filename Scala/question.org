@@ -13,3 +13,17 @@
 * tail recursion won't lead to stack overflow?
 * why add final?
   : @tailrec override final def f()
+* what's the Symbol type?
+  : List('a, 'b)
+* how does the compiler know the associativity of a operator?
+* what's the Either type? Left(), Right()
+* what's the associativity?
+  : List(1) ::: 2 :: List(3)
+* what about superclass's exception when overriding a method?
+* inner class
+  : context: Mapper[LongWritable, Text, NullWritable, NullWritable]#Context
+* what about Tuple1? How to get the length of a tuple?
+  : (1,) // or Tuple1(1), (1) is a scalar
+* Will Stream store values which have been visited?
+* how to write a implicit?
+* what's final class?

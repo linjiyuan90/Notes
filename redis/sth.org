@@ -101,3 +101,5 @@
 * application
   - distributed id generator
     since Redis is single thread, just use =incr=, cool.
+* sth
+  - getSet can be used as a lock?

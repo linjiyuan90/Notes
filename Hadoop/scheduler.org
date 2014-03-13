@@ -15,4 +15,5 @@
   initialized/pending tasks and jobs* from a single user and queue to
   ensure fairness and stability of the cluster.
 
-
+  - with capacity scheduler, =mapred.cluster.map.memory.mb= means one slot,
+    =mapred.tasktracker.map.tasks.maximum= means number of slots in one node.

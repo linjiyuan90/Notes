@@ -29,6 +29,7 @@ mongodb support tag excellently ?
    | $ne  |             |
    
    : db.col.find({field: {$lt:1234}})
+   : db.col.find({mentions: {$in: ["xxx"]}})
 
 * Date
   : Date()  // return the current date as a string
@@ -59,3 +60,40 @@ mongodb support tag excellently ?
 ** number
    : db.data.update({'name': 'zero'}, {'$set': {'value': NumberInt(0)}})
    : // NumberLong
+* keys
+  To see the key of a document
+  : var doc = db.test.findOne()
+  : for (var k in doc) {
+  : print(k);
+  : }
+* when and why will a cursor timeout?
+
+* eval
+  : mongo <dbname> --eval ""
+* shell
+  - if collection contains special character in shell, like dash, to acces it, use
+    : db["a-b"].count()
+  - find with =where=
+    : db.collections.find( { $where: "this.name.length > 1" } );
+  - check =type=
+    : db.coll.find({s: {$type: 1}})
+    http://docs.mongodb.org/manual/reference/operator/query/type/
+* example
+  #+BEGIN_SRC js
+  # query by array
+  db.coll.count({docs: {$size: 0}})
+  db.coll.count({docs: {$not: {$size: 0}}})
+  #+END_SRC
+* index
+  After index, the query will be much faster
+  http://docs.mongodb.org/manual/core/indexes/
+  - Text index is a nice feature
+  - Single Field Index is general (like array)
+    : db.collection.ensureIndex({field: 1})
+    : db.system.indexes.find()
+    
+* regex
+  : db.coll.find(name: /.*计算所.*/)
+* web console
+  : mongod --config mongod.con --rest # add --rest
+  then visit it on: http://mongohost:28017/

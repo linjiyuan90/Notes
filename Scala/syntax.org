@@ -182,6 +182,14 @@ reassigned.
   http://www.artima.com/pins1ed/implicit-conversions-and-parameters.html
   The fun comes from fact that this functions are applied implicitly by
   compiler with full type check. 
+** example
+   Mainly by adding a new type
+   https://github.com/twitter/util/blob/master/util-core/src/main/scala/com/twitter/conversions/storage.scala
+   : class RichWholeNumber(wrapped: Long) {
+   :   def megabytes =  //
+   : }
+   : implicit def intToStorageUnitableWholeNumber(i: Int) = new RichWholeNumber(i)
+   : 8.megabytes
 
 * class
   : class Test(val id: Int, val name: String)  // add val to the parameter will make the argument as class field

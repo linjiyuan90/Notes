@@ -152,7 +152,6 @@ prompt overwrite.
 
 
 
-
 * remote
   after add ssh key to github,
   : ssh -T git@github.com  # test
@@ -163,6 +162,10 @@ prompt overwrite.
    : git push --delete <branchName>
    : git push --delete tag <branchName>
    : git push origin :<branchName>  # push an empty branch, equal to delete
+*** set upstream
+    : git branch --set-upstream-to=origin/master master
+    : # or
+    : git push --set-upstream origin master
 ** show
    : git remote show [name]
 
@@ -264,8 +267,6 @@ prompt overwrite.
 [[http://daemianmack.com/magit-cheatsheet.html][magit-cheatsheet]] \\
 
 
-
-
 * rebase
   Rebasing replays changes from one line of work onto another in the
   order they were introduced, whereas merging takes the endpoints and
@@ -277,7 +278,21 @@ prompt overwrite.
 
 * reset
   : git reset --hard  # removes staged and working directory changes
+  : git reset [--hard] new_branch # make the current branch follow new_branch, nice!
+  : using --hard will change the file content to new_branch, while without it, you'll
+  : see modification of current branch.
   : git clean -f -d  # remove untracked files
   : git clean -f -x -d  # CAUTION: as above but removes ignored files like config
   : git reset commitid # reset current branch to commitid
   
+* sth
+** SSL certificate problem
+ fatal: unable to access 'https://linjiyuan90@bitbucket.org/linjiyuan90/oozie_workflow/': SSL certificate problem, verify that the CA cert is OK. Details:
+error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed
+  : export GIT_SSL_NO_VERIFY=true
+* credential
+  Tired of typeing password, please use =git-crediential=
+  : git config [--global] credential.helper store  # store in ~/.git-credentials
+  : # or
+  : git config credential.helper cache  # store in memory
+  : git credential-cache exit

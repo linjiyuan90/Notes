@@ -11,3 +11,7 @@
   The implementation is injected from outside?
   Being able to make this decision at run-time rather than compile
   time is the key advantage of dependency injection. 
+* maximum repeating numbere with O(1) space, number are in [0, n)
+  : for i = 0 to n - 1, A[A[i]%n] += n
+  Add n to the position of A[i] as 'count one'
+  

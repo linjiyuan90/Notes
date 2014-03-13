@@ -3,6 +3,24 @@
   | localhost:50070 |                   |
   | localhost:50075 | hdfs file browser |
   
+* distributed cache  
+  two ways
+  - add -files
+  - by programing
+** symbol link
+   : xx.txt#xx
+** recommendation
+   put the read only file to hdfs, then call 
+   : -files hdfs:///path/cache
+** archives
+   using =-archives xx.zip=, hadoop will *unarchive* the file, and create a file
+   name "xx.zip". To access files in the archive, just 
+   : xx.zip/a
+   You can create a symbol link by
+   : -archives xx.zip#xx
+   : # To access the file
+   : xx/a
+   
 
 * security
 ** SLA
@@ -28,6 +46,9 @@
 * jar
   To use generic options like =libjars=, need to make sure the code
   is using =GenericOptionsParser=
+** note
+   =libjars= are only for mapper and reducer, not for =Job=. To add jars for
+   =Job=, set =HADOOP_CLASSPATH=.
 * access from edge node
   just change conf to cluster conf, same as hbase. Alternatives is to change
   HADOOP_CONF_DIR, HBASE_CONF_DIR. (Also, note the default conf is in
@@ -45,3 +66,16 @@
 ** tmp file
   It's better not put tmp(like pid) file in /tmp, since this may be removed by
   system.
+  : export HADOOP_PID_DIR=
+
+** not running, retry
+   if you find log telling you that master(hadoop or hbase) is not running, or
+   can't connect to port, first make sure you can telnet it, then check =hosts=
+   at every node!  Hadoop register host rather than ip, so you need all the
+   corresponding host in your hosts file. Or reverse dns should be setup, so
+   that a node's hostname can be looked up through the IP address.
+** out-of disk
+   When out-of disk, the namenode may crash and no able to start again with log:
+   : NameNode: java.lang.NumberFormatException: For input string:“
+   One method is to copy files in secondarynamenode to =dfs.name.dir=, then start.
+
