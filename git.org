@@ -166,7 +166,7 @@ prompt overwrite.
     : git branch --set-upstream-to=origin/master master
     : # or
     : git push --set-upstream origin master
-** show
+** showzd
    : git remote show [name]
 
 * others
