@@ -25,41 +25,88 @@ const char * const p = sth; // const data, const pointer
 
 # reference
 * Args&&
+* reference to invalid location
+```c++
+int *ptr;
+int &ref = *ptr;
+int &fun() {
+	int a = 10;
+	// once fun returns, the space allocated to it on stack frame
+	// will be taken back, so the reference will not be valid
+	return a;
+}
+```
 
 # emplace
 what's emplace? in-place?
 
-# smart pointer
-Three type of memory: static, stack, dynamic memory.
-* regular pointer use `new`, `delete`
-* smart pointer automatically deletes the object to which it points(`memory`
-  header). The new library defines two kinds of smart pointers `shared_ptr`,
-  `unique_ptr` and a companion class named `weak_ptr`
-  * smart pointer are `templates`, by default holds `nullptr`
-  * `if(p)` to test whether it points to an object
-  * 
-  
-## unique_ptr
-`std::unique_str` is a smart pointer that retains sole ownership of an object
-through a pointer and *destroys* that object when the unique_ptr goes out of
-scope. No two unique_ptr instances can manage the same object.
-* Use `std::move` if you want to pass the object. Only `non-const` unique_str can
-transfer the ownship of the managed object to another unique_ptr.
-```c++
-std::unique_ptr<Foo> p1(new Foo);
-p1 = std::unique_ptr<Foo>(new Foo);  // the above Foo will be released since
-it's a smart
-std::unique_ptr<Foo> p2(std::move(p1));  // now p2 owns Foo
-p1 = std::move(p2);  // ownership returns to p1
-```
-* `std::unique_str` can holds no object
-
-## shared_ptr
-`std::shared_ptr` is also a smart pointer but retains shared ownership of an
-object. Several `shared_ptr` objects may own the same object.
-`std::make_shared`
-
-## auto_ptr
-
 # template
 ## typename
+
+# Name Lookup
+## Argument Dependent Lookup (ADL)
+
+# Virtual Function
+C++ is **static binding**, the method is resolved at compile-time. Specifies
+that a non-static member function is *virtual* and supports **dynamic binding**.
+The virtual fuction naturally introduces the concept of "virtual destructor".
+When virtual function is defined, virtual destructor need to be added, to avoid
+calling the wrong destructor.
+```c++
+class Person {
+public:
+  virtual void aboutMe() {
+    std::cout << "I'm a person" << std::endl;
+  }
+
+  virtual ~Person() {
+    std::cout << "Deleting person" << std::endl;
+  }
+};
+class Student: public Person {
+public:
+  void aboutMe() override { // override is optional, virtual is also optional
+    std::cout << "I'm a student" << std::endl;
+  }
+  ~Student() {
+    std::cout << "Deleting student" << std::endl;
+  }
+};
+int main() {
+  Person *p = new Student();
+  p->aboutMe();
+  delete p;
+  Student *s = new Student();
+  s->Person::aboutMe();  //suppressed dynamic binding using qulified name lookup
+  delete s;
+}
+// I'm a student
+// Deleting student
+// Deleting person
+// I'm a person
+// Deleting student
+// Deleting person
+```
+
+The base class's virtual function in derived class is also virtual.
+*Final overrider* is the actual executed function when a virtual function call
+ is made.
+
+# inline
+* recursive function can't be marked as inline since the recursive level is not
+  known (?)
+* class member function will be dealt as inline function(?)
+
+
+# pointer
+```
+Foo *array[10]; // array of 10 Foo pointers
+Foo (*array)[10]; // pointer to array of 10 Foos
+```
+
+# TODO
+* what's lvalue, rvalue
+* explicit
+  Use explicit to prevent implicit conversions.
+  http://stackoverflow.com/a/121216/3117578
+

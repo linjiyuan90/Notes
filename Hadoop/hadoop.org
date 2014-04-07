@@ -67,7 +67,6 @@
   It's better not put tmp(like pid) file in /tmp, since this may be removed by
   system.
   : export HADOOP_PID_DIR=
-
 ** not running, retry
    if you find log telling you that master(hadoop or hbase) is not running, or
    can't connect to port, first make sure you can telnet it, then check =hosts=
@@ -78,4 +77,7 @@
    When out-of disk, the namenode may crash and no able to start again with log:
    : NameNode: java.lang.NumberFormatException: For input string:“
    One method is to copy files in secondarynamenode to =dfs.name.dir=, then start.
-
+** specify number of mappers
+   Hadoop only considers the value of =mapred.map.tasks= as a hint, while
+   =mapred.min.split.size= and =mapred.max.split.size= plays a role. However,
+   if =mapred.map.tasks= is larger than the number of splits, hadoop will use =mapred.map.tasks=.

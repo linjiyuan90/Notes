@@ -53,6 +53,9 @@
   used in leveldb
 - tcp 
   - Congestion Control, AIMD (Additive increase/multiplicative decrease)
+- Bit Torrent protocol 
+- fork
+
 * multithread
   wait & notify
 
@@ -71,6 +74,10 @@
   - sth
     unordered_set, rehashing occurs only if the new number of elements is equal
     to or greater than =max_load_factor()*bucket_count()=
+  - rolling hash function, one in which if a character is deleted from the
+    front of the string, and another added to the end, the new hash code can be
+    computed in O(1) time.
+  - is MD5 a rolling hash?
 * difference between iterable and iterator
 
 * mathematics
@@ -87,6 +94,7 @@
     n!/(n1!n2!..nk!)
     两种理解，一种是先当成无重集排列，再除以每个重集的排列；一种是用组合来解释，
     n个位置选n1个放1，剩下的n-n1个选n2个放2。。。
+  - harmonic series
 * others
   - what if query are enormoous?
 
@@ -100,3 +108,17 @@
 * Data Structure
 - heap
 - BST
+- B-tree, B+tree
+  Indexing block-oriented storage.
+  B+ trees don't have data associated with interior nodes while B trees contain
+  data with each key.
+  BTree+ stored keys (and not values) are stored in the intermediate nodes. This
+  would mean that you would need fewer intermediate node blocks and would
+  increase the likelihood of a cache hit.
+  B+Trees are much easier and higher performing to do a full scan, as in look at every piece of data that the tree indexes, since the terminal nodes form a linked list.
+  B-Trees on the other hand can be faster when you do a seek (looking for a specific piece of data by key) especially when the tree resides in RAM or other non-block storage.
+* streaming calculation
+  - storm vs. MQ ?
+* spark, RDD(resilient distirbuted data)
+
+    

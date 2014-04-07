@@ -12,6 +12,6 @@
 		mysql > select host, user from user;
 		mysql > flush privileges;
 		```
-	* By granting (TODO)
+* By granting (TODO)
 		
 		

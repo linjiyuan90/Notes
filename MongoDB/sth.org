@@ -97,3 +97,8 @@ mongodb support tag excellently ?
 * web console
   : mongod --config mongod.con --rest # add --rest
   then visit it on: http://mongohost:28017/
+* collection
+  - renameCollection
+    can't rename a shared collection.
+  - copyTo
+  - drop
