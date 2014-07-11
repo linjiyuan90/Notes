@@ -38,6 +38,7 @@
   each key's last accesstime
   https://github.com/twitter/util/blob/master/util-collection/src/main/scala/com/twitter/util/ImmutableLRU.scala
   : cache: Map[K,(Long,V)], ord: SortedMap[Long,K]
+  - in java, inherient LinkedHashMap, and override `removeEldestEntry`
 
 - memory pool
 - translation lookaside buffer (TLB)
@@ -103,6 +104,11 @@
     Different url may have same content!
   - NIO, epoll
   - 文件队列
+  - id generator
+    - request, return the minimum available id
+    - release
+    - single machine approach, use map to store (x, k), means [x, x+k) is avaiable
+    - what about multi-thread solution?
 * C++
 - smart pointer
 * Data Structure
@@ -121,4 +127,19 @@
   - storm vs. MQ ?
 * spark, RDD(resilient distirbuted data)
 
-    
+* design patterns
+- visitor    
+
+
+- bitcount without loop
+  http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
+```
+int bitcount(int x) {  
+  x = x - ((x >> 1) & 0x55555555);  
+  x = (x & 0x33333333) + ((x >> 2) & 0x33333333);  
+  x = (x + (x >> 4)) & 0x0F0F0F0F;  
+  x = x + (x >> 8);  
+  x = x + (x >> 16);  
+  return x & 0x0000003F;  
+}
+```

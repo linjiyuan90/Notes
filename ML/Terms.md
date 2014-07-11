@@ -22,6 +22,16 @@ the unit interval (0, 1).
   * To sample from a Dirichlet Distribution, Dir(α1 , . . . , αk), one fast way
     is to draw K independent samples y1, ... yk from gamma distributions, each
     with density: Gamma(αi) = yi^(αi-1)e^-yi/Γ(αi), then set ai = yi/∑y
+  * for symmetric Dirichlet Dist, increasing alpha increases the precision
+    (decrease the variance) of the distribution. The mean of each dimention
+    becomes 1/K,  the larger the alpha, the **narrow** the distribution centered at
+    (1/K, ... 1/K). Samples will be more even and less variant. If **alpha_k < 1**
+    for all k, we get **"spikes"** at the corner of the simplex, but the mean is
+    still 1/K. That means samples are very variant, and most dimensions are zero.
+  * asymmetric dirichlet, the mean is alpha_k/alpha_0, and the larger the
+    alpha_0, the more stable.
+	
+
 
 # sth
 * when the prior and the posterior have the same form, we say that the prior is a **conjugate prior** for the corresponding likelihood
@@ -59,3 +69,15 @@ The **BIC** method is very closely related to the **minimum description length**
 # Probability
 * Probability measure is a function from subsets of space X to [0, 1],
   satisfying certain properties.
+
+
+# Others
+* The outcome of interest is called a **success**, whether it’s a good outcome
+  or not. **Probability** is the number of times suceess occurred compared to
+  the total number of trials; **Odds** are the number of times success occurred
+  compared to the number of times failure occurred. Probability ranges from 0 to
+  1, while odd ranges from 0 to infinity.
+
+
+# Central Limit Theorem
+* mean of infinite iid variables is normal distribution

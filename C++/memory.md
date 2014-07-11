@@ -27,6 +27,11 @@ p1 = std::move(p2);  // ownership returns to p1
 `std::shared_ptr` is also a smart pointer but retains shared ownership of an
 object. Several `shared_ptr` objects may own the same object.
 `std::make_shared`
+* two ptr are same if they contain same object! Not same content
+* pass *sink* arguments by value and move into place
+```
+std::make_shared<T>(std::move(t));
+```
 
 ## auto_ptr
 This is **[deprecated][]** for its risk:

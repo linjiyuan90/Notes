@@ -31,6 +31,10 @@
 * This generative process defines a joint probability distribution over both the observed and hidden random variables
 * **LDA is sensitive to noise**, which means the head/foot will influence the
   learned topices. Is that means LDA is robust or not?
+* hyperparameters
+  the lower the alpha, the sparse the topic distribution (not smooth); the lower
+  the beta, the topic-word distribution is also sparse.
+* a fully generative model would need a way of **generating lengths** (e.g. a Poisson distribution) or terminating documents (e.g. a disginuished end-of-document symbol).
 ## inference
 LDA only inference the hyper-paramters?
 two approaches of inference:
@@ -49,3 +53,14 @@ Each document j has its own DP(Dirichlet Process)
 * Cluster(topics) are **shared** across documents by imposing DP prior on base distritbuion
 
 * what's shared topics? Between different collections?
+
+## hyper-parameter estimation
+* using Minka's fixted-point iteration
+  T. P. Minka. Estimating a dirichlet distribution. Technical report, Microsoft Research, 2003.
+
+
+## LDA-HMM
+A word can be syntax, or semantic
+
+
+# Random Projections

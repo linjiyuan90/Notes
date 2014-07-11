@@ -1,3 +1,9 @@
+
+# Hierarchical Bayesian Modeling
+* enable the borrowing of statistical strength for small data size.
+* model with common prior
+
+
 # sth
 
 LDA's main advantage over the PLSI method is that it's not quite as susceptible to overfitting.  This is generally true of Baysian methods which reducees the number of model parameters to be estimated, and therefore work much better for smaller data sets.
@@ -33,6 +39,9 @@ Kolmogorov Consistency Theorem or de Finetti's Theorem
 A Dirichlet process(DP) is an "infinitely decimated" Dirichlet
 distribution. Each decimation step involves drawing from a Beta distribution(a
 Dirichlet with 2 components) and multiplying into the relevant entry.
+* Dirichlet process is a stochastic process, meaning that technically speaking
+  it is an infinite sequence of random variables, rather than a single random
+  distribution
 * DP can be thought of as inifinite dimentional Dirichlet Distributions
 * A Dirichlet Process is a distribution over probability measures such that
   marginals on finite partitions are Dirichlet distributed.
@@ -41,6 +50,9 @@ Dirichlet with 2 components) and multiplying into the relevant entry.
  * semiparametric modeling
  * sidestepping model selection/averaging
 * Posterior Dirichlet Process
+* atom
+* EM is generaly used for inference in a mixture model, but G is nonparametric,
+making EM diffcult
 #### Dirichlet Process Mixture Model
 [Neal][2] describes a finite mixture models with K components while letting K goes to
 infinity to view the DP mixture model.
@@ -56,6 +68,18 @@ infinity to view the DP mixture model.
 ###	Indian  Buffet Process
 ###	Beta Process
 ### Hierarchy Dirichlet Process
+Each group's proportions π are sampled from global proportions β.
+
+Cowans(2004, 2006) has shown that the HDP provides statistical justification for
+the intuition behind tf-idf.
+<Information retrieval using hierarchical Dirichlet processes>
+<Probabilistic Document Modelling>
+
+## Distance Dependent Chinese Restaurant Processes
+A flexible class of distributions over **partitions** that allows for **dependencies**
+betweent the elements.
+Including dependencies arising from time, space and network connectivity.
+
 
 ### sth
 think G as a prior process, H as likelihood?
