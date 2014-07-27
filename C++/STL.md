@@ -8,6 +8,9 @@
 *adjacent_difference 
 
 # algortithm
+* adjacent_find, searchs for two adjacent elements that are equal
+* unique(beg, end, pred)
+  the pred is a equal predicator, not less predicator!
 * rotate
 * stable_partition
 * all_if, any_of, none_of
@@ -25,8 +28,25 @@ vt.erase(remove_if(vt.begin(), vt.end(), [](int e){ return e % 2 == 0; }, vt.end
 * set_union, set_intersection, set_difference, set_symmetric_difference
 * merge, inplace_merge
 
+# initializer_list
+* require same type
 # list
-* splice
+* splice,  **move** element(s) from that to the front of some of this's iterator.
+```
+void list::splice(const_iterator pos, list& source) 
+void list::splice(const_iterator pos, list&& source)
+// the above two functions need to make sure source is not same as this
+void list::splice(const_iterator pos, list& source, const_iterator sourcePos ) 
+void list::splice(const_iterator pos, list& source, const_iterator sourceBeg, const_iterator sourceEnd)
+//source can be same as this
+mylist.splice(list.begin(), mylist, it);
+```
+* sort, unqiue, merge, remove, remove_if
+  since list has no RandomAccessIterator, it provide these methods. Also, these
+  methods are faster than *algorithm* because the manipulate only **internal
+  pointers** rather than elements.
+
+# forward_list
 
 # type_traits
 ```c++
@@ -60,6 +80,9 @@ void func(T a, typename Identity<T>::type b) {
 * is_array
 
 # IO
+## hierarchy
+![iostream hierarchy](iostream.gif) 
+## miscellaneous
 * `std::cout << std::boolalpha;`
 * endl, **manipulator**, insert newline and flush
 	* manipulators are nothing more than functions passed to the I/O operators
@@ -89,10 +112,16 @@ std::copy(src.begin(), src.end(), std::inserter(vt, vt.end()));
 std::insert_iterator<std::set<int>>(vt, vt.end());
 ```
 
-
 # functional
 * hash
-
+* bind1st, bind2nd, these two are functions, their type is
+```
+std::binder1st<std::equal_to<int>> equal_to_10 = std::bind1st(std::equal_to<int>(), 10);
+```
+* not_equal_to, equal_to, less, greater, less_equal, greater_equal, these are `function objects`
+```
+std::find_if(vt.begin(), vt.end(), std::bind1st(std::not_equal_to<int>(), x));
+```
 
 # typeinfo
 * `typeid` return `type_info` class, which can be used to detect runtime type of
@@ -104,3 +133,9 @@ const Father& a = Father(), & b = Son();
 assert(typeid(a).name() != typeid(b).name());
 // pointer also works
 ```
+
+# Exception
+* length_error 
+* runtime_error
+* system_error
+* invalid_argument

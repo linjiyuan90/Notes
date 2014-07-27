@@ -331,9 +331,20 @@ std::cout << &a << std::endl;
 * **used in universal reference**, often in a template function
 
 # cast
+## const_cast 
 ## static_cast
+* `static_cast` (and an `old style cast`) will perform the correct **address
+  manipulation**; while `reinterpret_cast` will typically just pretend the base
+  class pointer is a derived class pointer without changing its value.
 ## dynamic_cast
-## const_cast
+* a `dynamic_case`is used typically to perform a **safe down cast** from a
+  pointer/reference to base to derived class
+* `dynamic_case` used as a down cast may be performed only on `polymorphic` type
+  (that's, the type of the expression being cast has to be a pointer to a class
+  type with `virtual function`); and the cast actually performs a **runtime
+  check** to see that the cast is correct.
+* `static_cast` typically has no or minimal runtime cost whereas using
+  `dynamic_cast` implies significant runtime overhead.
 ## reinterpret_cast
 
 # noexcept
@@ -422,4 +433,36 @@ using Foo::Bar;
 ```
 try {}
 catch(...) {current_exception()};
+```
+
+# Function Object & Function Pointers
+## function object
+* function object overload `function call operator`
+* function object can have data members(to store states), virtual operator () to create a
+ `function object hierarchy`
+* STL funciton object (Not general function object) has no data members, no
+  virtual functions, and no explicitly declared constructors or destructor, and
+  the implementation of operator () is **inline**; while function pointer will
+  not be inlined; STL function object avoid to have data members since STL
+  implementation may make serveral copies of a function object and may assume
+  that all the copies are identical.
+* A `predicate` is an operation that asks a true/false question about a single
+  object; A `comparator` can be viewed as a kind of binary predicate.
+* When a function object is used as a callback, that's an instance of the
+  Command pattern.
+## function pointer
+* it's legal to point to an **inline** function; however, calling an inline
+  function through a function pointer will not result in an inline function
+  call, because the compiler will not be able, in general, to determine at
+  compile time precisely what function will be called; while function object works
+  since its type is clear;
+* one traditional use of function pointers is to implement `callbacks`
+```
+void (*fp)(int);  // ptr to function
+fp = 0;  // Ok, set ot null
+extern void f(int);
+fp = f;
+fp = &f;  // Ok, take addres explicitly
+// the standard typename new_hanlder is a typedef:
+typedef void (*new_handler)();
 ```

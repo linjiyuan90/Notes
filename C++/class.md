@@ -63,12 +63,25 @@ class object_t {
   pointers"); But funciton name and set of argument types, and `const` qualifier
   must be same
 * a constructor cannot be `virtual`; create a `virtual Base* clone()` function
-  to fulfill the task of "virtual constructors"
+  to fulfill the task of "virtual constructors". A member function that provides
+  the ability to clone an object is traditionally called a "**virtual constructor**"
+  in C++.
 * An `abstract class` (class which has pure virtual function) doesn't need a
   constructor
 * calling a function using the scope resolution operator, `::`, ensures that the
   `virtual` mechanism is not used.
 * A class with a virtual function should have a `virtual destructor`!
+* **virtual base classes**, used in **virtual inheritance**, is a way of
+  **preventing multiple "instances"** of a given claass apperaing in an
+  inheritance hierarchy when using multiple inheritance.
+```
+class A {}; class
+B : public virtual A {public: void Foo() {}};
+class C : public virtual A {};
+class D : public B, public C {};
+D d;
+d.Foo(); // no longer ambiguous
+```
   
 ## virtual function table (vtbl)
 * each class with virtual functions has its own vtbl identifying its virtual
@@ -100,10 +113,19 @@ class object_t {
   class guarantees (i.e., its `public` parts) becomes `private` or `protected`,
   respectively. Thus, `private` and `protected` inheritance respresent a
   different way of `reusing` a class.
+* if the access specifier for a base class is left out, the base defaults to a
+  private base for a class and a public base for a struct
+* `friend` class/function can access `private`, `protected` members as well
+* `protected` can be used to provide functions designed to be used in derived
+  class but not by the general user(like uncheck access function); A derived
+  class can access a base class's protected members only for objects of its own
+  type, not other object with same base class. Declaring **data members**
+  `protected` is usally a design error. 
 
 ## polymorphism
 * we can often write better code using `polymorphism`, i.e., using `public
   inheritance`, `base class pointers(or reference)`, and `virtual` functions.
-* polymorphism implemented by `virutal` is `runtime/dynamic polymorphism`; which using
-  `template` is call `compile-time/static polymorphsim`
+* polymorphism implemented by `virutal` is `runtime/dynamic polymorphism`; which
+  using `template` is call `compile-time/static polymorphsim`
+
 ## cast

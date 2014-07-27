@@ -7,3 +7,6 @@
 
 
 
+* special character
+** like, <feff>, <200b>, <200c>, <200d>, <200e>, <200f>, to replace it, input "^Vufeff", "^Vu200d"
+** <feff>'s utf-8 is: \xEF\xBB\xBF, so can replace using sed, sed 's/\xEF\xBB\xBF//g'

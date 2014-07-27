@@ -81,3 +81,11 @@
    Hadoop only considers the value of =mapred.map.tasks= as a hint, while
    =mapred.min.split.size= and =mapred.max.split.size= plays a role. However,
    if =mapred.map.tasks= is larger than the number of splits, hadoop will use =mapred.map.tasks=.
+** skip bad records
+   =mapred.skip.attempts.to.start.skipping=, The number of Task attempts AFTER
+   which skip mode will be kicked off;
+   =mapred.skip.map.max.skip.records=, The number of acceptable skip records
+   surrounding the bad record PER bad record in mapper. If Long.MAX_VALUE,
+   means all the remaining records will be droped. If 1, only this bad record
+   will be droped.
+
