@@ -27,6 +27,7 @@ vt.erase(remove_if(vt.begin(), vt.end(), [](int e){ return e % 2 == 0; }, vt.end
 * equal(first1, last1, first2[, pred])
 * set_union, set_intersection, set_difference, set_symmetric_difference
 * merge, inplace_merge
+* replace, seems better than std::string::replace when replacing one element
 
 # initializer_list
 * require same type
@@ -75,18 +76,40 @@ template<typename T>
 void func(T a, typename Identity<T>::type b) {
 }
 ```
-* iterator_traits
 * make_unsigned
 * is_array
+* remove_const
+```
+typedef typename remove_const<_Tp>::type value_type;
+```
+# iterator_traits
+
+```
+template<typename IterT>
+void doSomething(IterT iter) {
+	typename std::iterator_trait<IterT>::value_type tmp(*iter);
+}
+```
 
 # IO
+## stream
+* A `stream` is an abstraction that represents a device on which input and
+  output operations are performed. A `stream` can basically be represented as a
+  source or destination of **`character`** of infinite length.
 ## hierarchy
 ![iostream hierarchy](iostream.gif) 
-## miscellaneous
-* `std::cout << std::boolalpha;`
-* endl, **manipulator**, insert newline and flush
-	* manipulators are nothing more than functions passed to the I/O operators
-	as arguments 
+### ios_base
+### streambuf
+### ios
+### class templates
+### global stream objects
+
+## manipulator
+* header "iomanip"
+* manipulators are nothing more than functions passed to the I/O operators(<<,
+  >>) as arguments;
+* concurrent access to the same stream object may cause data race 
+* endl, insert newline and flush
 ```
 std::cout<<std::endl
 // =>
@@ -94,7 +117,20 @@ operator<<(cout, endl)
 // inside it, calls
 endl(cout)
 ```
-  
+* boolalpha
+```c++
+std::cout << std::boolalpha << true << std::endl;
+std::cout << std::noboolalpha << true << std::endl;  // unset
+```
+* ws reads and discards whitespaces
+* skipws, noskipws
+  leading whitespaces is skipped by default, set the flag `ios::skipws`; if you
+  want to read a whitespace to `char`, use `get`, or use `std::noskipws`
+* unitbuf, nounitbuf
+  unitbuf flush the output buffer after each write operation. (cerr/wcerr, this
+  flag is set initially)
+
+
 # string
 * to_string
 *  stoi, stol, stoll, stoul, stoull, stof, stod, stold

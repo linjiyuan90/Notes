@@ -1,3 +1,6 @@
+
+
+
 # auto & decltype
 * use `auto` when we have a suitable initializer
 * when we have a type **deduced** without defining an initialized type, use
@@ -128,7 +131,10 @@ The base class's virtual function in derived class is also virtual.
 * recursive function can't be marked as inline since the recursive level is not
   known (?)
 * class member function will by default mark as inline function(?)
-
+* inline is a request, not a command. The compiler may reject to inline the
+  function.
+* if there is a pointer to a inline function, in fact, the compiler will
+  generate a "outline" function for the function pointer.
 
 # pointer
 ```
@@ -136,9 +142,8 @@ Foo *array[10]; // array of 10 Foo pointers
 Foo (*array)[10]; // pointer to array of 10 Foos
 ```
 
-# TODO
-* explicit
-  Use explicit to prevent implicit conversions.
+# explicit
+* Use `explicit` to prevent implicit conversions.
   http://stackoverflow.com/a/121216/3117578
 
 # enumeration
@@ -337,16 +342,23 @@ std::cout << &a << std::endl;
   manipulation**; while `reinterpret_cast` will typically just pretend the base
   class pointer is a derived class pointer without changing its value.
 ## dynamic_cast
-* a `dynamic_case`is used typically to perform a **safe down cast** from a
-  pointer/reference to base to derived class
+* a `dynamic_cast`is used typically to perform a **safe down cast** from a
+  pointer/reference to base to derived class or sibling base class
+* dynamic_cast a wrong reference will throw `bad_cast` exception while cast
+  pointer won't have exception but return nullptr.
 * `dynamic_case` used as a down cast may be performed only on `polymorphic` type
   (that's, the type of the expression being cast has to be a pointer to a class
   type with `virtual function`); and the cast actually performs a **runtime
   check** to see that the cast is correct.
 * `static_cast` typically has no or minimal runtime cost whereas using
   `dynamic_cast` implies significant runtime overhead.
+* If you want to perform a cast on a type where **inheritance** is not involved,
+  you probably want a `static_cast`. To cast constness away, you always want a
+  `const_cast`
 ## reinterpret_cast
-
+* The most common use of reinterpret_cast is to cast between **function pointer
+  types**
+  
 # noexcept
 * allow compiler to do more optimizatoin options
   * `move_if_no_except`
@@ -466,3 +478,11 @@ fp = &f;  // Ok, take addres explicitly
 // the standard typename new_hanlder is a typedef:
 typedef void (*new_handler)();
 ```
+
+# new & delete
+|               |                                                         Description                                                         |
+|---------------|:-------------------------------------------------:|
+| new operator  | create an obeject on the heap; both **allocate memory** and calls a **constructor** for the object                          |
+| operator new  | like malloc but you can customise this function; the new operator will use your own version of operator new                 |
+| placement new | special version of operator new; construct an object in memory you've already got a pointer to. `new (buffer) YourClass();` |
+
