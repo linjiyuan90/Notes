@@ -48,7 +48,10 @@ mylist.splice(list.begin(), mylist, it);
   pointers** rather than elements.
 
 # forward_list
-
+* implemented as single-linked lists
+* `forward_list` objects are thus more efficient than `list` objects, although
+  they can only be **iterated forwards**.
+  
 # type_traits
 ```c++
 template<typename T>
@@ -82,15 +85,6 @@ void func(T a, typename Identity<T>::type b) {
 ```
 typedef typename remove_const<_Tp>::type value_type;
 ```
-# iterator_traits
-
-```
-template<typename IterT>
-void doSomething(IterT iter) {
-	typename std::iterator_trait<IterT>::value_type tmp(*iter);
-}
-```
-
 # IO
 ## stream
 * A `stream` is an abstraction that represents a device on which input and
@@ -137,9 +131,82 @@ std::cout << std::noboolalpha << true << std::endl;  // unset
 
 
 # iterator
+## overview
+* four types: `iterator`, `const_iterator`, `reverse_iterator`, `const_reverse_iterator`
+* `insert` and `erase` of container only support `iterator`
+* `iterator` can be implicitly converted to `const_iterator` while the vice is
+  not allowed; to get an `iterator` from `const_iterator`, use `advance` and
+  `distance`
+```
+CIter ci;
+Iter it = vt.begin();
+std::advance(it, std::distance<CIter>(it, cit));  // here it is converted to CIter implicitly
+```
+* `reverse_iterator` has a `base` member function to get the `iterator`
+  value. However, the `base()` is pointed to preceeding elements in revered
+  order!
+```
+typedef std::deque<int>::iterator Iter; 
+typedef std::deque<int>::reverse_iterator RIter;
+RIter ri;
+dq.insert(ri.base(), v );  // the insert is ok
+dq.erase((++ri).base());  // but erase need to increase ri first!
+// -- ri.base() maybe not compiled since the return value base() maybe a const pointer!
+```
+* another categories: `output iterator`, `input iterator`, `forward iterator`,
+  `bidirectional iterator`, `random-access iterator`
+** `random-access iterator` can use `vt.begin()[i]`
+## auxiliary Iterator functions
+* `advance`, `next`, `prev`, `distance`, `iter_swap`
+* the reason why using `advance` & `distance` is that some iterators don't have
+  `+=`, `+`, `-=`, `-`(such as `std::list`)
+* due to the use of iterator traits, `advance` will use `pos += n` if it's an
+  random-access iterator and call `++pos` n times for other iterators; for
+  random-access iterators, `distance(pos1, pos2)` calles `pos2-pos1`, while
+  increment pos1 till pos2 for other iterators. So make sure pos2 is >= pos1.
+* `next`, `prev` return a temporary object instead of modifying the original
+  iterator
+* `iter_swap` is used to swap **value** which iterators refer; the iterator
+  don't need to have the same type.
+## iterator adapter
+* reverse iterator
+** it's possible to convert a `iterator` to `reverse_iterator`, but noted the
+	iterator is moved (move one to left); if the iterator is `begin`, the
+	reverse ierator will become `rbegin`
+** to convert `reverse_iterator` to `iterator`, call `base`, but noted the
+	iterator is moved (move one to right of the reversed iterator)
+** `reverse_iterator` is always the **preceeding** of `iterator`
+** in fact, `rbegin` refer to `end` and `rend` refer to `begin`; thus `rbegin()`
+	is simply: `container::reverse_iterator(end())` and `rend()` is simply:
+	`container::reverse_iterator(begin())`
+* insert iterator
+** operations of insert iterator
+
+| Expression   |        Effect        |
+|--------------|:--------------------:|
+| \*iterator    | No-op (returns iter) |
+| iter = value | inserts value        |
+| ++iter       | No-op (returns iter) |
+| iter++       | No-op (returns iter) |
+
+** kinds of insert ierator
+| Name             |         Class         | Called Function    | Creation             |
+|------------------|:---------------------:|--------------------|----------------------|
+| Back Inserter    | back_insert_iterator  | push_back(value)   | back_inserter(cont)  |
+| Front Inserter   | front_insert_iterator | push_front(value)  | front_iterator(cont) |
+| General Inserter | insert_iterator       | insert(pos, value) | inserter(cont, pos)  |
+
+## iterator_traits
+```
+template<typename IterT>
+void doSomething(IterT iter) {
+	typename std::iterator_trait<IterT>::value_type tmp(*iter);
+}
+```
+## other
 * back_inserter
 ```std::copy(bar.begin(), bar.end(), std::back_inserter(foo));```
-	* requires `push_back`, don't work for `set`, but `inserter` works 
+* requires `push_back`, don't work for `set`, but `inserter` works 
 * ostream_iterator
 ```std::copy(vt.begin(), vt.end(), std::ostream_iterator<int>(std::cout, ", "))```
 * inserter, insert_iterator
@@ -147,6 +214,7 @@ std::cout << std::noboolalpha << true << std::endl;  // unset
 std::copy(src.begin(), src.end(), std::inserter(vt, vt.end()));
 std::insert_iterator<std::set<int>>(vt, vt.end());
 ```
+* `istreambuf_iterator` is much faster than `istream_iterator`
 
 # functional
 * hash
@@ -175,3 +243,6 @@ assert(typeid(a).name() != typeid(b).name());
 * runtime_error
 * system_error
 * invalid_argument
+# vector
+* it's implemented with 3 pointers. One for beg, one for end, one for capacity
+  end; the memory between end and capacity end are only `operator new`, not construct!

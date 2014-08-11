@@ -422,9 +422,6 @@ class Widget {
 * has concurrency problem, **data race** since several threads may write the
   data simutanously
 * add mutex
-```
-
-```
 * or use atomic data, which is automatically synchronized
 
 
@@ -433,7 +430,6 @@ class Widget {
 ```
 template <typename T> using my_type = whatever<T>;
 using Foo::Bar;
-
 ```
 
 
@@ -480,9 +476,31 @@ typedef void (*new_handler)();
 ```
 
 # new & delete
-|               |                                                         Description                                                         |
-|---------------|:-------------------------------------------------:|
-| new operator  | create an obeject on the heap; both **allocate memory** and calls a **constructor** for the object                          |
-| operator new  | like malloc but you can customise this function; the new operator will use your own version of operator new                 |
-| placement new | special version of operator new; construct an object in memory you've already got a pointer to. `new (buffer) YourClass();` |
-
+## new
+|                         |Description|
+|:------------|:-------------------------------------------------------------------------------------------|
+| new operator    | create an obeject on the heap; both **allocate memory** and calls a **constructor** for the object                          |
+| operator new    | like malloc but you can customise this function; the new operator will use your own version of operator new function, then all the new operator will call this operator new function.        |
+| placement new | **special version of operator new**; construct an object in memory you've already got a pointer to. `new (buffer) YourClass();` |
+## delete
+* there are delete operator, operator delete doing the opposite things
+## array
+* new [], delete[] and their corresponding operator new[] and operator delete[] which can be overloaded
+## other
+* heap memory for STL containers is managed by the containers' allocation
+  objects, not by *new* and *delete* directly.
+* exception `bad_alloc` or based on it is thrown using `new` while null pointer
+  is returned when using `malloc`
+* in deed, exception is thrown when the **new-handler** is not installed; if the
+  new-handler is installed, the `operator new` will call this handler repeatedly
+  until it can find enough memory
+  ```
+  namespace std{
+    typedef void (*new_handler)();
+	new_handler set_new_handler(new_handler p) throw();
+	// pass null pointer to deinstall the handler
+  }
+  ```
+* operator new has a serveral overloaded versions; user can overload
+  class-specific operator new.
+  [operator new](http://en.cppreference.com/w/cpp/memory/new/operator_new)
