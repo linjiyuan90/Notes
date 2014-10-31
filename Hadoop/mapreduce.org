@@ -1,4 +1,3 @@
-
 * 
 if a mapepr will run too long (>= 600s), need to call
 context.progress() to tell jobtracker the status.

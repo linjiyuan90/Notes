@@ -19,3 +19,18 @@ context.progress() to tell jobtracker the status.
 * use this mechanism, then the success task can move the file to the target
   output
 * can write a committer to do this work (FileOutputCommitter)
+
+
+# mapreduce
+## split
+* one file may be split as serveral splits, one split for one mapper
+* There is something called **CombineFileFormat** to combine serveral file as
+  one split; Or write several files to one sequencefile
+* to get the filename of current record/split:
+```
+FileSplit fileSplit = (FileSplit)context.getInputSplit();
+String filename = fileSplit.getPath().getName();
+// hbase
+TableSplit currentSplit = (TableSplit)context.getInputSplit();
+byte[] tableName = currentSplit.getTableName();
+```

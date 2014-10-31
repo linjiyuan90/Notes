@@ -60,3 +60,9 @@ assert(&b1 != &b2);  // error! can't compare bool* and std::vector<bool>::refere
 ## guidelines
 * auto a tool, not an obligation
 * if explicit types clear, use it
+# access control
+* avoid copying
+```
+LookupKey(const LookupKey&);
+void operator=(const LookupKey&);  // void return type is ok
+```

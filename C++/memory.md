@@ -32,7 +32,8 @@ object. Several `shared_ptr` objects may own the same object.
 ```
 std::make_shared<T>(std::move(t));
 ```
-
+* when using `shared_ptr`, do create two objects like: `std::shared_ptr<T> a(pt), b(pt);`,
+  they are not shared! use `std::shared_ptr<T> a(pt), b = a;`
 ## auto_ptr
 This is **[deprecated][]** for its risk:
 > `auto_ptr` transfers ownership when it's assigned.

@@ -1,6 +1,3 @@
-
-
-
 # auto & decltype
 * use `auto` when we have a suitable initializer
 * when we have a type **deduced** without defining an initialized type, use
@@ -59,6 +56,7 @@ int &fun() {
 	return a;
 }
 ```
+* a reference is generally implemented as a pointer
 # emplace
 what's emplace? in-place?
 
@@ -76,8 +74,20 @@ const int n = 123;
 meow(n); // meow still treate it as int, not const int!!!
 // however, if the paramter is T&, passing const int argument  will be const T&
 ```
-* 
-
+## others
+* type alias `template<typename T> using VT = std::vector<T>;` can't be written inside a function?
+* if u don't actually call a template's member function, it's not instantinated
+  for the purpose of reducing code size.
+* **template parameter** is used in the **declaration** of a template while
+  **template argument** is used in the **specializaition** of a template;
+  **template-name** is a simple identifier while **tempalte-id** is a tempalte
+  name with an appended tempalte argument list.
+* **specialization** and **instantination**
+** specialization may or may not cause a template instantination. For example,
+    if there is a **customized version** of template class for some type, the
+    specialization will refer to that version and no instantination will take
+    place.
+* `nontype parameters`, like `template<class T, std::size:t N> array`.
 # Name Lookup
 ## Argument Dependent Lookup (ADL)
 	
@@ -357,6 +367,7 @@ std::cout << &a << std::endl;
   `const_cast`
 ## reinterpret_cast
 * The most common use of reinterpret_cast is to cast between **function pointer
+* the `hash` in STL use `reinterpret_cast<size_t>(__p);` to hash a pointer.
   types**
   
 # noexcept
@@ -436,7 +447,7 @@ using Foo::Bar;
 
 # operator
 * prefix, postfix
-
+* `operator int()`, convert to int
 # exception
 ```
 try {}
@@ -482,6 +493,7 @@ typedef void (*new_handler)();
 | new operator    | create an obeject on the heap; both **allocate memory** and calls a **constructor** for the object                          |
 | operator new    | like malloc but you can customise this function; the new operator will use your own version of operator new function, then all the new operator will call this operator new function.        |
 | placement new | **special version of operator new**; construct an object in memory you've already got a pointer to. `new (buffer) YourClass();` |
+* to call constructor on an existing object, need to use `placement new`, like `new(&obj) Object();`; But desctructor can be called directly.
 ## delete
 * there are delete operator, operator delete doing the opposite things
 ## array
@@ -504,3 +516,17 @@ typedef void (*new_handler)();
 * operator new has a serveral overloaded versions; user can overload
   class-specific operator new.
   [operator new](http://en.cppreference.com/w/cpp/memory/new/operator_new)
+# some
+* some class's `copy constructor` is **deleted**, like `auto_ptr`, `unique_ptr`,
+  so `vt.push_back(ptr)` won't work. Use `vt.push_back(std::move(ptr))`
+* prefer `forward declaration` in header file instead of include the header
+  file, like `class Some;`. But the class from **forward declaration** can't be
+  used as member since its structure is unknown. It can only be used as
+  **pointer** and **reference**.
+  
+  
+# header
+* `bits/stdc++.h` this will include all the headers.
+# operator
+* `T& operator *()`
+* `T* operator ->()`
